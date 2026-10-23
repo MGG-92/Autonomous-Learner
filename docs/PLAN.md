@@ -20,6 +20,62 @@
 - [ ] Learn retrieval; test changing budgets/horizons and longer retention delays.
 - [ ] Contradiction handling, source reliability, revision, retention curves.
 
+## M2.5 — Minimal 3D memory and activity viewer
+
+User-requested observability milestone. Build after the changing-budget/horizon
+robustness increment and integration of the delayed-memory controller into the
+persistent investigation loop, before expanding M3 autonomous investigation. It
+does not need to wait for every M2 research question to be solved. Keep CLI and
+evaluation runs independent of the viewer.
+
+Purpose: teach the user what the agent's "brain" is doing as it works. The graph is
+one view of a recorded execution, not the whole explanation. Use simple labels and
+progressive detail to explain observed information flow between observations,
+episodic memory, belief memory, the learned controller, and supplied inference.
+Record at execution speed and replay slowly; playback must not rerun the policy.
+
+- [ ] Define versioned, read-only memory snapshots and activity events from the
+  actual loop, with stable evidence IDs, tick ordering, and restart behavior.
+- [ ] Provide a local viewer launched with one documented command, starting with a
+  saved synthetic session and replay; add live observation after replay is reliable.
+- [ ] Record ordered steps within each tick, not just final graph states: inputs
+  observed, available candidate actions/facts, actual controller scores and chosen
+  action, budget changes, memory changes, and any inference evidence IDs. Include
+  model/checkpoint identity and trace-schema version so replay is interpretable.
+- [ ] Add a compact component view beside the 3D memory graph. Activate components
+  as their recorded operations occur; show candidate scores on demand and explain
+  each operation in plain language. Clearly distinguish learned policy decisions,
+  programmed inference, and stored evidence. Missing telemetry is labeled unknown.
+- [ ] Offer an optional advanced view of actual recorded neural activations only
+  when useful. Label their numerical meaning and scale; activation magnitude or an
+  action score is not confidence, a thought, or proof of causal importance. Start
+  with component activity and scores before adding individual-neuron displays.
+- [ ] Render a minimal, visually appealing 3D graph: entities/classes as nodes,
+  labeled fact edges, restrained colors, subtle motion, legible labels on selection,
+  orbit/zoom/reset controls, and a reduced-motion option. Avoid decorative effects.
+- [ ] Distinguish episodic and belief evidence; selecting an edge shows its polarity,
+  provenance, timestamp, and evidence ID. Represent conflicting evidence explicitly.
+- [ ] Show an activity timeline and current action, goal, and remaining budgets.
+  Highlight observed additions, consolidation, expiration/eviction, and proof paths
+  only when the recorded action or inference provides them; do not invent thoughts.
+- [ ] Support pause, single-operation step, rewind/scrub, and replay speed; explain
+  the selected step and its before/after state. Separate live/current memory from past
+  replay frames: forgotten facts disappear from current memory and are labeled as
+  historical when replayed. Display terminal/idle and disconnected states honestly.
+- [ ] Verify a synthetic session against underlying memory at each replay tick,
+  including expiration, consolidation, conflicts, and restart. Viewer history must
+  never enter agent inputs or bypass memory limits; private sessions stay local.
+- [ ] Check that enabling recording preserves actions/results under the same seed
+  and checkpoint. Capture actual computations without extra stochastic model calls,
+  record timing separately from playback speed, and measure recording overhead.
+- [ ] Document the launch workflow and demonstrate readable interaction on an
+  ordinary laptop, without changing benchmark decisions or requiring paid services.
+
+Acceptance: a user can launch a demonstration, replay it slowly, see which component
+operated at each step, understand its inputs and decision, inspect the supporting
+facts, and compare memory before/after. This is an observability feature, not evidence
+of curiosity or improved learning; a component animation must map to a recorded event.
+
 ## M3 — Autonomous investigation
 - [x] Persistent tick loop for ASK/ANSWER/ABSTAIN/WAIT, timestamps, teacher/compute budgets.
 - [ ] Expand internal computations and learned THINK/RECALL/STORE/REVISE choices.
