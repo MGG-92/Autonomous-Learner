@@ -10,6 +10,7 @@ and validation may be revisited; freeze final tests before examining results.
 | Original hinted memory | 0..79 | 100000..100009 | Development/reproduction 200000..200099 |
 | Original integrated controllers | Models above | Models above | 600000..600199 |
 | Delayed-specific-goal memory | 700000..700359 | 800000..800039 | Reserved 2000000..2000199 |
+| Frozen delayed-memory robustness v1 | No updates; original models above | No selection | OPENED 2100000..2100099; shared across eight scenarios |
 | Delayed-memory unit/smoke | 1100000 and nearby | 1200000 and nearby | 1300000 and nearby; software checks only |
 | Interactive original demo | No parameter updates | Not applicable | 900001 (and user-selected seeds) |
 

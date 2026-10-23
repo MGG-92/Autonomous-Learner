@@ -30,10 +30,10 @@ thoughts/confidence. Playback must not rerun decisions or change agent behavior.
 
 The delayed-memory increment in https://github.com/MGG-92/Autonomous-Learner/pull/1
 was merged as `3f1f5dd`. Source review/local checks and PR CI passed for frozen
-experiment source `d675f4b`. The full final run is complete, the predefined scoped
-gate passed, and 31 local tests passed. The current documentation increment is
-`docs/memory-activity-viewer`, adding the user-requested M2.5 objective. Inspect its
-PR/merge state when resuming and finish any interrupted publication first. The user
+experiment source `d675f4b`. The full final run is complete and the predefined scoped
+gate passed. The viewer-planning PR #2 merged as `da38854`; main CI passed.
+The current robustness increment is `codex/delayed-memory-robustness`, with evaluation
+source frozen as `ebd2099`. Check its PR/merge state when resuming. The user
 requires feature branches and PRs for meaningful changes; do not develop directly
 on main. Preserve source hashes with merge commits and GitHub no-reply metadata;
 do not squash/rebase experiment commits referenced by reports. Keep main stable.
@@ -71,7 +71,7 @@ do not squash/rebase experiment commits referenced by reports. Keep main stable.
 - Cached candidate pagination (200 per page), trainable residual token scorer, MORE/END,
   supervised-loss interface, and real token-selection generation driver.
 - Researcher memory inspection and Graphviz DOT export; audit logs excluded from policy.
-- 31 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed.
+- 33 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed.
 - Delayed-specific-goal benchmark: shuffled facts, expiring episodic evidence, neural
   WAIT/CONSOLIDATE gate and retention scores, persistent bounded snapshots, graph/FIFO/
   random/untrained/imitation controls, predefined gate, and per-world resampling.
@@ -125,19 +125,43 @@ test range was moved before use to avoid demo seed 900001. See protocol/seed led
 This scoped experiment passes, but M2 still lacks learned retrieval, general revision,
 source reliability, changing-horizon/budget evidence, and joint question-policy training.
 
+Frozen robustness v1 now supplies changing-budget/horizon evidence; it does NOT
+establish broad robustness. Evaluation source `ebd209995ed0cd6565fdd5923f60baae754185e1`,
+clean tree, original final-v1 checkpoints, optimizer seeds 7/42/97. New worlds
+2100000..2100099 are OPENED and barred from tuning. Eight scenarios share these 100
+worlds. Reference mean accuracy 22.11%; two empty ticks between observations cause
+all learned policies to make zero writes and answer 0% (random 4.19%). With nine
+allowed writes, learned accuracy 24.59% versus scheduled graph 28.33%; paired utility
+difference -0.0291 [-0.0424, -0.0162]. Three belief slots give 7.44% learned accuracy;
+nine give 36.63%. Zero capacity violations across all scenarios/policies. Reference
+utility advantage over scheduled graph has interval [-0.0073, 0.0435], including zero.
+All intervals exploratory/unadjusted, over worlds only. No retraining or selection.
+Full sanitized metrics, checkpoint hashes, and limitations:
+`reports/delayed-robustness-v1/README.md`. Quiet-tail extension changes policy timing
+and heuristic scheduling; beliefs do not decay, so this is not long-term retention.
+
+Validation of this increment: `.\.venv\Scripts\python.exe -m pytest -q` (33 passed),
+`-m autonomous_learner demo --memory runs/robustness-demo.sqlite` (passed),
+`-m autonomous_learner delayed-memory --config configs/delayed-memory-smoke.json
+--output runs/delayed-robustness-regression --phase validation` (completed), and
+`-m autonomous_learner delayed-robustness --checkpoints runs/delayed-final-v1
+--output runs/delayed-robustness-v1` (completed, 25.27 seconds). The default demo path
+already exists after the initial smoke; repeat demos must always use fresh paths.
+
 ## Immediate next actions when the user says continue
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
 2. Finish any interrupted current-branch PR/publication first. Then start a NEW
-   feature branch. Next research increment: test the frozen delayed-memory policy on
-   changing horizons, observation order/delays, and memory/write budgets. Reserve new
-   worlds in the seed ledger before evaluation; keep old final worlds out of tuning.
-   Use failures to design broader training distributions on separate training and
-   validation ranges. Do not claim M2 complete from the single fixed-budget experiment.
-   Subsequent work: delayed-memory integration into the persistent loop, followed by
-   the M2.5 memory/activity viewer at its documented dependency gate; learned retrieval,
-   source reliability/revision, and joint training remain M2 research objectives.
+   feature branch. Next engineering increment: integrate the delayed-memory controller
+   into the persistent investigation loop, including restart, hard-budget/expiration
+   invariants, and compatibility checks. Preserve the withheld-specific-question
+   scientific boundary where applicable and distinguish deployment from joint training.
+   Then implement the M2.5 memory/activity viewer at its documented dependency gate.
+   Research follow-up: use robustness failures to design broader timing/resource
+   training on separate training/validation ranges; reserve new final worlds before
+   evaluation. Do not tune on either opened delayed-memory final range. Learned
+   retrieval, source reliability/revision, and joint training remain M2 objectives.
 3. Preserve existing reports; add new experiment configs/results under new names.
    Continue documenting unsupported claims and negative results. Do not expand the
    language track merely to avoid a failed controlled experiment.

@@ -1,7 +1,7 @@
 """Reproducible delayed-query experiments; hidden truth stays at reward/evaluation boundaries."""
 import csv
 from copy import deepcopy
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, replace
 from itertools import combinations
 import json
 from pathlib import Path
@@ -62,13 +62,22 @@ class DelayedConfig:
 
 
 def episode(policy, world_seed: int, config: DelayedConfig, optimizer_seed=42, sample=False,
-            capture=False):
+            capture=False, *, reverse_stream=False, gap_ticks=0):
+    if not isinstance(gap_ticks, int) or gap_ticks < 0:
+        raise ValueError("Observation gaps must be nonnegative integer ticks")
     world = World.generate(world_seed)  # Environment/evaluator, not a policy input.
-    memory = DelayedMemory(config.task(world))
+    facts = tuple(reversed(world.facts)) if reverse_stream else world.facts
+    stream = []
+    for i, fact in enumerate(facts):
+        if i:
+            stream.extend([None] * gap_ticks)
+        stream.append(fact)
+    stream.extend([None] * config.quiet_ticks)
+    memory = DelayedMemory(replace(config.task(world), horizon=len(stream)))
     rng = random.Random((optimizer_seed << 32) ^ world_seed)
     log_probs, entropies, trace = [], [], []
     max_episodes = max_beliefs = 0
-    for fact in (*world.facts, *([None] * config.quiet_ticks)):
+    for fact in stream:
         memory.advance(fact)
         indices, logs, entropy = choose(memory, policy, rng, sample)
         log_probs.extend(logs)
@@ -112,9 +121,10 @@ def summarize(rows: list[dict]) -> dict:
             "max_belief_size": max(row["max_belief_size"] for row in rows)}
 
 
-def evaluate(policy, start: int, worlds: int, config: DelayedConfig, seed=42):
+def evaluate(policy, start: int, worlds: int, config: DelayedConfig, seed=42, **stream_options):
     with torch.no_grad():
-        rows = [episode(policy, world_seed, config, seed)[0] for world_seed in range(start, start + worlds)]
+        rows = [episode(policy, world_seed, config, seed, **stream_options)[0]
+                for world_seed in range(start, start + worlds)]
     return summarize(rows), rows
 
 

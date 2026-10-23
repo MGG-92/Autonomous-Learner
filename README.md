@@ -130,6 +130,18 @@ scoped gate: 22.61% mean learned accuracy versus 4.44% FIFO, with a 33.33% offli
 storage-only upper bound. This is a harder task than the original 100% demonstration;
 the accuracy figures are not directly comparable across those task settings.
 
+The [frozen robustness report](reports/delayed-robustness-v1/README.md) tests eight
+timing/resource scenarios without retraining. It exposes a complete failure with
+observation gaps and a loss to scheduled graph with more writes. To reproduce using
+the original final checkpoints:
+
+```powershell
+.\.venv\Scripts\python.exe -m autonomous_learner delayed-robustness --checkpoints runs/delayed-final-v1 --output runs/delayed-robustness-v1
+```
+
+Use a fresh output directory. All published final ranges are already opened; reserve
+new worlds before evaluating a revised policy.
+
 ## Bounded autonomous investigation
 
 ```powershell
