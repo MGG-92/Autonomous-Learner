@@ -9,7 +9,8 @@ from .policy import Heuristic, RandomPolicy
 from .world import SyntheticTeacher, World
 
 
-def evaluate(policy, start: int, worlds: int, max_steps: int = 8, capacity: int = 64) -> dict:
+def evaluate(policy, start: int, worlds: int, max_steps: int = 8, capacity: int = 64,
+             memory_factory=None) -> dict:
     if worlds < 1:
         raise ValueError("worlds must be positive")
     results = []
@@ -17,7 +18,7 @@ def evaluate(policy, start: int, worlds: int, max_steps: int = 8, capacity: int 
     with torch.no_grad():
         for seed in range(start, start + worlds):
             world = World.generate(seed)
-            memory = Memory(capacity=capacity)
+            memory = memory_factory(world.goal()) if memory_factory else Memory(capacity=capacity)
             agent = Agent(memory, world.catalog(), world.goal(), max_steps)
             result, _ = run_episode(agent, SyntheticTeacher(world), policy, world.truth(world.goal()))
             results.append(result)

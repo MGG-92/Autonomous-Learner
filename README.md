@@ -14,8 +14,8 @@ generation. No pretrained model or paid API is needed for the controlled track.
 
 **Status:** under active development. See [PROJECT_STATE.md](PROJECT_STATE.md) for
 verified results, blockers, and the exact next task. See [docs/PLAN.md](docs/PLAN.md)
-for the full workflow. Learned memory management and open-ended language learning
-are research milestones, not current claims.
+for the full workflow. Broader memory management and open-ended language learning
+remain research milestones; current learned retention uses a narrow task setting.
 
 ## Setup
 
@@ -68,7 +68,14 @@ Checkpoints are selected using validation reward, never test accuracy. Training,
 validation, and final test seeds are checked for overlap. Final metrics include
 accuracy, coverage, selective accuracy, teacher calls, steps, reward, elapsed time,
 and a Wilson interval across generated worlds. One training seed is not evidence of
-robustness across optimizer initializations; multi-seed analysis is on the roadmap.
+robustness across optimizer initializations; use the replication runner below.
+
+For a frozen preliminary replication over three optimizer seeds and a fresh held-out
+world range:
+
+```powershell
+.\.venv\Scripts\python.exe -m autonomous_learner replicate --config configs/confirmatory.json --seeds 7 42 97 --output runs/replication
+```
 
 ## What actually learns?
 
@@ -82,7 +89,8 @@ It has separate persistent episodic and belief graphs (4 and 3 evidence slots).
 After observing a proof, it must retain that proof through distractors. The future
 query is provided as a task hint. Consolidation occurs after each observation;
 the scorer learns which facts to retain, not when to consolidate. This experiment
-is separate from the question-selection benchmark pending joint-policy integration.
+is evaluated separately from the question-selection benchmark. Both frozen controllers
+can be combined in the tick loop; joint optimization is still pending.
 
 Experience changes the facts in bounded SQLite memory. Optimization changes the
 neural action scorer through imitation followed by REINFORCE. The supplied inference
@@ -94,6 +102,57 @@ deliberate experimental boundaries, not learned grammar or learned inference rul
 The teacher's hidden facts never enter policy features. Expert training labels may
 inspect the hidden world; evaluation actions cannot. No-memory evaluation keeps the
 same controller, task catalog, and compute budget while denying accessible evidence.
+
+## Bounded autonomous investigation
+
+```powershell
+.\.venv\Scripts\python.exe -m autonomous_learner run --session runs/session.json --checkpoint runs/experiment/controller.pt --ticks 2
+.\.venv\Scripts\python.exe -m autonomous_learner run --session runs/session.json --checkpoint runs/experiment/controller.pt --ticks 8
+```
+
+The second invocation resumes the first. The loop persists question history and
+budgets, uses application timestamps, and stops after answering or exhausting its
+resources. Audit traces are separate from accessible memory. Use one writer per
+session. Atomic session-file replacement protects against partially written JSON;
+the session and evidence database are not one crash-atomic transaction.
+Add `--retention-checkpoint runs/memory/retention.pt` to run the question controller
+against learned, bounded dual memory. The two controllers are trained separately;
+this option does not imply joint optimization.
+Add `--teacher human` for restricted JSON teacher replies. `--teacher local` loads
+the optional language model as a separate teacher invocation; its claims are marked
+unverified. Neither interface replaces the synthetic oracle in controlled evaluation.
+
+## Optional language and token-control track
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -e '.[language]'
+.\.venv\Scripts\python.exe -m autonomous_learner language-smoke --output runs/language.json
+```
+
+This explicitly downloads the default model, `HuggingFaceTB/SmolLM2-135M-Instruct`,
+into ignored `runs/models/`. Use `--model` to change it, `--revision` to pin its source
+revision, and `--local-only` for an already-cached offline run. Model weights are
+frozen and remote model code is disabled. Candidate probabilities remain normalized
+over the full vocabulary. Additional pages reuse the same cached distribution.
+
+The separate token scorer combines the language prior with a trainable residual
+and MORE/END actions. A supervised-loss interface supports visible tokens, page
+requests, and termination. The generation driver keeps earlier candidates available
+after requesting another page. Unit tests demonstrate optimization on a small
+synthetic selection task; the real-model smoke uses an **untrained** scorer. No
+benefit to language quality or task performance has been established. Model context
+is currently recomputed after each emitted token; KV-cache optimization is pending.
+
+Answer rendering copies exact entity names after generating a placeholder sentence.
+A strict acceptance check falls back to the template if the proposed sentence
+changes. This narrow baseline preserves the claim but does not validate arbitrary
+paraphrases or demonstrate learned grammar.
+
+Model/interface references: [SmolLM2 model card](https://huggingface.co/HuggingFaceTB/SmolLM2-135M-Instruct),
+[Transformers outputs](https://huggingface.co/docs/transformers/main_classes/output).
+
+Export an evidence graph with `autonomous-learner graph runs/demo.sqlite --output runs/memory.dot`.
+Render the DOT file using Graphviz if installed; inspection does not modify memory.
 
 ## Continuing development in another chat
 

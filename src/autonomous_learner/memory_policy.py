@@ -43,6 +43,15 @@ class RetentionController(nn.Module):
         return self.network(features).squeeze(-1)
 
 
+def load_retention(path: Path) -> RetentionController:
+    saved = torch.load(path, map_location="cpu", weights_only=True)
+    if tuple(saved["features"]) != MEMORY_FEATURES:
+        raise ValueError("Retention checkpoint feature schema differs")
+    scorer = RetentionController()
+    scorer.load_state_dict(saved["state_dict"])
+    return scorer.eval()
+
+
 class DualMemory:
     """Bounded episodic and belief graphs. Only their contents are agent-accessible.
 

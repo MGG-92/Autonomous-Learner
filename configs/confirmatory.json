@@ -1,0 +1,10 @@
+{
+  "seed": 42,
+  "imitation_worlds": 160,
+  "epochs": 12,
+  "rl_episodes": 160,
+  "validation_start": 100000,
+  "validation_worlds": 40,
+  "test_start": 500000,
+  "test_worlds": 200
+}

@@ -65,8 +65,11 @@ def experiment(output: Path, config: TrainConfig):
               "limitations": ["Scripted monotonic reasoning", "Fixed FIFO memory admission/eviction",
                                "Template/structured output; no language model", "Single training seed",
                                "Easy generated task family; evidence status is not calibrated confidence"]}
+    selected = max(curve, key=lambda row: row["mean_reward"])
+    report["selected_checkpoint"] = {"stage": selected["stage"], "iteration": selected["iteration"]}
     (output / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report["results"], indent=2))
+    return report
 
 
 def main():
@@ -79,14 +82,37 @@ def main():
     e = commands.add_parser("experiment")
     e.add_argument("--output", type=Path, default=Path("runs/experiment"))
     e.add_argument("--config", type=Path)
+    p = commands.add_parser("replicate", help="Repeat a frozen experiment over optimizer seeds")
+    p.add_argument("--config", type=Path, required=True)
+    p.add_argument("--seeds", type=int, nargs="+", default=[7, 42, 97])
+    p.add_argument("--output", type=Path, default=Path("runs/replication"))
     m = commands.add_parser("memory-experiment")
     m.add_argument("--output", type=Path, default=Path("runs/memory-experiment"))
+    r = commands.add_parser("run", help="Run bounded autonomous ticks; repeat to resume")
+    r.add_argument("--session", type=Path, default=Path("runs/session.json"))
+    r.add_argument("--seed", type=int, default=900_001)
+    r.add_argument("--checkpoint", type=Path)
+    r.add_argument("--retention-checkpoint", type=Path)
+    r.add_argument("--teacher", choices=["synthetic", "human", "local"], default="synthetic")
+    r.add_argument("--model", default="HuggingFaceTB/SmolLM2-135M-Instruct")
+    r.add_argument("--ticks", type=int, default=8)
+    r.add_argument("--interval", type=float, default=0.0)
+    r.add_argument("--max-steps", type=int, default=8)
+    r.add_argument("--max-questions", type=int, default=8)
     i = commands.add_parser("inspect")
     i.add_argument("memory", type=Path)
+    g = commands.add_parser("graph", help="Export inspectable evidence as Graphviz DOT")
+    g.add_argument("memory", type=Path)
+    g.add_argument("--output", type=Path, default=Path("runs/memory.dot"))
     v = commands.add_parser("evaluate")
     v.add_argument("checkpoint", type=Path)
     v.add_argument("--start", type=int, default=300_000)
     v.add_argument("--worlds", type=int, default=100)
+    l = commands.add_parser("language-smoke", help="Download/load optional local model and inspect candidates")
+    l.add_argument("--model", default="HuggingFaceTB/SmolLM2-135M-Instruct")
+    l.add_argument("--revision")
+    l.add_argument("--local-only", action="store_true")
+    l.add_argument("--output", type=Path, default=Path("runs/language-smoke.json"))
     args = parser.parse_args()
     torch.set_num_threads(1)
     if args.command == "demo":
@@ -94,13 +120,91 @@ def main():
     elif args.command == "experiment":
         config = TrainConfig(**json.loads(args.config.read_text(encoding="utf-8"))) if args.config else TrainConfig()
         experiment(args.output, config)
+    elif args.command == "replicate":
+        from dataclasses import replace
+        if len(set(args.seeds)) != len(args.seeds) or args.output.exists():
+            parser.error("Use unique optimizer seeds and a fresh output directory")
+        config = TrainConfig(**json.loads(args.config.read_text(encoding="utf-8")))
+        reports = [experiment(args.output / f"seed-{seed}", replace(config, seed=seed)) for seed in args.seeds]
+        summary = {"optimizer_seeds": args.seeds, "config": asdict(config),
+                   "results_by_seed": {str(seed): report["results"] for seed, report in zip(args.seeds, reports)},
+                   "limitations": ["Shared generated test worlds across optimizer seeds",
+                                    "Three seeds are preliminary; do not infer broad robustness",
+                                    "Task family and supervised proof demonstrations remain simple"]}
+        (args.output / "summary.json").write_text(json.dumps(summary, indent=2), encoding="utf-8")
     elif args.command == "memory-experiment":
         from .memory_policy import memory_experiment
         print(json.dumps(memory_experiment(args.output), indent=2))
+    elif args.command == "run":
+        from .loop import PersistentLoop
+        from .teachers import HumanTeacher, LocalLMTeacher
+        world = World.generate(args.seed)
+        args.session.parent.mkdir(parents=True, exist_ok=True)
+        if args.retention_checkpoint:
+            from .memory_policy import DualMemory, load_retention
+            memory = DualMemory(world.goal(), load_retention(args.retention_checkpoint),
+                                path=args.session.with_suffix(""))
+        else:
+            memory = Memory(args.session.with_suffix(".sqlite"))
+        try:
+            policy = load_checkpoint(args.checkpoint)[0] if args.checkpoint else Heuristic()
+            agent = Agent(memory, world.catalog(), world.goal(), args.max_steps)
+            loop = PersistentLoop(args.session, agent, policy, args.max_questions)
+            if args.teacher == "synthetic":
+                teacher = SyntheticTeacher(world)
+            elif args.teacher == "human":
+                teacher = HumanTeacher()
+            else:
+                from .language import FrozenLanguageModel
+                teacher = LocalLMTeacher(FrozenLanguageModel(args.model), json.dumps([asdict(f) for f in world.facts]))
+            for event in loop.run(teacher, args.ticks, args.interval):
+                print(json.dumps(event), flush=True)
+        finally:
+            memory.close()
     elif args.command == "inspect":
         if not args.memory.is_file():
             parser.error("memory database does not exist")
         print(json.dumps(Memory.inspect_file(args.memory), indent=2))
+    elif args.command == "graph":
+        from .inspection import export_dot
+        if not args.memory.is_file():
+            parser.error("memory database does not exist")
+        if args.output.exists():
+            parser.error("Choose a fresh graph output path")
+        export_dot(args.memory, args.output)
+        print(f"Wrote {args.output}")
     elif args.command == "evaluate":
         policy, config = load_checkpoint(args.checkpoint)
         print(json.dumps(evaluate(policy, args.start, args.worlds, config.max_steps), indent=2))
+    elif args.command == "language-smoke":
+        from .language import FrozenLanguageModel, render_answer
+        from .types import Answer, Query
+        from .token_controller import TokenController, controlled_generate
+        import time
+        if args.output.exists():
+            parser.error("Choose a new language-smoke output path")
+        start = time.perf_counter()
+        engine = FrozenLanguageModel(args.model, local_only=args.local_only, revision=args.revision)
+        cached = engine.candidates("The agent learns by", page_size=200, max_pages=2)
+        first, second = cached.page(0), cached.page(1)
+        assert engine.forward_calls == 1
+        assert not set(first.token_ids.tolist()) & set(second.token_ids.tolist())
+        controller = TokenController(first.embeddings.shape[1], 4)
+        choice = int(controller(first, torch.zeros(4)).argmax())
+        report = {"model": args.model, "forward_calls_for_two_pages": engine.forward_calls,
+                  "model_revision": getattr(engine.model.config, "_commit_hash", None),
+                  "page_sizes": [len(first.token_ids), len(second.token_ids)],
+                  "all_parameters_frozen": all(not p.requires_grad for p in engine.model.parameters()),
+                  "candidate_examples": [{"id": int(first.token_ids[i]), "text": first.text[i],
+                        "probability": float(first.log_probabilities[i].exp())} for i in range(5)],
+                  "untrained_controller_choice": first.text[choice] if choice < len(first.text) else ["MORE", "END"][choice - len(first.text)],
+                  "render": render_answer(engine, Query("dax", "can", "zep"), Answer("SUPPORTED", (1, 2, 3))),
+                  "controlled_generation": controlled_generate(engine, controller, torch.zeros(4),
+                                               "The agent learns by", max_new_tokens=8),
+                  "elapsed_seconds": time.perf_counter() - start,
+                  "limitations": ["Untrained token scorer initialized to the language prior",
+                                   "Strict template acceptance; language benefit not established",
+                                   "Each new context is recomputed; only candidate pagination is cached"]}
+        args.output.parent.mkdir(parents=True, exist_ok=True)
+        args.output.write_text(json.dumps(report, indent=2), encoding="utf-8")
+        print(json.dumps(report, indent=2))
