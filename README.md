@@ -33,6 +33,12 @@ from experience. This is planned, not demonstrated. It does not imply subjective
 consciousness or rely on generated self-descriptions. Goal-directed world learning
 remains the next experimental milestone.
 
+An [Interactive Agent Playground](docs/PLAYGROUND.md) is planned after the first
+scored action-world goal baseline: a small CLI for goals, step-by-step investigation,
+actual beliefs/predictions and evidence. The proposed `playground` command is not
+implemented yet. Manual sandbox sessions will stay separate from scientific evaluation;
+graphical views and new capability displays can follow as the core develops.
+
 **Status:** under active development. See [PROJECT_STATE.md](PROJECT_STATE.md) for
 verified results, blockers, and the exact next task. See [docs/PLAN.md](docs/PLAN.md)
 for the full workflow. The current priority is internal rule/model learning (C1–C4),

@@ -25,6 +25,12 @@ internal-observation interface must exclude research audit logs, hidden interven
 labels, held-out answers and forgotten task contents. Test against no-self-model,
 simple calibration and matched-resource controls before making self-modeling claims.
 
+The planned Interactive Agent Playground follows `docs/PLAYGROUND.md` and P1 in
+`docs/PLAN.md`: first score the action-world goal baseline, then a bounded CLI using
+actual cognitive components. Keep manual sessions development-only, observer history
+outside agent memory, and step/replay inspection free of repeated decisions. It must
+not displace model, strategy, abstraction or self-modeling research with UI work.
+
 Read `PROJECT_STATE.md`, `docs/PLAN.md`, and `docs/ARCHITECTURE.md` before changing code.
 The user authorizes autonomous implementation, debugging, tests, sensible architecture
 changes, local commits, and pushing this project to its GitHub repository. Do not

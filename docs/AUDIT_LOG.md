@@ -298,3 +298,30 @@ checks actually performed and never certify that the whole system is flaw-free.
   controls and source/config freeze. Then specify the C5a reliability pilot and
   its feedback schema. All C5 milestones remain unchecked, as do goal-performance,
   learned strategy, new abstractions, calibration and transfer claims.
+
+## 2026-10-23 — Interactive Agent Playground planning
+
+- Scope: roadmap and observer contract; inspected the real investigation loop,
+  planning primitive, architecture, CLI and adjacent historical viewer requirements.
+  No runtime behavior changed and no new runtime defect was reproduced.
+- Counterexample: implementing step mode by rerunning action selection could consume
+  RNG and simulated work, changing the supposed explanation. P1 requires one resumable
+  core execution path, captured actual-operation events and recording/step/run parity.
+  Inspection reads recorded telemetry; fresh prediction requests are explicit work.
+- Scientific boundary: new seeds or object labels can reproduce reserved mechanisms.
+  Manual sessions must use the development partition; later edits/imports need semantic
+  identity/exclusion checks. No automatic training ingestion or benchmark promotion.
+  Silent rule reveal/model reset would fake adaptation; keep edits deferred and expose
+  current fixed-model failure honestly. These are design requirements, not verified
+  playground protections: no playground code was added.
+- Roadmap conflict resolved: P1 follows scored goal learning, while the retained M2.5
+  graphical viewer and its historical delayed-memory dependencies do not block it.
+  C5a/C3 research need not wait for graphics, language or interface polish. Existing
+  memory facilities are not yet integrated into the action-world path; planned views
+  must not imply that they are, or turn observer history into agent memory.
+- Actual checks: all 127 tests, fresh legacy and action-model demos, diff whitespace
+  checks and publication preflight passed. No policy training or new scientific
+  measurements were appropriate.
+- Next audit: independent goal/start sampling, prior/random-plan information and cost
+  fairness, commitment before feedback and source/config freeze in the scored goal
+  runner. Later P1 must test its observer and partition boundaries before launch.

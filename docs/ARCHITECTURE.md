@@ -179,6 +179,17 @@ bootstrapped from a supplied graph heuristic and optionally refined by terminal-
 policy gradients. See the versioned protocol and results; this is not learned logic
 or joint training with the original question-selection controller.
 
+The planned Interactive Agent Playground is a development-only CLI adapter to the
+actual action-world model, investigation and goal-planning execution path. P1 follows
+the first scored goal baseline; no playground command or interactive action-world
+session exists yet. See `docs/PLAYGROUND.md` for scope and acceptance gates. Structured
+goals and queries precede natural-language input. Versioned operation events support
+step/run and future graphical views without rerunning decisions during inspection.
+Observer history stays outside learner inputs; sandbox mechanisms and interactions
+cannot enter reserved evaluation. Additional user-requested predictions are explicit
+work, distinct from reading captured telemetry. Later memory, abstraction and
+self-model views expose implemented mechanisms, not simulated introspection.
+
 The planned M2.5 viewer is a read-only observer of versioned memory snapshots and
 activity events from the persistent loop. A minimal local 3D graph and timeline
 will support saved-session replay before live observation. Display current bounded
