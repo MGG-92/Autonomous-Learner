@@ -10,6 +10,9 @@ commit email. Only source, tests, documentation, and sanitized synthetic reports
 may be published. Never add local paths, private prompts, credentials, databases,
 checkpoints, or unreviewed generated artifacts. Do not change
 unrelated repositories, account settings, or delete user work.
+Keep the README's prominent work-in-progress and agentic-AI disclosure. The user
+requires the project to be presented as an experiment, nothing less and nothing more.
+Do not rewrite public branch history; the private bootstrap cleanup was one-time.
 
 ## Resuming when the user says “continue”
 

@@ -6,6 +6,8 @@ Implement the architecture in `docs/ARCHITECTURE.md` incrementally and autonomou
 Train, evaluate, debug, keep appropriate Git history, and maintain a PUBLIC GitHub repository.
 The user clarified public visibility and emphasized careful publication. Use the
 publication check, GitHub no-reply author metadata, and explicit source-only staging.
+The README must prominently disclose work in progress and that most development
+is done by agentic AI. Present the project as an experiment, nothing less and nothing more.
 Make progress across sessions; the user will say “continue” after usage refills.
 The original attached draft is inspiration; the accepted architecture prioritizes
 controlled experiments before language/token control. Never claim all milestones

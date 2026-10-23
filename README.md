@@ -1,5 +1,12 @@
 # Autonomous Learner
 
+> **Work in progress · Agentic AI experiment**
+>
+> Most of the implementation, testing, debugging, and documentation in this project
+> is done by agentic AI under human direction. Treat this project as an experiment,
+> nothing less and nothing more. It is not a finished product, and its results do
+> not establish general intelligence or independent language understanding.
+
 A research prototype that learns synthetic facts through teacher interaction and
 trains a small PyTorch controller to choose useful questions. The first experiment
 separates knowledge acquisition, parameter learning, supplied inference, and language
