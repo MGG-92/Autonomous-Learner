@@ -3,6 +3,11 @@
 This is an agentic-AI work in progress. These measurements describe narrow synthetic
 experiments, not general intelligence, independent grammar learning, or a finished product.
 
+The newer [delayed-question memory experiment](delayed-memory-v1/README.md) removes
+the specific future-question hint and proof-first ordering. Its scoped gate passed;
+mean learned accuracy was 22.61%, versus 4.44% FIFO and a 33.33% storage-only bound.
+The original, easier experiments below remain unchanged for comparison.
+
 ## Question-selection replication
 
 Source: `3666831e3571d0f52ed48b84abeb0d55f2bb1136`, clean working tree.

@@ -1,0 +1,12 @@
+{
+  "optimizer_seeds": [42],
+  "bootstrap_policy": "graph_scheduled",
+  "train_start": 1100000,
+  "imitation_worlds": 12,
+  "imitation_epochs": 4,
+  "rl_episodes": 4,
+  "validation_start": 1200000,
+  "validation_worlds": 6,
+  "test_start": 1300000,
+  "test_worlds": 8
+}

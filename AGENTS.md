@@ -21,7 +21,11 @@ Do not rewrite public branch history; the private bootstrap cleanup was one-time
 3. Run the documented smoke tests; take the first unfinished milestone in `docs/PLAN.md`.
 4. Implement, test, and debug a small meaningful increment. Continue while useful work remains.
 5. Update `PROJECT_STATE.md` with exact commands, evidence, limitations, and the next task.
-6. Commit coherent increments with descriptive messages; push if authenticated.
+6. Use a short-lived feature branch for each meaningful increment, with coherent
+   commits. Open a PR against main, review its diff, and require passing CI before
+   merging. Routine PR creation and merging are authorized; do not wait for human
+   approval unless an unresolved consequential decision requires it. Keep main stable.
+   Use merge commits so source hashes in experiment reports remain reachable.
    Record any remote/authentication blocker without delaying independent local work.
 
 ## Scientific rules

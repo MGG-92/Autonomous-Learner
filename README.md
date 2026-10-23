@@ -105,6 +105,31 @@ The teacher's hidden facts never enter policy features. Expert training labels m
 inspect the hidden world; evaluation actions cannot. No-memory evaluation keeps the
 same controller, task catalog, and compute budget while denying accessible evidence.
 
+## Delayed-question memory experiment
+
+The newer controlled experiment withholds the specific future question, shuffles all
+observations, and gives memory a limited consolidation budget. Episodic evidence
+expires before the question. A neural policy chooses WAIT/CONSOLIDATE and retention
+priorities, bootstrapped from a supplied graph heuristic and optionally refined with RL.
+Possible question vocabulary/distribution and the horizon are public; this is not
+open-ended memory or learned logic. Read the [protocol](docs/experiments/delayed-goal-memory.md).
+
+```powershell
+.\.venv\Scripts\python.exe -m autonomous_learner delayed-memory --config configs/delayed-memory-smoke.json --output runs/delayed-smoke --phase validation
+```
+
+Use `configs/delayed-memory.json` for the full three-seed experiment. Validation is
+the default phase. `--phase final` opens the reserved test range: run it only after
+freezing the experiment, and do not tune on those results. Output includes learned,
+imitation-only, random, untrained, FIFO, and graph baselines, per-world metrics, a
+storage upper bound, and an explicit success/failure gate. A failed gate is a valid
+research result and does not mark the milestone complete.
+
+The [first delayed-question report](reports/delayed-memory-v1/README.md) passed its
+scoped gate: 22.61% mean learned accuracy versus 4.44% FIFO, with a 33.33% offline
+storage-only upper bound. This is a harder task than the original 100% demonstration;
+the accuracy figures are not directly comparable across those task settings.
+
 ## Bounded autonomous investigation
 
 ```powershell

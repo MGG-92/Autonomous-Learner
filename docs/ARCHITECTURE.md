@@ -32,6 +32,14 @@ reference for attributing learning to this architecture. A token reranker is opt
 and must earn its complexity through ablation. Syntax/semantics are not cleanly separated
 inside a pretrained LM.
 
+The newer delayed-question memory track withholds the specific question until after
+a shuffled stream and quiet delay. A separate neural policy jointly encodes visible
+evidence, scores retention, and chooses WAIT/CONSOLIDATE under hard write/storage
+limits. Its possible query distribution/vocabulary and horizon remain public. It is
+bootstrapped from a supplied graph heuristic and optionally refined by terminal-reward
+policy gradients. See the versioned protocol and results; this is not learned logic
+or joint training with the original question-selection controller.
+
 References: Sutton, Precup & Singh (1999), options,
 https://people.cs.umass.edu/~barto/courses/cs687/Sutton-Precup-Singh-AIJ99.pdf;
 Lewis et al. (2020), retrieval-augmented generation,

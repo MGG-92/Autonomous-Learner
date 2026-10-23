@@ -16,6 +16,12 @@ PATTERNS = {
 FORBIDDEN = {".pt", ".pth", ".sqlite", ".sqlite3", ".db", ".pem", ".key", ".pfx", ".zip"}
 
 
+def public_email(email):
+    # GitHub creates a synthetic merge commit for PR CI with its service identity.
+    # Human author/committer addresses must still use GitHub's no-reply domain.
+    return email.lower() == "noreply@github.com" or email.lower().endswith("@users.noreply.github.com")
+
+
 def git(*args):
     return subprocess.check_output(["git", *args])
 
@@ -52,7 +58,7 @@ def main():
                 errors.extend(check_content(f"history:{name}", git("cat-file", "blob", object_id)))
                 checked.add(object_id)
         emails = git("show", "-s", "--format=%ae%n%ce", revision).decode().splitlines()
-        if any(not email.endswith("@users.noreply.github.com") for email in emails):
+        if any(not public_email(email) for email in emails):
             errors.append(f"commit {revision[:8]}: author/committer email is not GitHub no-reply")
     if errors:
         print("Publication preflight failed:\n" + "\n".join(sorted(set(errors))))
