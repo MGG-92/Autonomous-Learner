@@ -92,6 +92,11 @@ def main():
     dm.add_argument("--config", type=Path, default=Path("configs/delayed-memory.json"))
     dm.add_argument("--output", type=Path, default=Path("runs/delayed-memory"))
     dm.add_argument("--phase", choices=["validation", "final"], default="validation")
+    dr = commands.add_parser("delayed-robustness", help="Evaluate frozen memory policies under resource/stream shifts")
+    dr.add_argument("--checkpoints", type=Path, required=True)
+    dr.add_argument("--output", type=Path, required=True)
+    dr.add_argument("--start", type=int, default=2_100_000)
+    dr.add_argument("--worlds", type=int, default=100)
     r = commands.add_parser("run", help="Run bounded autonomous ticks; repeat to resume")
     r.add_argument("--session", type=Path, default=Path("runs/session.json"))
     r.add_argument("--seed", type=int, default=900_001)
@@ -144,6 +149,9 @@ def main():
         config = DelayedConfig(**json.loads(args.config.read_text(encoding="utf-8")))
         report = delayed_experiment(config, args.output, args.phase)
         print(json.dumps({"gate": report["gate"], "results": report["results_by_seed"]}, indent=2))
+    elif args.command == "delayed-robustness":
+        from .delayed_robustness import robustness
+        robustness(args.checkpoints, args.output, args.start, args.worlds)
     elif args.command == "run":
         from .loop import PersistentLoop
         from .teachers import HumanTeacher, LocalLMTeacher
