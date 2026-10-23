@@ -101,6 +101,9 @@ def main():
     qp.add_argument("--output", type=Path, required=True)
     ad = commands.add_parser("action-model-demo", help="Scripted transition-belief software demo, not a benchmark")
     ad.add_argument("--output", type=Path, required=True)
+    ap = commands.add_parser("action-prediction", help="Development-only action-world prediction comparison")
+    ap.add_argument("--config", type=Path, default=Path("configs/action-prediction.json"))
+    ap.add_argument("--output", type=Path, required=True)
     dr = commands.add_parser("delayed-robustness", help="Evaluate frozen memory policies under resource/stream shifts")
     dr.add_argument("--checkpoints", type=Path, required=True)
     dr.add_argument("--output", type=Path, required=True)
@@ -176,6 +179,11 @@ def main():
                           "before": report["before"]["probabilities"],
                           "after_experience": report["after_experience"]["probabilities"],
                           "after_reset": report["after_reset"]["probabilities"]}, indent=2))
+    elif args.command == "action-prediction":
+        from .action_prediction import PredictionConfig, run as action_prediction
+        config = PredictionConfig(**json.loads(args.config.read_text(encoding="utf-8")))
+        report = action_prediction(config, args.output, progress=lambda row: print(json.dumps(row), flush=True))
+        print(json.dumps(report["results_by_seed"], indent=2))
     elif args.command == "delayed-robustness":
         from .delayed_robustness import robustness
         robustness(args.checkpoints, args.output, args.start, args.worlds)

@@ -35,7 +35,7 @@ and renders authorized structured claims; its parsing/fidelity must be evaluated
 separately, and its wording must not automatically become new cognitive evidence.
 See `docs/experiments/internal-rule-discovery.md` and C1–C4 in `docs/PLAN.md`.
 
-## Action-world bridge: transition beliefs implemented, experiment pending
+## Action-world bridge: development prediction comparison implemented
 
 Finite function discovery is a diagnostic for a broader objective: learning predictive
 models of objects, properties, actions, interactions, and consequences, and using
@@ -70,7 +70,8 @@ Public immutable records expose object/action IDs and observed bits, not true ef
 instances or mechanism identities. Legal actions are independent of hidden effects;
 no-ops consume budget and there is no agent-accessible reset. This is a software
 oracle/interface, not a learned policy. See the v1 development
-contract in `docs/experiments/structured-action-world.md`. No study has run yet.
+contract in `docs/experiments/structured-action-world.md`. Prediction-only development
+results are in `reports/action-prediction-v1/README.md`; no goal study has run yet.
 
 `action_model.py` now filters the public effect hypotheses from experienced
 transitions and preserves their joint implications in rollouts of up to three
@@ -91,8 +92,13 @@ development mechanisms, keeping named software fixtures development-only. Public
 class enumeration yields 2744 identities (1934/410/400 development/validation/final).
 It does not execute reserved worlds. Cached public transition tables preserve the
 original identity algorithm while making complete-class enumeration CPU-friendly.
-The scripted `action-model-demo` records changed predictions and exact reset;
-investigation policies, scoring, planning, parameter learning and transfer remain pending.
+The scripted `action-model-demo` records changed predictions and exact reset.
+`action_investigation.py` supplies information gain, random and cyclic controls using
+only current public state and the model. `action_prediction.py` commits all policy/seed
+predictions before target access and scores full/shared-unseen one/two-step panels.
+The first development comparison supports improved prediction from experience, with
+bounded supplied inference and myopic investigation. Goal planning, parameter
+learning, new abstractions, calibrated uncertainty and transfer remain pending.
 
 ## Earlier controlled graph track (supporting baseline)
 

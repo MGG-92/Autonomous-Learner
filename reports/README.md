@@ -3,6 +3,14 @@
 This is an agentic-AI work in progress. These measurements describe narrow synthetic
 experiments, not general intelligence, independent grammar learning, or a finished product.
 
+The [first action-world development comparison](action-prediction-v1/README.md)
+tests experience-updated predictions of state-changing actions without an LLM.
+Supplied information-gain investigation reaches 75.31% one-step and 71.80% two-step
+accuracy, versus 61.98%/56.41% after model reset. Shared unseen cases also improve
+on proper scores, but the two-step unseen interval against fixed cycling crosses
+zero. These are development results under supplied effects/inference; no goal
+planning, learned investigation, calibrated uncertainty or transfer is demonstrated.
+
 The active [internal rule-discovery result](internal-rule-discovery-v1/README.md)
 tests unfamiliar finite operations without an LLM. Supplied information-gain
 investigation reaches 76.53% reserved-input accuracy on 100 distinct rules, versus

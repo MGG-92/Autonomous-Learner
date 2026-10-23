@@ -29,6 +29,7 @@ jobs:
       - run: python -m autonomous_learner rule-discovery --config configs/rule-discovery-smoke.json --output runs/ci-rules
       - run: python -m autonomous_learner learned-investigation --config configs/learned-investigation-smoke.json --output runs/ci-query-policy
       - run: python -m autonomous_learner action-model-demo --output runs/ci-action-model.json
+      - run: python -m autonomous_learner action-prediction --config configs/action-prediction-smoke.json --output runs/ci-action-prediction
       - uses: actions/upload-artifact@v4
         with:
           name: experiment-${{ matrix.python }}
@@ -40,3 +41,4 @@ jobs:
             runs/ci-rules/report.json
             runs/ci-query-policy/report.json
             runs/ci-action-model.json
+            runs/ci-action-prediction/report.json
