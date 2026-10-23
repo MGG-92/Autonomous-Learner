@@ -27,6 +27,12 @@ finds 75.31% one-step accuracy with supplied information-gain investigation vers
 goal planning and transfer remain pending. The scripted demo is a software check:
 `python -m autonomous_learner action-model-demo --output runs/action-model-demo.json`.
 
+Long-term research also includes [functional self-modeling](docs/SELF_MODELING.md):
+learning the agent's own reliability, limitations and the effects of cognitive choices
+from experience. This is planned, not demonstrated. It does not imply subjective
+consciousness or rely on generated self-descriptions. Goal-directed world learning
+remains the next experimental milestone.
+
 **Status:** under active development. See [PROJECT_STATE.md](PROJECT_STATE.md) for
 verified results, blockers, and the exact next task. See [docs/PLAN.md](docs/PLAN.md)
 for the full workflow. The current priority is internal rule/model learning (C1–C4),

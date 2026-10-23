@@ -100,6 +100,43 @@ The first development comparison supports improved prediction from experience, w
 bounded supplied inference and myopic investigation. Goal planning, parameter
 learning, new abstractions, calibrated uncertainty and transfer remain pending.
 
+`action_planning.py` now provides the next supplied primitive: exhaustive open-loop
+search of sequences up to three actions using only the acquired model and public
+start/goal. It ranks predicted success, prefers shorter tied plans and uses a public
+RNG for remaining ties; it reports simulated work without querying an environment.
+Software fixtures verify planning from experienced transitions. The goal evaluator,
+independent sampling, baselines and performance measurement are still pending.
+
+## Functional self-modeling: proposed extension, not implemented
+
+The research objective includes learning about the agent's own reliability and the
+consequences of memory, strategy and compute choices. This can use the same learning
+principles as world modeling: predict from accessible context/operation, observe
+actual feedback, update and test interventions. Reusing principles does not imply
+reusing the finite guarded-effect grammar or requiring a separate introspection module.
+Begin after the goal baseline with a small empirical success/error predictor; compare
+it with simple calibration and equally informed controllers before adding complexity.
+
+Current posteriors, accessible evidence, reset controls and strategy/cost records are
+potential signals, not an existing self-model. New mechanisms are needed for learned
+self-related predictions, agent-specific attribution and adaptive metacognitive control.
+Candidate counts/entropies describe uncertainty within the supplied class; they do not
+establish knowledge of blind spots or calibrated reliability. Self-model learning
+and strategy/parameter optimization must be reported separately.
+
+Future agent-visible cognitive events must have an explicit bounded interface,
+distinct from researcher traces and audit logs. Only actually accessible evidence,
+chosen operations, declared resource observations and ordinary delayed feedback
+may enter it. Hidden mechanisms, held-out panel answers, evaluator reachability,
+intervention flags and evicted task contents stay unavailable. Cost the interface,
+self-model state and control actions; it must not become an unlimited auxiliary memory.
+
+World and self models may share representations. Testing their functional separation
+requires controlled task/agent variations, task-only and no-self-model controls,
+monitor-only and shuffled-state ablations, and intervention benefits after overhead.
+Language can later render committed self-related claims but cannot supply them.
+The staged proposal in `docs/SELF_MODELING.md` makes no subjective-consciousness claim.
+
 ## Earlier controlled graph track (supporting baseline)
 
 The controlled track has no language model. A generated hidden world belongs only

@@ -261,3 +261,40 @@ checks actually performed and never certify that the whole system is flaw-free.
 - Next: supplied open-loop goal planning, independent goals, prior/random-plan
   controls and unreachable-goal accounting outside learner inputs. Freeze that
   scope before measuring; preserve this report and all earlier negative findings.
+
+## 2026-10-23 — Functional self-modeling roadmap and planning primitive
+
+- Scope/source: long-term objective, roadmap, architecture and new supplied planner;
+  adjacent world-model probabilities, memory/audit boundaries and existing reports.
+  Parent `77592da`; frozen prediction experiments, configs and active policies unchanged.
+- Critical distinction: confidence/candidate counts and stored history are available
+  signals, not learned self-understanding. A successful task-only forecaster can
+  mimic reliability awareness; a strategy selected for harder tasks can have a
+  higher failure rate without being worse. Proposed C5 tests control these alternatives
+  using matched task/agent interventions, calibration baselines and behavioral ablations.
+- Information-budget risk: feeding researcher logs or forgotten task contents into
+  a monitor would bypass the established learning boundary. No such interface was
+  implemented. The new contract requires declared bounded internal events and normal
+  feedback, excludes evaluator targets/condition flags, and charges extra resources.
+- Conceptual limits: an implicit history-based controller may learn equivalent
+  adaptation without a separately named self-model. A separate module must earn
+  its complexity; equal results do not prove the baseline lacks implicit metacognition.
+  Forecast improvement without control benefit is monitoring only. Functional gains
+  do not establish subjective consciousness. Primary author research and the
+  Fleming/Lau measurement review ground distinctions, not project capability claims.
+- Continued implementation: a supplied exhaustive planner consumes only acquired
+  dynamics and public start/goal, evaluates sequences up to length three, commits
+  before execution, and records simulated work. No actual environment callback or
+  self-model enters planning. Predicted success is task-model-relative, not learned
+  empirical self-reliability. This primitive is not integrated into an agent policy
+  or scored goal study yet; no policy or metacognition measurement was run.
+- Actual checks: 127 tests passed, six new planning cases. The named development
+  chain is planned from three observed transitions and then executed without changing
+  learned evidence. Ties prefer shorter plans with seeded choice; zero/bad budgets,
+  model failure and effect counts are explicit. Fresh legacy and action-model demos
+  passed. No new correctness defect was reproduced in the adjacent belief core.
+  Independent local roadmap formatting was preserved and excluded from the commit.
+- Next: scored development goal baseline with independent goals, prior/random-plan
+  controls and source/config freeze. Then specify the C5a reliability pilot and
+  its feedback schema. All C5 milestones remain unchecked, as do goal-performance,
+  learned strategy, new abstractions, calibration and transfer claims.

@@ -15,6 +15,16 @@ transfer or world-modeling question before further benchmark-specific optimizati
 Progress from learned investigation to small structured action worlds and reusable
 abstractions; avoid adding perception or language complexity before testing the core.
 
+Functional self-modeling is an explicit long-term objective: learn reliability,
+capabilities and effects of cognitive actions from ordinary experience, then test
+whether this improves decisions. Follow `docs/SELF_MODELING.md` and C5 in the plan;
+keep the action-world goal baseline next. No canned self-descriptions or LLM
+self-awareness simulation counts as evidence, and functional benefits imply no
+subjective-consciousness result. Preserve the evaluator/agent boundary: any future
+internal-observation interface must exclude research audit logs, hidden intervention
+labels, held-out answers and forgotten task contents. Test against no-self-model,
+simple calibration and matched-resource controls before making self-modeling claims.
+
 Read `PROJECT_STATE.md`, `docs/PLAN.md`, and `docs/ARCHITECTURE.md` before changing code.
 The user authorizes autonomous implementation, debugging, tests, sensible architecture
 changes, local commits, and pushing this project to its GitHub repository. Do not
