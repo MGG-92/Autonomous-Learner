@@ -65,10 +65,23 @@ robustness across optimizer initializations; multi-seed analysis is on the roadm
 
 ## What actually learns?
 
+An additional memory experiment trains retention priorities under a hard budget:
+
+```powershell
+.\.venv\Scripts\python.exe -m autonomous_learner memory-experiment --output runs/memory
+```
+
+It has separate persistent episodic and belief graphs (4 and 3 evidence slots).
+After observing a proof, it must retain that proof through distractors. The future
+query is provided as a task hint. Consolidation occurs after each observation;
+the scorer learns which facts to retain, not when to consolidate. This experiment
+is separate from the question-selection benchmark pending joint-policy integration.
+
 Experience changes the facts in bounded SQLite memory. Optimization changes the
 neural action scorer through imitation followed by REINFORCE. The supplied inference
 procedure follows `is_a` edges and inherits explicit positive/negative capabilities.
-The initial memory strategy is fixed FIFO. Output is structured text. These are
+The question-selection benchmark uses FIFO; the separate memory benchmark learns
+retention priorities. Output is structured text. These are
 deliberate experimental boundaries, not learned grammar or learned inference rules.
 
 The teacher's hidden facts never enter policy features. Expert training labels may
@@ -86,3 +99,5 @@ this repository does not independently restart Codex when usage limits reset.
 
 Never commit virtual environments, private conversations, model caches, credentials,
 raw databases, or large checkpoints. Generated artifacts live under ignored `runs/`.
+Before pushing, run `python scripts/publication_check.py` and review staged changes.
+The public repository publishes code and sanitized synthetic reports only.

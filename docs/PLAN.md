@@ -9,9 +9,11 @@
 - [ ] Tests, CI, Git history, remote repository, continuation documentation.
 
 ## M2 — Learned memory management
-- [ ] Separate bounded episodic and belief stores with explicit consolidation actions.
-- [ ] Task distributions with delayed reuse and controlled distractors.
-- [ ] Learn admission/eviction/retrieval decisions against budget-matched heuristics.
+- [x] Separate bounded episodic and belief stores (consolidation timing still fixed).
+- [x] Task distribution with delayed reuse and controlled distractors; broaden later.
+- [x] Learned retention scorer versus FIFO/untrained/heuristic with hard budgets.
+- [ ] Explicit consolidation actions and integration with the question policy.
+- [ ] Learn retrieval and consolidation timing against budget-matched heuristics.
 - [ ] Contradiction handling, source reliability, revision, retention curves.
 
 ## M3 — Autonomous investigation

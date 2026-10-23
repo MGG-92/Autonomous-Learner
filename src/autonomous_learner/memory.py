@@ -42,6 +42,21 @@ class Memory:
                 (f.subject, f.relation, f.object, int(f.positive), observation.source, time.time()))
         self._trim()
 
+    def retain(self, records: list[dict]) -> None:
+        """Atomically select an accessible snapshot, preserving IDs of retained facts."""
+        if len(records) > self.capacity:
+            raise ValueError("Selected evidence exceeds capacity")
+        fields = ("subject", "relation", "object", "positive", "source")
+        selected = {tuple(r[k] for k in fields) for r in records}
+        with self.db:
+            for row in self.inspect():
+                if tuple(row[k] for k in fields) not in selected:
+                    self.db.execute("DELETE FROM evidence WHERE id = ?", (row["id"],))
+            for row in records:
+                self.db.execute("""INSERT OR IGNORE INTO evidence
+                    (subject, relation, object, positive, source, observed_at) VALUES (?, ?, ?, ?, ?, ?)""",
+                    tuple(row[k] for k in fields) + (row["observed_at"],))
+
     def inspect(self) -> list[dict]:
         self.db.row_factory = sqlite3.Row
         rows = [dict(row) for row in self.db.execute("SELECT * FROM evidence ORDER BY id")]

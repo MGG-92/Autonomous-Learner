@@ -19,6 +19,9 @@ complete merely because a prototype runs.
 - Local virtual environment: `.venv`; Python 3.12.14.
 - GitHub account: `MGG-92`; user authenticated `gh` after setup began.
 - Remote: https://github.com/MGG-92/Autonomous-Learner (initially private; public requested).
+- Local repository author/committer now uses GitHub no-reply identity. The sole
+  private bootstrap commit was amended to remove personal email and local paths
+  before public publication. Do not restore its obsolete hash.
 - Installed PyTorch 2.14.1+cpu, pytest 9.1.1, NumPy 2.5.4; editable project installed.
 
 ## Implemented and verified
@@ -37,6 +40,13 @@ Demo `runs/first-demo.sqlite` verified negative acquisition, restart, related ne
 and memory ablation. Initial short test training failed; 24 epochs on 40 worlds fixes
 insufficient optimizer updates. Full default configuration remains 160 worlds/12 epochs.
 Diagnostic runs predate the first source commit; rerun from committed source for reports.
+
+M2 increment: separate bounded episodic/belief SQLite stores; learned supervised
+retention priorities; fixed consolidation timing. On 100 held-out delayed-reuse
+worlds, learned and heuristic retained 100%, FIFO and untrained retained 0%.
+Future query is given as a hint and proof arrives before distractors. Not learned
+retrieval, not learned consolidation timing, not yet integrated with asking.
+11 tests pass, including learned retention and dual-store restart.
 
 ## Next actions
 

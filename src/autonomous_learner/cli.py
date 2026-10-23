@@ -79,6 +79,8 @@ def main():
     e = commands.add_parser("experiment")
     e.add_argument("--output", type=Path, default=Path("runs/experiment"))
     e.add_argument("--config", type=Path)
+    m = commands.add_parser("memory-experiment")
+    m.add_argument("--output", type=Path, default=Path("runs/memory-experiment"))
     i = commands.add_parser("inspect")
     i.add_argument("memory", type=Path)
     v = commands.add_parser("evaluate")
@@ -92,6 +94,9 @@ def main():
     elif args.command == "experiment":
         config = TrainConfig(**json.loads(args.config.read_text(encoding="utf-8"))) if args.config else TrainConfig()
         experiment(args.output, config)
+    elif args.command == "memory-experiment":
+        from .memory_policy import memory_experiment
+        print(json.dumps(memory_experiment(args.output), indent=2))
     elif args.command == "inspect":
         if not args.memory.is_file():
             parser.error("memory database does not exist")
