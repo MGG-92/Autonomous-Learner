@@ -19,6 +19,12 @@ testing and delayed-memory integration into the persistent loop, before expanded
 M3 investigation. Start with a local read-only graph, fact inspection, activity
 timeline, and saved-session replay; then add live observation. This is planned,
 not implemented. Preserve real forgetting and keep observer history out of policy.
+The user clarified the teaching objective: show which parts of the agent activate
+as it works. Prioritize operation-level recording and slow replay, with a simple
+component view alongside the 3D memory graph, plain-language explanations, and actual
+controller scores. Distinguish trained decisions from supplied inference. Optional
+neural activations must be measured and labeled, never invented or presented as
+thoughts/confidence. Playback must not rerun decisions or change agent behavior.
 
 ## Environment and version control
 
