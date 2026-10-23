@@ -50,8 +50,9 @@ optimization. Start with a tiny, fully observed discrete simulator and structure
 object/property observations, legal actions, and observed transitions. No graphics,
 natural-language parsing, or pretrained representations are prerequisites.
 
-- [ ] Freeze a development protocol for unknown action effects and interactions;
-  keep hidden mechanisms, effect labels, and held-out transitions evaluator-only.
+- [x] Specify the v1 development protocol for unknown action effects and interactions,
+  with an executable simulator contract. No learner or experiment runner yet; keep
+  hidden mechanisms, effect labels, and probe targets evaluator-only.
 - [ ] Learn transition predictions from actual experience and choose interventions
   that distinguish competing models; include evidence that forces model revision.
 - [ ] Test unseen interventions and action sequences, then goal achievement using
@@ -66,6 +67,14 @@ Success here would establish bounded action-world modeling under declared simula
 assumptions. It would not establish unrestricted causal discovery or general reasoning.
 Choose the minimal environment and model family through development experiments;
 do not expose gold causal rules to make the learner appear more general.
+
+Contract: `docs/experiments/structured-action-world.md`; proposed settings:
+`configs/action-world-development.json` (explicitly not runnable yet). The simulator
+has three binary-property objects and three unknown guarded effects; software tests
+cover sequential interactions, action budgets, public-record boundaries and semantic
+identity under all object/action renamings. Next implement development-only sampling,
+transition-model belief updates and consistent multi-step predictions before goal
+planning or a measured comparison. No action-world learning result is established.
 
 ### C3 — Learn reusable abstractions
 - [ ] Induce reusable program fragments/concepts from experience rather than adding gold rules.
