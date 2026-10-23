@@ -96,6 +96,9 @@ def main():
     rules.add_argument("--config", type=Path, default=Path("configs/rule-discovery.json"))
     rules.add_argument("--output", type=Path, required=True)
     rules.add_argument("--phase", choices=["validation", "final"], default="validation")
+    qp = commands.add_parser("learned-investigation", help="Train a development-only model-based query policy")
+    qp.add_argument("--config", type=Path, default=Path("configs/learned-investigation.json"))
+    qp.add_argument("--output", type=Path, required=True)
     dr = commands.add_parser("delayed-robustness", help="Evaluate frozen memory policies under resource/stream shifts")
     dr.add_argument("--checkpoints", type=Path, required=True)
     dr.add_argument("--output", type=Path, required=True)
@@ -158,6 +161,11 @@ def main():
         config = RuleConfig(**json.loads(args.config.read_text(encoding="utf-8")))
         report = rule_experiment(config, args.output, args.phase)
         print(json.dumps(report["summary"], indent=2))
+    elif args.command == "learned-investigation":
+        from .query_training import QueryConfig, run as query_experiment
+        config = QueryConfig(**json.loads(args.config.read_text(encoding="utf-8")))
+        report = query_experiment(config, args.output)
+        print(json.dumps(report["results_by_seed"], indent=2))
     elif args.command == "delayed-robustness":
         from .delayed_robustness import robustness
         robustness(args.checkpoints, args.output, args.start, args.worlds)

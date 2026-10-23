@@ -16,6 +16,48 @@ bridge in `docs/PLAN.md` before prolonged arithmetic optimization. Test mechanis
 transfer and acquired abstractions separately from renamed-object generalization.
 No action-world learning, learned planning, or abstraction discovery is implemented.
 
+## Latest increment — learned investigation development comparison
+
+First C2 query policy implemented and evaluated at clean source/config/protocol
+freeze `bcd7f5106425b18db217c049e0cb8a09435b20f0`. Shared 7 -> 16 -> 1 scorer uses
+sorted predictive masses, model count, and budget. REINFORCE trains from Brier
+prediction improvement on development functions, without query demonstrations,
+entropy labels, or language. Exact inference, grammar, features, reward, and optimizer
+are supplied. Last episode is selected by a fixed 800-episode schedule, not validation.
+
+Optimizer seeds 7/42/97; 80 shared validation functions, five reserved inputs, four
+queries. Mean trained accuracy 75.0%, random 70.25%, initial networks 75.83%,
+information gain 76.5%. Trained Brier 0.2895/0.2787/0.3196 versus initialization
+0.2866/0.3404/0.2656; benefit over initialization is not consistent. Information
+gain Brier 0.2658 beats every trained seed. Updated model access beats prior-feature
+selection in all seeds; prediction reset/no-memory gives 26.25% accuracy. Compute
+is measured, not matched: trained/heuristic selection both scan about 30000 candidate
+outputs/world; no speedup demonstrated. This is mixed development evidence, not a
+final result or proof of learned reasoning. No final functions were evaluated.
+
+Report: `reports/learned-investigation-v1/README.md` and `validation.json`. Verified
+all 1680 local raw rows and paired differences against aggregates without rerunning.
+Checkpoints/raw rows remain in ignored `runs/`. Current tests: 88 passed; fresh
+legacy demo, C1 rule smoke, and new query-policy smoke passed. Commands:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/c2-start-demo.sqlite
+.\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery-smoke.json --output runs/c2-regression-rules-v1
+.\.venv\Scripts\python.exe -m autonomous_learner learned-investigation --config configs/learned-investigation-smoke.json --output runs/c2-software-smoke-v1
+.\.venv\Scripts\python.exe -m autonomous_learner learned-investigation --config configs/learned-investigation.json --output runs/learned-investigation-v1
+```
+
+Latest recurring audit: C2 first development comparison in `docs/AUDIT_LOG.md`.
+Next: specify the minimal structured action-world development protocol. Keep C2
+compute matching, mechanism/family transfer, and reliable training benefit open;
+do not tune indefinitely for arithmetic gains or pick a favorable seed. The current
+sorted-marginal features cannot distinguish equal marginals with different joint
+action consequences. Critique that representation and prevent hidden-effect leakage
+before implementing the bridge. C1 final results/protocol and saved branches remain intact.
+
+## Preserved C1 and supporting work
+
 The user authorized applying this direction. Paused delayed-loop integration and
 the recurring audit workflow were preserved locally in commit `cda82bf` on branch
 `codex/delayed-loop-and-recurring-audit`, not pushed or merged. Its 76 tests and real
@@ -34,8 +76,7 @@ Protocol: `docs/experiments/internal-rule-discovery.md`. The selected final func
 are now OPENED after clean source/config freeze `aedf284f0bf84a4accf3ccaab827f9a6f8af728d`.
 Keep these and the old graph final ranges barred from tuning.
 
-Latest recurring audit: `docs/AUDIT_LOG.md`, world-learning roadmap review. Current suite:
-77 local tests passed, including core import without Torch/Transformers/language
+At the C1 source freeze, 77 local tests passed, including core import without Torch/Transformers/language
 modules, budget/observation boundaries, reset causality, semantic splits, and explicit
 model-class failure. Legacy demo also passed. Full validation on 100 distinct rules:
 active 72.6%, random 66.8%, fixed/untrained 54.0%, reset/no-memory 25.6% reserved-input
@@ -68,7 +109,8 @@ aggregates were reviewed without rerunning final worlds. Report:
 construction: 1.27 seconds locally; no portable performance claim.
 
 C1 is a measured bounded rule-learning baseline, not learned inference or concept
-invention. Next is C2, under a NEW reserved final protocol. Preserve the recurring
+invention. C2's first development comparison is recorded above; any eventual final
+evaluation requires a NEW reserved protocol. Preserve the recurring
 audit and the local paused integration branch. No LLM/token/viewer development
 should displace the internal-model research objective.
 
@@ -270,12 +312,14 @@ The learned timing failure remains unresolved and requires new training/evidence
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. C1 is merged and its final measurement complete. Take C2: learn query/search guidance
-   from separate development tasks and compare it with C1 under matched observation
-   and compute budgets. Reserve new final functions before evaluating a revised
-   algorithm. Do not tune on opened final functions or either delayed-memory final
-   range. Keep this increment bounded; then freeze a development protocol for the
-   structured action-world bridge before extended function-specific optimization.
+2. The bounded C2 development comparison is complete, with mixed/negative training
+   benefit and no final evaluation. Specify the minimal structured action-world
+   development protocol next: hidden action effects, public objects/properties,
+   interventions, transition predictions, and short goal sequences. Keep supplied
+   planning separate from acquired dynamics. Preserve C2's open compute-matching
+   and transfer questions; do not tune on opened final functions or either delayed-memory
+   final range. Use new development configs and freeze a fresh final protocol only
+   when the developmental hypothesis and baselines justify opening final worlds.
    Recurring critique is required before every meaningful PR; append actual
    findings to `docs/AUDIT_LOG.md`. Defer viewer/token work until the core has models
    and computations worth explaining; retain their designs and saved integration work.

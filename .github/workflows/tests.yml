@@ -27,6 +27,7 @@ jobs:
       - run: python -m autonomous_learner experiment --config configs/smoke.json --output runs/ci
       - run: python -m autonomous_learner delayed-memory --config configs/delayed-memory-smoke.json --output runs/ci-delayed --phase validation
       - run: python -m autonomous_learner rule-discovery --config configs/rule-discovery-smoke.json --output runs/ci-rules
+      - run: python -m autonomous_learner learned-investigation --config configs/learned-investigation-smoke.json --output runs/ci-query-policy
       - uses: actions/upload-artifact@v4
         with:
           name: experiment-${{ matrix.python }}
@@ -36,3 +37,4 @@ jobs:
             runs/ci-delayed/report.json
             runs/ci-delayed/world-metrics.csv
             runs/ci-rules/report.json
+            runs/ci-query-policy/report.json

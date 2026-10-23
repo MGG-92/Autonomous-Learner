@@ -1,0 +1,13 @@
+{
+  "episodes": 800,
+  "worlds": 80,
+  "queries": 4,
+  "heldout_inputs": 5,
+  "optimizer_seeds": [7, 42, 97],
+  "data_seed": 411,
+  "evaluation_seed": 521,
+  "training_layout_start": 4000000,
+  "validation_layout_start": 4100000,
+  "learning_rate": 0.005,
+  "entropy_bonus": 0.01
+}

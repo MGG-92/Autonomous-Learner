@@ -10,6 +10,13 @@ investigation reaches 76.53% reserved-input accuracy on 100 distinct rules, vers
 primitives, inference, and investigation algorithms are supplied. No learned
 reasoning strategy or general cognition is claimed.
 
+The [first learned-investigation development comparison](learned-investigation-v1/README.md)
+trains a query scorer from prediction rewards without heuristic demonstrations.
+On 80 shared validation functions, its three-seed mean accuracy is 75.0%, versus
+70.25% random and 75.83% untrained. Training does not consistently improve over
+initialization and all seeds trail information gain on Brier. Model access helps,
+but reliable optimization benefit, compute advantage, and transfer remain unproven.
+
 The newer [delayed-question memory experiment](delayed-memory-v1/README.md) removes
 the specific future-question hint and proof-first ordering. Its scoped gate passed;
 mean learned accuracy was 22.61%, versus 4.44% FIFO and a 33.33% storage-only bound.
