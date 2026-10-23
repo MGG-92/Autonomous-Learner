@@ -1,0 +1,8 @@
+{
+  "seed": 42,
+  "imitation_worlds": 40,
+  "epochs": 24,
+  "rl_episodes": 40,
+  "validation_worlds": 20,
+  "test_worlds": 30
+}
