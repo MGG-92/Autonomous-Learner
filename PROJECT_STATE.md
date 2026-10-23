@@ -9,13 +9,19 @@ interface. Existing graph inference is programmed, not learned reasoning. Follow
 C1–C4 in `docs/PLAN.md` before further memory optimization, token control, or viewer
 polish. Do not drift toward an LLM-centered agent or claim prior-free learning.
 
+Broader objective: world learning with objects, properties, actions, interactions,
+consequences, and goals. Mathematics is a diagnostic, not the destination. Retain C2
+as the next bounded implementation, then design the small structured-action-world
+bridge in `docs/PLAN.md` before prolonged arithmetic optimization. Test mechanism
+transfer and acquired abstractions separately from renamed-object generalization.
+No action-world learning, learned planning, or abstraction discovery is implemented.
+
 The user authorized applying this direction. Paused delayed-loop integration and
 the recurring audit workflow were preserved locally in commit `cda82bf` on branch
 `codex/delayed-loop-and-recurring-audit`, not pushed or merged. Its 76 tests and real
 checkpoint demo passed, but it is supporting engineering, not evidence of cognition.
 Do not delete that branch or cherry-pick its whole implementation merely to resume.
-The recurring workflow/log are carried forward separately into the current branch
-`codex/internal-rule-discovery`.
+The recurring workflow/log and C1 were merged through PR #5 at `762ef7f`.
 
 C1 implementation: generated depth-two expressions with modular arithmetic/min/max
 primitives, quotiented into 1210 distinct finite functions; observation-conditioned
@@ -28,7 +34,7 @@ Protocol: `docs/experiments/internal-rule-discovery.md`. The selected final func
 are now OPENED after clean source/config freeze `aedf284f0bf84a4accf3ccaab827f9a6f8af728d`.
 Keep these and the old graph final ranges barred from tuning.
 
-Latest recurring audit: `docs/AUDIT_LOG.md`, C1 source-freeze entry. Current suite:
+Latest recurring audit: `docs/AUDIT_LOG.md`, world-learning roadmap review. Current suite:
 77 local tests passed, including core import without Torch/Transformers/language
 modules, budget/observation boundaries, reset causality, semantic splits, and explicit
 model-class failure. Legacy demo also passed. Full validation on 100 distinct rules:
@@ -65,6 +71,13 @@ C1 is a measured bounded rule-learning baseline, not learned inference or concep
 invention. Next is C2, under a NEW reserved final protocol. Preserve the recurring
 audit and the local paused integration branch. No LLM/token/viewer development
 should displace the internal-model research objective.
+
+World-learning roadmap clarification: documentation only; no learner, protocol,
+frozen report, or final-world selection changed. Local checks passed:
+`git diff --check`, `.\.venv\Scripts\python.exe -m pytest -q` (77 tests), and
+`.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/world-roadmap-demo.sqlite`
+(restart retained evidence; memory ablation returned UNKNOWN). Publication preflight
+also passed. No new capability measurement is claimed.
 
 ## User intent and authorization
 
@@ -257,12 +270,13 @@ The learned timing failure remains unresolved and requires new training/evidence
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. Finish the current rule-discovery increment's PR/CI/publication if interrupted
-   (source freeze and final measurement are complete). Then take C2: learn query/search guidance
+2. C1 is merged and its final measurement complete. Take C2: learn query/search guidance
    from separate development tasks and compare it with C1 under matched observation
    and compute budgets. Reserve new final functions before evaluating a revised
    algorithm. Do not tune on opened final functions or either delayed-memory final
-   range. Recurring critique is required before every meaningful PR; append actual
+   range. Keep this increment bounded; then freeze a development protocol for the
+   structured action-world bridge before extended function-specific optimization.
+   Recurring critique is required before every meaningful PR; append actual
    findings to `docs/AUDIT_LOG.md`. Defer viewer/token work until the core has models
    and computations worth explaining; retain their designs and saved integration work.
 3. Preserve existing reports; add new experiment configs/results under new names.

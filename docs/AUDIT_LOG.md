@@ -84,3 +84,25 @@ checks actually performed and never certify that the whole system is flaw-free.
   are not. Selected final functions are now opened; use a fresh protocol for C2.
 - Next audit: development-only learned search/query proposals, compute accounting,
   function/family splits, and intervention tests that challenge model dependence.
+
+## 2026-10-23 — World-learning roadmap review
+
+- Scope/source: documentation after C1 merge `762ef7f`; reviewed the plan and
+  architecture against the adjacent frozen C1 evidence and public README claims.
+- Counterexample to a broad interpretation: a learner could perfectly predict every
+  function in the supplied grammar while lacking any state-transition model,
+  action-sequence planning, or transfer across world mechanisms. C1 does not test
+  those abilities. No new software defect or capability result was established.
+- Repair: made world learning the explicit destination, kept bounded C2 search
+  next, and added a small structured action-world bridge before prolonged arithmetic
+  tuning. Added whole-world/mechanism splits, goal tests, transfer/removal controls,
+  and a recurring relevance check. Supplied planning and representation priors must
+  be reported separately from learned dynamics and abstractions.
+- Checks: reviewed documentation diff; `git diff --check` passed; local pytest
+  passed all 77 tests; fresh legacy demo passed restart and memory ablation.
+  No final experiment was rerun and no frozen result/protocol was modified.
+- Open/next audit: C2 still needs a development-only policy design, fair compute
+  accounting, and fresh final selection. Before implementing the bridge, specify
+  minimal hidden mechanisms and whether proposed observations leak effect labels;
+  distinguish causal intervention tests from observational prediction, and genuine
+  mechanism transfer from renaming invariance. All bridge/abstraction items remain open.
