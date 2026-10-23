@@ -24,7 +24,50 @@ behavioral benefit. It is not implemented and implies no consciousness claim.
 Keep goal-directed world learning next, then a small C5a reliability pilot alongside
 later abstraction/strategy work. Language rendering is not a prerequisite.
 
-## Latest increment — self-modeling roadmap and supplied planning primitive
+## Latest increment — Interactive Agent Playground roadmap
+
+Added `docs/PLAYGROUND.md` and P1 in `docs/PLAN.md`. This is planning only: no
+`playground` command, event recorder or interactive action-world session exists yet.
+After the first scored goal baseline, take one bounded CLI increment using the real
+simulator, transition beliefs, investigation controls and planner. Keep C5a/C3 research
+moving; graphics, natural language and complete memory integration are not prerequisites.
+The earlier M2.5 graphical viewer is retained as a later extension with shared events.
+
+P1 targets structured goals/questions, step/run, evidence/hypothesis inspection,
+model-relative uncertainty and committed plan execution. Actual-operation telemetry
+must distinguish belief updating, supplied algorithms, trained parameters and any
+later LLM interface. Inspection/replay cannot rerun choices, use oracle calls or
+modify work counters; requested predictions are explicit, separately counted work.
+Observer history is never learner memory. Existing memory/abstraction/self-model
+views are added only as those components become integrated and demonstrated.
+
+Manual sessions stay local under ignored `runs/playground/`, using development
+mechanisms only; no reserved targets/loaders, automatic training ingestion or benchmark
+promotion. Rule editing is deferred: later edits need semantic partition checks and
+logged operator interventions, without secretly resetting/revealing the agent's model.
+Current stationary filtering can fail after rule changes; adaptive revision is unproven.
+
+Validation commands for this documentation increment:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/playground-roadmap-demo.sqlite
+.\.venv\Scripts\python.exe -m autonomous_learner action-model-demo --output runs/playground-roadmap-action-demo.json
+.\.venv\Scripts\python.exe scripts/publication_check.py
+git diff --check
+git diff --cached --check
+```
+
+All 127 tests passed in 13.63 seconds; both demos, diff whitespace checks and
+publication preflight passed. The action-model demo remains scripted, not an
+interactive agent or benchmark result. Playground acceptance checks are future
+requirements, not tests already implemented. Latest critique: `docs/AUDIT_LOG.md`, playground planning entry.
+Immediate next task is still the development-only scored goal evaluator with independent
+goals, prior/random-plan controls, public commitment and source/config freeze; then
+P1 as a small observability increment alongside the C5a reliability pilot.
+Independent local `docs/PLAN.md` formatting remains preserved outside this commit.
+
+## Previous increment — self-modeling roadmap and supplied planning primitive
 
 Added `docs/SELF_MODELING.md`: critical mapping of existing components, information
 boundaries, candidate experiments and research sources. New C5 stages: empirical

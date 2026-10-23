@@ -95,6 +95,31 @@ fixtures for acquired dynamics, committed execution, tie-breaking and work count
 It is supplied search, not trained planning. The goal runner, controls and scored
 goal comparison remain pending; the kernel fixture is not a benchmark result.
 
+### P1 — Interactive Agent Playground (planned)
+
+After the first scored action-world goal baseline, implement one bounded CLI
+increment using the real simulator, acquired transition beliefs, investigation
+controls and planner. Intended command: `python -m autonomous_learner playground`
+(not implemented). This is a manual development sandbox, not a scientific benchmark.
+Do not delay C5a or C3 for interface polish, arbitrary language or graphics.
+
+- [ ] Expose structured goals, prediction/inspection queries and step/run execution
+      through the same cognitive components, with evidence, ambiguity and budgets.
+- [ ] Emit versioned actual-operation events; inspection/replay must not rerun
+      decisions, consume observations or expose researcher history to the agent.
+- [ ] Label experience-updated beliefs, supplied algorithms, trained components
+      and optional LLM operations separately; do not simulate missing capabilities.
+- [ ] Enforce development-only mechanism isolation and local session storage;
+      manual sessions cannot feed reserved evaluation or automatic training.
+- [ ] Verify recording and step/run parity, document a real-component walkthrough,
+      then resume research. Add memory/abstraction/self-model views as implemented.
+
+Scope, extension boundaries and future acceptance checks: `docs/PLAYGROUND.md`.
+Rule editing and graphical interaction are later increments. Existing stationary
+models may fail after changed rules; do not imply adaptive revision already exists.
+The historical M2.5 graphical viewer can share these events; its delayed-memory
+integration dependencies do not block this action-world CLI.
+
 ### C3 — Learn reusable abstractions
 - [ ] Induce reusable program fragments/concepts from experience rather than adding gold rules.
 - [ ] Measure transfer and search savings on new tasks; test representation limitations.
@@ -163,6 +188,10 @@ claims explained solely by extra feedback, memory, compute or intervention label
 - [ ] Contradiction handling, source reliability, revision, retention curves.
 
 ## M2.5 — Minimal 3D memory and activity viewer
+
+P1 above is the first, smaller interactive playground. This retained graphical
+viewer is a later optional extension using shared actual-operation events. The
+historical dependencies below apply to the graph-memory viewer, not to P1.
 
 Deferred by the clarified cognitive-core priority above. Retain this requested
 design, but do not use it as a prerequisite for demonstrating learned internal models.
