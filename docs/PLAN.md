@@ -8,6 +8,13 @@ The earlier graph experiments below are supporting baselines: they learned contr
 and retention around supplied inference, not rule discovery. Follow C1–C4 first;
 memory infrastructure, token control, and the viewer do not establish this objective.
 
+The destination is reasoning about worlds: objects and properties, actions and
+interactions, consequences, and goals. Mathematical functions provide an objectively
+scored starting point, not an endpoint. Keep C1 frozen as a diagnostic and preserve
+its negative findings. C2 remains next; take a bounded learned-search increment,
+then the structured-world bridge below before prolonged function-specific tuning.
+Neither a fixed hypothesis class nor a supplied planner is the intended end state.
+
 ### C1 — Bounded unfamiliar-rule discovery baseline
 - [x] Generate compositional expression hypotheses independently of the oracle.
 - [x] Update competing internal models from observed input/output pairs, without an LLM.
@@ -24,11 +31,43 @@ It does not learn its primitives, search algorithm, or reasoning strategy.
 - [ ] Compare against the C1 information-gain/program-search baseline under matched costs.
 - [ ] Hold out functions and compositions; reserve new final tasks before evaluation.
 - [ ] Ablate internal simulation/model updating and test behavior under counterexamples.
+- [ ] State the proposed transferable capability and measure observation and compute
+  costs, including training amortization, before selecting a new final protocol.
+
+### C2 bridge — Small structured action worlds
+
+Plan this after the first bounded C2 comparison and before extensive arithmetic
+optimization. Start with a tiny, fully observed discrete simulator and structured
+object/property observations, legal actions, and observed transitions. No graphics,
+natural-language parsing, or pretrained representations are prerequisites.
+
+- [ ] Freeze a development protocol for unknown action effects and interactions;
+  keep hidden mechanisms, effect labels, and held-out transitions evaluator-only.
+- [ ] Learn transition predictions from actual experience and choose interventions
+  that distinguish competing models; include evidence that forces model revision.
+- [ ] Test unseen interventions and action sequences, then goal achievement using
+  learned predictions. Label any supplied search/planning algorithm explicitly.
+- [ ] Compare random, untrained, heuristic, no-memory/model-reset, and from-scratch
+  controls under matched interaction and declared compute budgets.
+- [ ] Separate renamed-object/layout generalization from transfer across mechanisms
+  or new compositions. Hold out whole worlds/mechanisms, not just transitions from
+  training worlds; freeze selection before opening a fresh final split.
+
+Success here would establish bounded action-world modeling under declared simulator
+assumptions. It would not establish unrestricted causal discovery or general reasoning.
+Choose the minimal environment and model family through development experiments;
+do not expose gold causal rules to make the learner appear more general.
 
 ### C3 — Learn reusable abstractions
 - [ ] Induce reusable program fragments/concepts from experience rather than adding gold rules.
 - [ ] Measure transfer and search savings on new tasks; test representation limitations.
 - [ ] Extend revision/noise/model-class uncertainty beyond deterministic in-class filtering.
+- [ ] Test learned abstractions in the structured action worlds: compare transfer
+  against learning from scratch and removing the acquired abstraction library.
+  Measure interaction/search savings as well as prediction and goal success.
+- [ ] Document the supplied representation and composition operators separately
+  from acquired concepts. Test new mechanism compositions and failures outside
+  the current vocabulary; do not count object renaming as abstraction discovery.
 
 ### C4 — Communicate established internal content
 - [ ] Define structured prediction/hypothesis/question messages and deterministic renderers.

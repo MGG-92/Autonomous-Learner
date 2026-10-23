@@ -29,6 +29,35 @@ and renders authorized structured claims; its parsing/fidelity must be evaluated
 separately, and its wording must not automatically become new cognitive evidence.
 See `docs/experiments/internal-rule-discovery.md` and C1–C4 in `docs/PLAN.md`.
 
+## Planned bridge to world learning (not implemented)
+
+Finite function discovery is a diagnostic for a broader objective: learning predictive
+models of objects, properties, actions, interactions, and consequences, and using
+those models to achieve goals. A function score alone cannot demonstrate this.
+After a bounded learned-search comparison, introduce a small fully observed discrete
+world before extending to partial observation, noisy perception, or language input.
+
+Keep the environment boundary structured: observations, legal actions, and experienced
+state/action/next-observation transitions. Hidden transition mechanisms and held-out
+outcomes belong to the evaluator. The learner may have an explicit representation
+prior, but must acquire which effects hold from experience. Goals specify desired
+observable outcomes, not the hidden action sequence or causal rule that achieves them.
+
+Distinguish the learned predictive model, investigation strategy, and goal-directed
+planner. Evaluate predictions before feedback and test model interventions/reset;
+if planning uses supplied search, report it as supplied search over learned dynamics.
+Controlled interventions can test causal predictions within the simulator's declared
+assumptions; observational prediction alone does not establish causal identification.
+Research traces and evaluator state must remain inaccessible to all three components.
+
+Begin with declared fixed primitives as a baseline, then evaluate acquired reusable
+fragments/concepts and their contribution through transfer and removal ablations.
+New object labels or layouts test narrower invariances than new mechanisms or unseen
+compositions. Separate these claims and split whole worlds accordingly. Learning
+without any representation bias is not a requirement; learning beyond a permanently
+fixed list of complete answers is the research direction. These are future interfaces
+and evaluation requirements, not capabilities of the current implementation.
+
 ## Earlier controlled graph track (supporting baseline)
 
 The controlled track has no language model. A generated hidden world belongs only

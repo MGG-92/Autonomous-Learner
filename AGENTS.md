@@ -8,6 +8,13 @@ Prioritize internal rule/model learning and falsifiable causal tests over furthe
 memory infrastructure, token reranking, or viewer polish. Distinguish learned rules
 from supplied primitives/search/inference, and belief updates from parameter training.
 
+The destination is generalizable world learning: objects, properties, actions,
+interactions, consequences, and goals. Finite mathematical rules are a diagnostic
+starting point, not the objective. Preserve frozen results, but require a concrete
+transfer or world-modeling question before further benchmark-specific optimization.
+Progress from learned investigation to small structured action worlds and reusable
+abstractions; avoid adding perception or language complexity before testing the core.
+
 Read `PROJECT_STATE.md`, `docs/PLAN.md`, and `docs/ARCHITECTURE.md` before changing code.
 The user authorizes autonomous implementation, debugging, tests, sensible architecture
 changes, local commits, and pushing this project to its GitHub repository. Do not
@@ -48,6 +55,10 @@ Check hidden-answer leakage, real forgetting and hard budgets, restart/side-effe
 consistency, seed/checkpoint separation, baseline fairness, statistics, and whether
 public claims match measured behavior. Choose checks relevant to the increment;
 do not add ritual tests or invent findings to fill a checklist.
+Also ask which capability could transfer beyond the current task distribution,
+what supplied machinery still explains success, and which experiment could refute
+the broader interpretation. A higher mathematical benchmark score alone is not
+evidence of general world reasoning.
 
 Fix consequential correctness, data-loss, or scientific-integrity defects affecting
 the increment before merging, and add meaningful regressions. Explicitly bounded

@@ -15,6 +15,11 @@ algorithm are supplied; it has not learned general reasoning or invented concept
 Earlier PyTorch experiments learn question selection and memory control around
 programmed graph inference. No paid API is needed for the controlled track.
 
+The long-term objective is learning about worlds with objects, properties, actions,
+and consequences, then using learned models to pursue goals and transfer knowledge.
+Mathematical rule discovery is an initial diagnostic. Action-world learning,
+reusable abstraction discovery, and transfer across world mechanisms remain untested.
+
 **Status:** under active development. See [PROJECT_STATE.md](PROJECT_STATE.md) for
 verified results, blockers, and the exact next task. See [docs/PLAN.md](docs/PLAN.md)
 for the full workflow. The current priority is internal rule/model learning (C1–C4),
