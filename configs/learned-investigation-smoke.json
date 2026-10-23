@@ -1,0 +1,5 @@
+{
+  "episodes": 12,
+  "worlds": 3,
+  "optimizer_seeds": [7]
+}
