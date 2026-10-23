@@ -13,17 +13,24 @@ The original attached draft is inspiration; the accepted architecture prioritize
 controlled experiments before language/token control. Never claim all milestones
 complete merely because a prototype runs.
 
+New user objective: a simple, visually appealing, restrained 3D representation of
+memory and agent activity. Scheduled as M2.5 in `docs/PLAN.md`, after robustness
+testing and delayed-memory integration into the persistent loop, before expanded
+M3 investigation. Start with a local read-only graph, fact inspection, activity
+timeline, and saved-session replay; then add live observation. This is planned,
+not implemented. Preserve real forgetting and keep observer history out of policy.
+
 ## Environment and version control
 
-Latest increment: `feature/delayed-goal-memory`, tracked in
-https://github.com/MGG-92/Autonomous-Learner/pull/1, starting from `ce7a6f5`. The user
-requires feature branches and PRs for meaningful changes; do not develop directly on
-main. Source review/local checks and PR CI passed for frozen experiment source
-`d675f4b`. The full final run is complete, the predefined scoped gate passed, and
-31 local tests pass. Inspect the PR's current head/checks/merge state: if still open,
-finish the reviewed publication/merge before starting another increment. Preserve
-source hashes with a merge commit and GitHub no-reply metadata; do not squash/rebase
-experiment commits referenced by reports. Main must remain stable until checks pass.
+The delayed-memory increment in https://github.com/MGG-92/Autonomous-Learner/pull/1
+was merged as `3f1f5dd`. Source review/local checks and PR CI passed for frozen
+experiment source `d675f4b`. The full final run is complete, the predefined scoped
+gate passed, and 31 local tests passed. The current documentation increment is
+`docs/memory-activity-viewer`, adding the user-requested M2.5 objective. Inspect its
+PR/merge state when resuming and finish any interrupted publication first. The user
+requires feature branches and PRs for meaningful changes; do not develop directly
+on main. Preserve source hashes with merge commits and GitHub no-reply metadata;
+do not squash/rebase experiment commits referenced by reports. Keep main stable.
 
 - Local virtual environment `.venv`, Python 3.12.14; see README to recreate elsewhere.
 - Installed PyTorch 2.14.1+cpu, pytest 9.1.1, NumPy 2.5.4, Transformers 4.57.6.
@@ -116,13 +123,15 @@ source reliability, changing-horizon/budget evidence, and joint question-policy 
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. Check PR #1 and finish any interrupted merge/publication first. Then start a NEW
+2. Finish any interrupted current-branch PR/publication first. Then start a NEW
    feature branch. Next research increment: test the frozen delayed-memory policy on
    changing horizons, observation order/delays, and memory/write budgets. Reserve new
    worlds in the seed ledger before evaluation; keep old final worlds out of tuning.
    Use failures to design broader training distributions on separate training and
    validation ranges. Do not claim M2 complete from the single fixed-budget experiment.
-   Subsequent work: learned retrieval, source reliability/revision, joint integration.
+   Subsequent work: delayed-memory integration into the persistent loop, followed by
+   the M2.5 memory/activity viewer at its documented dependency gate; learned retrieval,
+   source reliability/revision, and joint training remain M2 research objectives.
 3. Preserve existing reports; add new experiment configs/results under new names.
    Continue documenting unsupported claims and negative results. Do not expand the
    language track merely to avoid a failed controlled experiment.

@@ -20,6 +20,39 @@
 - [ ] Learn retrieval; test changing budgets/horizons and longer retention delays.
 - [ ] Contradiction handling, source reliability, revision, retention curves.
 
+## M2.5 — Minimal 3D memory and activity viewer
+
+User-requested observability milestone. Build after the changing-budget/horizon
+robustness increment and integration of the delayed-memory controller into the
+persistent investigation loop, before expanding M3 autonomous investigation. It
+does not need to wait for every M2 research question to be solved. Keep CLI and
+evaluation runs independent of the viewer.
+
+- [ ] Define versioned, read-only memory snapshots and activity events from the
+  actual loop, with stable evidence IDs, tick ordering, and restart behavior.
+- [ ] Provide a local viewer launched with one documented command, starting with a
+  saved synthetic session and replay; add live observation after replay is reliable.
+- [ ] Render a minimal, visually appealing 3D graph: entities/classes as nodes,
+  labeled fact edges, restrained colors, subtle motion, legible labels on selection,
+  orbit/zoom/reset controls, and a reduced-motion option. Avoid decorative effects.
+- [ ] Distinguish episodic and belief evidence; selecting an edge shows its polarity,
+  provenance, timestamp, and evidence ID. Represent conflicting evidence explicitly.
+- [ ] Show an activity timeline and current action, goal, and remaining budgets.
+  Highlight observed additions, consolidation, expiration/eviction, and proof paths
+  only when the recorded action or inference provides them; do not invent thoughts.
+- [ ] Support pause, step, and replay speed. Separate live/current memory from past
+  replay frames: forgotten facts disappear from current memory and are labeled as
+  historical when replayed. Display terminal/idle and disconnected states honestly.
+- [ ] Verify a synthetic session against underlying memory at each replay tick,
+  including expiration, consolidation, conflicts, and restart. Viewer history must
+  never enter agent inputs or bypass memory limits; private sessions stay local.
+- [ ] Document the launch workflow and demonstrate readable interaction on an
+  ordinary laptop, without changing benchmark decisions or requiring paid services.
+
+Acceptance: a user can launch a demonstration, see what the agent currently knows
+and does, inspect the supporting facts, and replay how that state changed. This is
+an observability feature, not evidence of curiosity or improved learning.
+
 ## M3 — Autonomous investigation
 - [x] Persistent tick loop for ASK/ANSWER/ABSTAIN/WAIT, timestamps, teacher/compute budgets.
 - [ ] Expand internal computations and learned THINK/RECALL/STORE/REVISE choices.

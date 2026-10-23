@@ -40,6 +40,15 @@ bootstrapped from a supplied graph heuristic and optionally refined by terminal-
 policy gradients. See the versioned protocol and results; this is not learned logic
 or joint training with the original question-selection controller.
 
+The planned M2.5 viewer is a read-only observer of versioned memory snapshots and
+activity events from the persistent loop. A minimal local 3D graph and timeline
+will support saved-session replay before live observation. Display current bounded
+memory separately from historical replay; researcher history must never become
+agent-accessible memory. Stable evidence IDs link selected graph edges to actual
+provenance and inference, and the viewer must not expose teacher-hidden facts.
+CLI operation and scientific evaluation remain independent of visualization.
+See `docs/PLAN.md` for dependencies and acceptance criteria.
+
 References: Sutton, Precup & Singh (1999), options,
 https://people.cs.umass.edu/~barto/courses/cs687/Sutton-Precup-Singh-AIJ99.pdf;
 Lewis et al. (2020), retrieval-augmented generation,
