@@ -17,12 +17,14 @@ programmed graph inference. No paid API is needed for the controlled track.
 
 The long-term objective is learning about worlds with objects, properties, actions,
 and consequences, then using learned models to pursue goals and transfer knowledge.
-Mathematical rule discovery is an initial diagnostic. Action-world performance,
+Mathematical rule discovery is an initial diagnostic. Action-world goal achievement,
 reusable abstraction discovery, and transfer across world mechanisms remain unverified.
 The [action-world development track](docs/experiments/structured-action-world.md)
 now has a simulator, development-only sampler and experience-updated transition model.
-Its inference/templates are supplied; investigation, planning and scored comparisons
-remain pending. The scripted demo is a software check, not a learning benchmark:
+The [first development prediction comparison](reports/action-prediction-v1/README.md)
+finds 75.31% one-step accuracy with supplied information-gain investigation versus
+61.98% after model reset. Inference, templates and investigation are supplied;
+goal planning and transfer remain pending. The scripted demo is a software check:
 `python -m autonomous_learner action-model-demo --output runs/action-model-demo.json`.
 
 **Status:** under active development. See [PROJECT_STATE.md](PROJECT_STATE.md) for

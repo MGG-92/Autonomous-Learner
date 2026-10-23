@@ -15,9 +15,61 @@ bounded comparison is complete; build the small structured action-world bridge i
 `docs/PLAN.md` before prolonged arithmetic optimization. Test mechanism
 transfer and acquired abstractions separately from renamed-object generalization.
 The action-world core now updates transition beliefs within supplied templates;
-no scored world-learning comparison, learned planning or abstraction discovery exists.
+its first development prediction comparison is complete. Goal planning, learned
+investigation, abstraction acquisition and transfer remain unmeasured/unimplemented.
 
-## Latest increment — experience-updated transition model and development sampler
+## Latest increment — scored action-world prediction comparison
+
+Frozen clean source/config/protocol: `b94d48acb3880e88e244f093cf196ef073cfef3f`.
+Implemented `action_investigation.py` controls (supplied one-step information gain,
+random and fixed cyclic actions), and `action_prediction.py` for development-only
+joint prediction scoring. 80 canonical development worlds, 12 real actions per run,
+24 one-step/16 two-step probes, policy RNG seeds 7/42/97. All policies/seeds commit
+all predictions before any panel target access. Shared unseen cases exclude the
+union of every compared trajectory across policies AND seeds. Empty panels stay
+unavailable; macro scores and bootstrap denominators are explicit. No final phase.
+
+Full-panel seed-mean accuracy: information gain 75.31% one-step / 71.80% two-step;
+random 73.63% / 69.97%; fixed 73.33% / 69.84%; reset/prior 61.98% / 56.41%.
+Information-gain Brier 0.3407/0.3837 versus random 0.3672/0.4131 and reset
+0.5682/0.6074. Shared-unseen Brier 0.4326/0.4767; reductions versus random
++0.0173 [0.0087, 0.0274] / +0.0223 [0.0110, 0.0355], versus reset
++0.1415 [0.1093, 0.1723] / +0.1365 [0.1018, 0.1717]. Intervals bootstrap
+worlds after averaging seeds, exploratory/unadjusted. Two-step unseen versus fixed
++0.0105 [-0.0055, 0.0289] crosses zero; no universal investigation advantage.
+
+Shared-unseen coverage: mean 17.325/24 and 12.075/16; no empty panels this run.
+Of 966 unseen two-action probes, 47 consist of single transitions seen somewhere
+in the union. Stasis is a strong baseline: the prior argmax always predicts no
+change, correct on 1190/1920 one-step and 722/1280 two-step targets. This post-hoc
+interpretation check uses saved raw results, without tuning or new world execution.
+Information gain averages 9.0625 no-ops/12 actions. Interaction counts are matched;
+compute is not: exploration effect evaluations 1043.1 versus random/fixed 293.6/291.3.
+Inference, templates and investigation remain supplied; this is experience-conditioned
+model learning, not trained reasoning, primitive discovery, planning or transfer.
+
+Report: `reports/action-prediction-v1/README.md` and `development.json`. All 3840
+score rows, 960 cost records, raw predictions/targets, shared-unseen sets, aggregates,
+paired differences and bootstrap intervals verified offline without rerunning worlds.
+Effect-evaluation counts independently reconstructed from public traces. Only the
+reviewed compact synthetic report is published; raw files stay in ignored `runs/`.
+Latest audit: prediction-stage entry in `docs/AUDIT_LOG.md`. 121 tests passed, plus
+fresh legacy/model demos and prediction smoke. Exact commands (fresh paths):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/action-prediction-start-demo.sqlite
+.\.venv\Scripts\python.exe -m autonomous_learner action-model-demo --output runs/action-prediction-model-smoke.json
+.\.venv\Scripts\python.exe -m autonomous_learner action-prediction --config configs/action-prediction-smoke.json --output runs/action-prediction-software-smoke-v1
+.\.venv\Scripts\python.exe -m autonomous_learner action-prediction --config configs/action-prediction.json --output runs/action-prediction-v1
+```
+
+Next: implement supplied open-loop goal planning from acquired dynamics, independent
+goal/start sampling, prior/no-memory and random-plan controls, with a new scope/config
+freeze before measuring. Keep source-stable previous prediction results intact;
+do not silently convert development outcomes into final or family-transfer evidence.
+
+## Preserved transition model and development sampler
 
 Implemented `action_model.py`: independent uniform priors over 45 public effects
 per action, conditioned only on experienced full-state transitions. Predictions
@@ -45,7 +97,7 @@ the exact prior on reset. It does not score a probe against the oracle, train an
 investigation policy, achieve goals or measure transfer. Full protocol/config stays
 development-only; no full experiment runner or final phase is implemented.
 
-Latest audit: transition-model/sampler entry in `docs/AUDIT_LOG.md`. Checks: 111 tests
+That increment's audit: transition-model/sampler in `docs/AUDIT_LOG.md`. Checks: 111 tests
 passed, including nine new cases. The decisive rollout fixture observes 100 -> 000:
 fixed set-zero/toggle hypotheses imply 000 after two actions from 000, whereas the
 incorrect independent-step approximation assigns 25% to 100. True hypotheses are
@@ -400,12 +452,13 @@ The learned timing failure remains unresolved and requires new training/evidence
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. The development sampler and transition-belief core are now implemented and
-   software-tested. Add controlled investigation and prediction scoring under
-   `docs/experiments/structured-action-world.md`, followed by supplied goal planning.
-   Keep full source/config freeze before measurement, no final phase, and proper
-   common-unseen panel coverage. Retain random/fixed/heuristic, prior/no-memory and
-   later exact-initialization controls; measure real actions and simulated work.
+2. The prediction-stage development comparison is complete; preserve the report
+   and its limits. Implement supplied open-loop goal planning from learned dynamics,
+   independently sampled goals/starts, prior/no-memory and random-plan controls,
+   under `docs/experiments/structured-action-world.md`. Freeze the new scope/config
+   before measurement, keep a development-only phase, and report unreachable goals
+   outside learner inputs. Retain earlier controls; measure real actions and
+   simulated planning work. Do not claim a learned planner or mechanism transfer.
    Keep supplied planning separate from acquired dynamics. Preserve C2's mixed
    training evidence and open compute-matching and transfer questions; do not tune
    on opened final functions or either delayed-memory

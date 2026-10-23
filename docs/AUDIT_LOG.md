@@ -219,3 +219,45 @@ checks actually performed and never certify that the whole system is flaw-free.
   measurement, track real versus simulated costs, keep all controls, and test that
   evaluator targets and reachability cannot influence choices. Transfer, learned
   search benefit, calibrated uncertainty and acquired abstractions remain open.
+
+## 2026-10-23 — First action-world prediction comparison
+
+- Scope/source: investigation controls, prediction evaluator, CLI/CI and adjacent
+  transition-model/sampler boundaries. Clean source/config/protocol freeze
+  `b94d48acb3880e88e244f093cf196ef073cfef3f` before the 80-world development run.
+  No implementation or hyperparameter change followed the measurement.
+- Boundary checks: policy takes only the current observation, model and public RNG.
+  The sole real-action callback must match the chosen action and pre-state before
+  observation learning. A regression verifies all controls/seeds commit every panel
+  prediction before any evaluator target access. All 720 actual investigation runs
+  consume 12 actions (8640 total), counting no-ops; 240 reset records reuse IG traces.
+- Conditional-panel critique: using own-trace unseen cases would compare different
+  questions and can leak another policy/seed's familiar cases into an unseen claim.
+  The implementation excludes the full experience union across all compared runs.
+  Regressions reconstruct that complement, keep empty-panel denominators explicit,
+  and preserve outputs on rerun. This measured run had no empty shared panels.
+  Coverage is 17.325/24 one-step and 12.075/16 two-step cases per world; 47/966
+  unseen two-action probes contain single transitions observed somewhere in the union.
+- Counterexample to broad interpretation: the reset prior always predicts no change
+  as its argmax, attaining 1190/1920 one-step and 722/1280 two-step correct outcomes.
+  IG also experiences 9.0625 no-ops/12. This post-hoc saved-target check shows why
+  accuracy alone can overstate understanding. No new policy or world rerun was used.
+- Evidence: IG full accuracy 75.31%/71.80%, random 73.63%/69.97%, reset 61.98%/56.41%.
+  Shared-unseen Brier reductions versus random are +0.0173/+0.0223 and versus reset
+  +0.1415/+0.1365; exploratory world-bootstrap intervals are positive. Two-step
+  unseen versus fixed +0.0105 has interval [-0.0055, 0.0289], crossing zero; no
+  universal heuristic benefit or acquired reasoning strategy is established.
+- Actual checks: 121 tests, fresh legacy/model demos and scoring smoke passed.
+  Verified all 3840 scores against saved joint probabilities/targets and shared
+  unseen sets; checked every aggregate, paired difference and bootstrap interval.
+  Independently reconstructed effect-evaluation counts for all 960 cost records
+  from public traces without executing worlds. No new correctness defect was
+  reproduced in the adjacent transition-model path; existing limitations remain.
+- Cost/limits: IG exploration 1043.1 effect evaluations versus random/fixed
+  293.6/291.3; compute measured, not matched. Priors, inference, effects and
+  investigation remain supplied. Reset/no-memory/untrained are equivalent here,
+  not independent controls. Model priors differ from population weights. All
+  measured worlds are development; no validation/final, goals or transfer tested.
+- Next: supplied open-loop goal planning, independent goals, prior/random-plan
+  controls and unreachable-goal accounting outside learner inputs. Freeze that
+  scope before measuring; preserve this report and all earlier negative findings.

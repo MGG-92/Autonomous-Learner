@@ -1,8 +1,9 @@
 # Structured action-world bridge: development contract v1
 
 Status: simulator, development-only semantic sampler, transition-belief core and
-prediction-only comparison runner implemented. The latter must be frozen before
-measurement; see its runnable subset below. No goal planner or full goal experiment
+prediction-only comparison runner implemented. The first frozen development result
+is [reported here](../../reports/action-prediction-v1/README.md); see its subset below.
+No goal planner or full goal experiment
 exists yet. The scripted `action-model-demo` is a software demonstration of belief
 changes and reset, not the proposed 80-world study.
 The values in `configs/action-world-development.json` are proposed development

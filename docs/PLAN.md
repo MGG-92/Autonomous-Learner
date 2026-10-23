@@ -55,8 +55,9 @@ natural-language parsing, or pretrained representations are prerequisites.
 - [x] Implement development-only unique-mechanism sampling, independent slot permutations,
   experience-conditioned effect beliefs, reset erasure and consistent joint rollouts.
   These are software checks, not a measured goal/transfer result.
-- [ ] Choose interventions that distinguish models and compare prediction performance
-  against controls; include evidence that forces model revision.
+- [x] Compare supplied investigation controls and scored joint predictions with
+  experience-conditioned beliefs and reset/prior controls. Preserve shared unseen
+  coverage and within-class belief updates; structural/noisy revision is still open.
 - [ ] Test unseen interventions and action sequences, then goal achievement using
   learned predictions. Label any supplied search/planning algorithm explicitly.
 - [ ] Compare random, untrained, heuristic, no-memory/model-reset, and from-scratch
@@ -71,14 +72,16 @@ Choose the minimal environment and model family through development experiments;
 do not expose gold causal rules to make the learner appear more general.
 
 Contract: `docs/experiments/structured-action-world.md`; proposed settings:
-`configs/action-world-development.json` (explicitly not runnable yet). The simulator
+`configs/action-world-development.json` (full goal study not runnable yet), with
+the measured prediction-only subset in `configs/action-prediction.json`. The simulator
 has three binary-property objects and three unknown guarded effects; software tests
 cover sequential interactions, action budgets, public-record boundaries and semantic
 identity under all object/action renamings. The sampler and transition-belief core
 are now implemented, with a scripted `action-model-demo`. The core learns by belief
-updating within supplied templates, without parameter training. Next implement
-investigation and a scored development comparison, then supplied goal planning.
-No world-level benchmark or goal/transfer result is established.
+updating within supplied templates, without parameter training. The first 80-world
+development prediction comparison is recorded in `reports/action-prediction-v1/README.md`.
+No validation/final, goal or transfer result is established. Next implement supplied
+open-loop goal planning with independent goals and prior/random-plan controls.
 
 ### C3 — Learn reusable abstractions
 - [ ] Induce reusable program fragments/concepts from experience rather than adding gold rules.
