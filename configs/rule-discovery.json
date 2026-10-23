@@ -1,0 +1,9 @@
+{
+  "worlds": 100,
+  "queries": 4,
+  "heldout_inputs": 5,
+  "query_seeds": [7, 42, 97],
+  "selection_seed": 17,
+  "validation_layout_start": 3200000,
+  "final_layout_start": 3300000
+}

@@ -1,5 +1,44 @@
 # Implementation plan
 
+## Current priority — independently learned internal models
+
+The user's clarified objective is a cognitive core that discovers and manipulates
+internal models from experience, with an optional pretrained LLM for communication.
+The earlier graph experiments below are supporting baselines: they learned control
+and retention around supplied inference, not rule discovery. Follow C1–C4 first;
+memory infrastructure, token control, and the viewer do not establish this objective.
+
+### C1 — Bounded unfamiliar-rule discovery baseline
+- [x] Generate compositional expression hypotheses independently of the oracle.
+- [x] Update competing internal models from observed input/output pairs, without an LLM.
+- [x] Choose experiments by supplied information gain; predict reserved inputs.
+- [x] Compare random, fixed/untrained query control, no-memory, and model-reset controls.
+- [x] Split semantic functions rather than renamed expressions; test model failure honestly.
+- [x] Freeze and evaluate the first protocol; publish results and causal/uncertainty limits.
+
+This baseline learns a rule within a supplied finite language by belief updating.
+It does not learn its primitives, search algorithm, or reasoning strategy.
+
+### C2 — Learn investigation/search strategies
+- [ ] Train proposal or query policies on separate development tasks without language priors.
+- [ ] Compare against the C1 information-gain/program-search baseline under matched costs.
+- [ ] Hold out functions and compositions; reserve new final tasks before evaluation.
+- [ ] Ablate internal simulation/model updating and test behavior under counterexamples.
+
+### C3 — Learn reusable abstractions
+- [ ] Induce reusable program fragments/concepts from experience rather than adding gold rules.
+- [ ] Measure transfer and search savings on new tasks; test representation limitations.
+- [ ] Extend revision/noise/model-class uncertainty beyond deterministic in-class filtering.
+
+### C4 — Communicate established internal content
+- [ ] Define structured prediction/hypothesis/question messages and deterministic renderers.
+- [ ] Evaluate an optional read-only LLM renderer separately for semantic fidelity.
+- [ ] Evaluate language input parsing separately; no unchecked parser hypotheses become beliefs.
+- [ ] Build the requested viewer around actual model changes/computations after C1 evidence.
+
+Token-level control remains a deferred optional comparison, contingent on measured
+benefit over structured communication. Preserve old experiments and negative reports.
+
 ## M1 — Controlled learning experiment
 - [x] Synthetic oracle with randomized names, graph relations, explicit negatives.
 - [x] Persistent bounded evidence memory and traceable multi-step inference.
@@ -23,6 +62,9 @@
 - [ ] Contradiction handling, source reliability, revision, retention curves.
 
 ## M2.5 — Minimal 3D memory and activity viewer
+
+Deferred by the clarified cognitive-core priority above. Retain this requested
+design, but do not use it as a prerequisite for demonstrating learned internal models.
 
 User-requested observability milestone. Build after the changing-budget/horizon
 robustness increment and integration of the delayed-memory controller into the

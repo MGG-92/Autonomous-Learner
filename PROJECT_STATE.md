@@ -1,5 +1,71 @@
 # Project state — 2026-10-23
 
+## Current priority after vision clarification
+
+The user clarified that the goal is an independently learning cognitive core:
+experience -> internal models/hypotheses -> experiments/predictions/revision ->
+structured communication, with a pretrained LLM only as an optional language
+interface. Existing graph inference is programmed, not learned reasoning. Follow
+C1–C4 in `docs/PLAN.md` before further memory optimization, token control, or viewer
+polish. Do not drift toward an LLM-centered agent or claim prior-free learning.
+
+The user authorized applying this direction. Paused delayed-loop integration and
+the recurring audit workflow were preserved locally in commit `cda82bf` on branch
+`codex/delayed-loop-and-recurring-audit`, not pushed or merged. Its 76 tests and real
+checkpoint demo passed, but it is supporting engineering, not evidence of cognition.
+Do not delete that branch or cherry-pick its whole implementation merely to resume.
+The recurring workflow/log are carried forward separately into the current branch
+`codex/internal-rule-discovery`.
+
+C1 implementation: generated depth-two expressions with modular arithmetic/min/max
+primitives, quotiented into 1210 distinct finite functions; observation-conditioned
+version-space predictions; supplied information-gain investigation; random and
+fixed/untrained controls; no-memory and model-reset interventions; semantic rule
+splits; independent reserved input layouts. Core imports no Torch/Transformers/LM
+module. This learns rules within a supplied representation by belief updating. It
+does not train parameters, invent primitives, or learn a reasoning/search strategy.
+Protocol: `docs/experiments/internal-rule-discovery.md`. The selected final functions
+are now OPENED after clean source/config freeze `aedf284f0bf84a4accf3ccaab827f9a6f8af728d`.
+Keep these and the old graph final ranges barred from tuning.
+
+Latest recurring audit: `docs/AUDIT_LOG.md`, C1 source-freeze entry. Current suite:
+77 local tests passed, including core import without Torch/Transformers/language
+modules, budget/observation boundaries, reset causality, semantic splits, and explicit
+model-class failure. Legacy demo also passed. Full validation on 100 distinct rules:
+active 72.6%, random 66.8%, fixed/untrained 54.0%, reset/no-memory 25.6% reserved-input
+accuracy. An initial overconfidence assumption was falsified: four observations of
+max leave six hypotheses in the regression fixture. Do not claim unique discovery
+from correct predictions or probabilities as calibrated real-world confidence.
+
+Commands used before the source freeze (choose fresh paths to repeat):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery-smoke.json --output runs/rule-discovery-smoke-v1
+.\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery.json --output runs/rule-discovery-validation-v1
+.\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery.json --output runs/rule-discovery-validation-v2
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/rules-reorientation-demo.sqlite
+```
+
+Frozen final command:
+`.\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery.json --output runs/rule-discovery-final-v1 --phase final`.
+Clean source, 100 distinct final functions, five reserved inputs per function,
+query seeds 7/42/97 (exploration repeats, not optimizer seeds). Active accuracy
+76.53%, random 66.60%, fixed/untrained 54.40%, reset/no-memory 28.20%. Brier scores
+0.2460/0.4007/0.5360/0.7804 respectively. Active full-function identification is
+25% of rule/query-seed runs. Paired Brier reduction versus random +0.1547,
+rule-bootstrap95 [0.1086, 0.2007]; versus reset +0.5344 [0.4960, 0.5706].
+Exploratory/unadjusted intervals, seeds averaged within rules. Compute is not matched;
+no-memory and reset are equivalent controls. All 1500 synthetic result rows and
+aggregates were reviewed without rerunning final worlds. Report:
+`reports/internal-rule-discovery-v1/README.md`. Total evaluation after hypothesis
+construction: 1.27 seconds locally; no portable performance claim.
+
+C1 is a measured bounded rule-learning baseline, not learned inference or concept
+invention. Next is C2, under a NEW reserved final protocol. Preserve the recurring
+audit and the local paused integration branch. No LLM/token/viewer development
+should displace the internal-model research objective.
+
 ## User intent and authorization
 
 Implement the architecture in `docs/ARCHITECTURE.md` incrementally and autonomously.
@@ -33,8 +99,9 @@ was merged as `3f1f5dd`. Source review/local checks and PR CI passed for frozen
 experiment source `d675f4b`. The full final run is complete and the predefined scoped
 gate passed. The viewer-planning PR #2 merged as `da38854`; main CI passed.
 The robustness increment merged through PR #3 as `054181f`, after both Python CI
-jobs passed; evaluation source remains frozen as `ebd2099`. The current critic-audit
-increment is `codex/critic-reliability-fixes`; check its PR/merge state when resuming. The user
+jobs passed; evaluation source remains frozen as `ebd2099`. The critic-audit increment
+merged through PR #4 as `ce9c632`, with both Python CI jobs passing. Current work is
+the cognitive-core reorientation described above. The user
 requires feature branches and PRs for meaningful changes; do not develop directly
 on main. Preserve source hashes with merge commits and GitHub no-reply metadata;
 do not squash/rebase experiment commits referenced by reports. Keep main stable.
@@ -72,7 +139,7 @@ do not squash/rebase experiment commits referenced by reports. Keep main stable.
 - Cached candidate pagination (200 per page), trainable residual token scorer, MORE/END,
   supervised-loss interface, and real token-selection generation driver.
 - Researcher memory inspection and Graphviz DOT export; audit logs excluded from policy.
-- 64 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed.
+- 77 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed in the earlier track.
 - Delayed-specific-goal benchmark: shuffled facts, expiring episodic evidence, neural
   WAIT/CONSOLIDATE gate and retention scores, persistent bounded snapshots, graph/FIFO/
   random/untrained/imitation controls, predefined gate, and per-world resampling.
@@ -190,16 +257,14 @@ The learned timing failure remains unresolved and requires new training/evidence
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. Finish any interrupted current-branch PR/publication first. Then start a NEW
-   feature branch. Next engineering increment: integrate the delayed-memory controller
-   into the persistent investigation loop, including restart, hard-budget/expiration
-   invariants, and compatibility checks. Preserve the withheld-specific-question
-   scientific boundary where applicable and distinguish deployment from joint training.
-   Then implement the M2.5 memory/activity viewer at its documented dependency gate.
-   Research follow-up: use robustness failures to design broader timing/resource
-   training on separate training/validation ranges; reserve new final worlds before
-   evaluation. Do not tune on either opened delayed-memory final range. Learned
-   retrieval, source reliability/revision, and joint training remain M2 objectives.
+2. Finish the current rule-discovery increment's PR/CI/publication if interrupted
+   (source freeze and final measurement are complete). Then take C2: learn query/search guidance
+   from separate development tasks and compare it with C1 under matched observation
+   and compute budgets. Reserve new final functions before evaluating a revised
+   algorithm. Do not tune on opened final functions or either delayed-memory final
+   range. Recurring critique is required before every meaningful PR; append actual
+   findings to `docs/AUDIT_LOG.md`. Defer viewer/token work until the core has models
+   and computations worth explaining; retain their designs and saved integration work.
 3. Preserve existing reports; add new experiment configs/results under new names.
    Continue documenting unsupported claims and negative results. Do not expand the
    language track merely to avoid a failed controlled experiment.

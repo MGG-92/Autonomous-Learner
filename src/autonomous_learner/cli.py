@@ -92,6 +92,10 @@ def main():
     dm.add_argument("--config", type=Path, default=Path("configs/delayed-memory.json"))
     dm.add_argument("--output", type=Path, default=Path("runs/delayed-memory"))
     dm.add_argument("--phase", choices=["validation", "final"], default="validation")
+    rules = commands.add_parser("rule-discovery", help="Infer unfamiliar finite rules without a language model")
+    rules.add_argument("--config", type=Path, default=Path("configs/rule-discovery.json"))
+    rules.add_argument("--output", type=Path, required=True)
+    rules.add_argument("--phase", choices=["validation", "final"], default="validation")
     dr = commands.add_parser("delayed-robustness", help="Evaluate frozen memory policies under resource/stream shifts")
     dr.add_argument("--checkpoints", type=Path, required=True)
     dr.add_argument("--output", type=Path, required=True)
@@ -149,6 +153,11 @@ def main():
         config = DelayedConfig(**json.loads(args.config.read_text(encoding="utf-8")))
         report = delayed_experiment(config, args.output, args.phase)
         print(json.dumps({"gate": report["gate"], "results": report["results_by_seed"]}, indent=2))
+    elif args.command == "rule-discovery":
+        from .rule_experiment import RuleConfig, run as rule_experiment
+        config = RuleConfig(**json.loads(args.config.read_text(encoding="utf-8")))
+        report = rule_experiment(config, args.output, args.phase)
+        print(json.dumps(report["summary"], indent=2))
     elif args.command == "delayed-robustness":
         from .delayed_robustness import robustness
         robustness(args.checkpoints, args.output, args.start, args.worlds)
