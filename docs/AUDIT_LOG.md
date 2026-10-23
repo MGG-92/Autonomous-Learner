@@ -180,3 +180,42 @@ checks actually performed and never certify that the whole system is flaw-free.
   erasure, fixed-mechanism multi-step predictions, and measured oracle-call budgets
   before planning. Unknown primitives, representation learning, general causal
   discovery, learned planning and transfer remain open research problems.
+
+## 2026-10-23 — Transition beliefs and development sampler
+
+- Scope/source: `action_model.py`, evaluator-only sampler, scripted demo/CLI/CI and
+  adjacent simulator transition records/canonical identity; parent `a827f50`.
+  Existing arithmetic/graph algorithms, configs and frozen reports are unchanged.
+- Reproduced defect: the committed `Transition` dataclass accepted an illegal action
+  and mixed before/after catalogs. Re-executed the prior source to reproduce, then
+  confirmed the new validator rejects the same record. Regressions cover bad actions,
+  mixed catalogs and malformed model input before observation/counter mutation.
+- Rollout counterexample: after observing 100 -> 000 for an action, six consistent
+  supplied hypotheses remain (guarded/unconditional set-zero or toggle). Two repeats
+  from 000 must end at 000 under every fixed hypothesis. Independent-step resampling
+  incorrectly assigns 25% to 100. The new joint predictor returns probability one
+  for 000 and counts 12 hypothetical effect evaluations; no oracle call is needed.
+- Sampling: enumerate unique behavioral identities, not syntax triples/renamings;
+  action-permutation symmetry permits combinations with replacement during enumeration.
+  Population has 2744 identities, with 1934/410/400 development/validation/final after
+  named-fixture exclusions. Development draws match uniform sampling of this unique
+  sorted bank. Independent slot permutations change roles while preserving names,
+  initial layout and identity. Execution rejects reserved and forged identities.
+  Cached public tables match the prior uncached canonical hash on regression fixtures.
+- Limits: the model's independent uniform labeled-effect prior is not the sampler's
+  uniform canonical-world population. Report model-relative uncertainty; no population
+  calibration claim. Vocabulary, filtering and rollout inference are supplied. The
+  core learns beliefs from observations, not parameters, primitives or abstractions.
+  Malformed structure raises; valid but impossible dynamics give model-class failure.
+- Actual checks: 111 tests passed. True effects remain in the candidate sets after
+  12 real transitions in each of eight development fixtures. Reset clears evidence,
+  posterior and work counters and restores prior predictions; the pure core imports
+  no Torch/Transformers/language/sampler. Fresh legacy demo and five-action scripted
+  action-model demo passed. The latter leaves 27/6/3 candidates and ambiguity; its
+  probe is not oracle-scored, its actions are scripted, and it is not the 80-world study.
+  No validation/final mechanism was executed and no performance comparison was run.
+- Next: controlled investigation, proper joint prediction scoring and common-unseen
+  panel coverage, followed by supplied goal planning. Freeze source/config before
+  measurement, track real versus simulated costs, keep all controls, and test that
+  evaluator targets and reachability cannot influence choices. Transfer, learned
+  search benefit, calibrated uncertainty and acquired abstractions remain open.

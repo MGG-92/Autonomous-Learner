@@ -35,7 +35,7 @@ and renders authorized structured claims; its parsing/fidelity must be evaluated
 separately, and its wording must not automatically become new cognitive evidence.
 See `docs/experiments/internal-rule-discovery.md` and C1–C4 in `docs/PLAN.md`.
 
-## Action-world bridge: simulator contract implemented, learner pending
+## Action-world bridge: transition beliefs implemented, experiment pending
 
 Finite function discovery is a diagnostic for a broader objective: learning predictive
 models of objects, properties, actions, interactions, and consequences, and using
@@ -69,15 +69,30 @@ observed binary properties and three actions with unknown guarded set/toggle eff
 Public immutable records expose object/action IDs and observed bits, not true effect
 instances or mechanism identities. Legal actions are independent of hidden effects;
 no-ops consume budget and there is no agent-accessible reset. This is a software
-oracle/interface, not a cognitive model or a learned policy. See the v1 development
+oracle/interface, not a learned policy. See the v1 development
 contract in `docs/experiments/structured-action-world.md`. No study has run yet.
 
-The next learner will filter public effect hypotheses from experienced transitions
-and preserve their joint implications in rollouts. A later supplied planner must
-use the acquired model and commit a short sequence before goal feedback. Canonical
+`action_model.py` now filters the public effect hypotheses from experienced
+transitions and preserves their joint implications in rollouts of up to three
+actions. It receives only a public catalog and observed transition records. Reset
+clears candidates, raw observations and model-work counters; inconsistent evidence
+causes explicit model-class failure. The inference algorithm and effect vocabulary
+are supplied; learning is posterior conditioning, not parameter optimization.
+Independent uniform labeled-effect priors differ from the evaluator's uniform
+canonical-world population, so probabilities are explicitly model-relative.
+
+A later supplied planner must use the acquired model and commit a short sequence
+before goal feedback. Canonical
 world identities quotient object/action permutations for future split integrity;
 episode layouts must independently shuffle the slots to avoid canonical role cues.
-Sampling, belief updating, prediction scoring, planning and transfer remain pending.
+`action_sampling.py` now samples development identities uniformly without replacement
+and independently shuffles episode slots before naming. It executes only verified
+development mechanisms, keeping named software fixtures development-only. Public
+class enumeration yields 2744 identities (1934/410/400 development/validation/final).
+It does not execute reserved worlds. Cached public transition tables preserve the
+original identity algorithm while making complete-class enumeration CPU-friendly.
+The scripted `action-model-demo` records changed predictions and exact reset;
+investigation policies, scoring, planning, parameter learning and transfer remain pending.
 
 ## Earlier controlled graph track (supporting baseline)
 

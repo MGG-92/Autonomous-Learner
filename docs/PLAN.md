@@ -51,10 +51,12 @@ object/property observations, legal actions, and observed transitions. No graphi
 natural-language parsing, or pretrained representations are prerequisites.
 
 - [x] Specify the v1 development protocol for unknown action effects and interactions,
-  with an executable simulator contract. No learner or experiment runner yet; keep
-  hidden mechanisms, effect labels, and probe targets evaluator-only.
-- [ ] Learn transition predictions from actual experience and choose interventions
-  that distinguish competing models; include evidence that forces model revision.
+  with an executable simulator contract; keep mechanisms and probe targets evaluator-only.
+- [x] Implement development-only unique-mechanism sampling, independent slot permutations,
+  experience-conditioned effect beliefs, reset erasure and consistent joint rollouts.
+  These are software checks, not a measured goal/transfer result.
+- [ ] Choose interventions that distinguish models and compare prediction performance
+  against controls; include evidence that forces model revision.
 - [ ] Test unseen interventions and action sequences, then goal achievement using
   learned predictions. Label any supplied search/planning algorithm explicitly.
 - [ ] Compare random, untrained, heuristic, no-memory/model-reset, and from-scratch
@@ -72,9 +74,11 @@ Contract: `docs/experiments/structured-action-world.md`; proposed settings:
 `configs/action-world-development.json` (explicitly not runnable yet). The simulator
 has three binary-property objects and three unknown guarded effects; software tests
 cover sequential interactions, action budgets, public-record boundaries and semantic
-identity under all object/action renamings. Next implement development-only sampling,
-transition-model belief updates and consistent multi-step predictions before goal
-planning or a measured comparison. No action-world learning result is established.
+identity under all object/action renamings. The sampler and transition-belief core
+are now implemented, with a scripted `action-model-demo`. The core learns by belief
+updating within supplied templates, without parameter training. Next implement
+investigation and a scored development comparison, then supplied goal planning.
+No world-level benchmark or goal/transfer result is established.
 
 ### C3 — Learn reusable abstractions
 - [ ] Induce reusable program fragments/concepts from experience rather than adding gold rules.
