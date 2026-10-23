@@ -1,9 +1,10 @@
 # Structured action-world bridge: development contract v1
 
-Status: simulator, development-only semantic sampler, and transition-belief core
-implemented. No investigation policy, planner, full experiment runner, or performance
-comparison exists for this environment yet. The scripted `action-model-demo` is a
-software demonstration of belief changes and reset, not the proposed 80-world study.
+Status: simulator, development-only semantic sampler, transition-belief core and
+prediction-only comparison runner implemented. The latter must be frozen before
+measurement; see its runnable subset below. No goal planner or full goal experiment
+exists yet. The scripted `action-model-demo` is a software demonstration of belief
+changes and reset, not the proposed 80-world study.
 The values in `configs/action-world-development.json` are proposed development
 settings, not measurements. Preserve C1/C2 results and their negative conclusions.
 
@@ -99,7 +100,49 @@ The first per-world learner starts fresh, so it cannot demonstrate transfer of
 acquired abstractions between worlds. Later C3 must compare retained learned
 libraries/parameters with from-scratch and library-removal controls on new mechanisms.
 
-## Committed predictions and goal tests (future runner)
+## Prediction stage and planned goal tests
+
+### First runnable subset: prediction-only development comparison
+
+`action-prediction` implements only investigation/prediction scoring, configured by
+`configs/action-prediction.json`: 80 development mechanisms, 12 actions, 24 one-step
+and 16 two-step probes, policy seeds 7/42/97, selection seed 611 and the purpose-specific
+layout ranges from the original proposed settings. No goal layouts or planning
+parameters are consumed. Source/config must be committed before measurement.
+
+Information gain chooses the action with maximum entropy over the eight predicted
+next states at the current observed state. This supplied one-step heuristic is not
+lookahead planning or learned investigation. Ties within 1e-12 use a local RNG with
+seed `(policy_seed << 32) ^ exploration_layout_seed`. Random uses that same seed;
+fixed cycles action slots 0/1/2. Every run consumes exactly the action budget,
+including repeats and no-ops, with no early stop or reset during investigation.
+The chosen action/current state must match its reply before learning continues.
+
+All three policies and all seeds finish exploration and commit every panel prediction
+before any panel targets are read. Common-unseen coverage excludes the union of
+experience across every policy AND seed in a world. Reset uses the information-gain
+trajectory, erases posterior/raw evidence before prediction and is equivalent here
+to an untrained/no-memory prior. Its trace/exploration costs are reused, not a fourth
+independent interaction run. Model-relative probabilities use the prior described above.
+
+Primary summaries are macro means across worlds, separately per seed, panel length
+and full/common-unseen scope. Empty panels have zero denominator and unavailable
+scores; eligible-world counts and mean coverage are reported. Compare Brier scores
+paired within world, average seeds within world, then bootstrap worlds with replacement
+2000 times using seed 197 (sorted indices 50/1950). Intervals are exploratory and
+unadjusted, conditional on this development population and coverage. A missing
+common-unseen world is omitted from that scoped comparison, never filled with zero.
+
+Count selection, all exploration (selection plus filtering) and prediction effect
+evaluations separately; report no-op counts and descriptive stage wall times. These
+exclude evaluator gold simulations and population construction; report construction
+time separately. Record all raw committed predictions, targets, traces and per-world
+scores in ignored `runs/`, and publish a reviewed compact summary. No goal success,
+parameter training, new primitives, or mechanism/family transfer is measured here.
+The diagnostic panel includes hypothetical states that may be unreachable from the
+exploration start; scoring them does not grant the learner arbitrary state preparation.
+
+`python -m autonomous_learner action-prediction --config configs/action-prediction.json --output runs/action-prediction-v1`
 
 After exploration, freeze each learner's evidence/model for scoring. Predictions
 must be computed before reading evaluator outcomes; probe replies must never update
@@ -160,8 +203,8 @@ true-hypothesis retention, joint rollout consistency, no-memory erasure, and ora
 call counts. Review at least the model and evaluator boundaries. Persist source
 hash, dirty status, all settings and seeds, actual denominators, unreachable-goal
 counts, ambiguity and negative outcomes. Publish reviewed synthetic summaries only.
-Belief updates and consistent rollouts are implemented with software regressions;
-investigation, planning, all experimental controls and scoring remain roadmap items.
+Belief updates, consistent rollouts and the prediction-stage controls/scoring are
+implemented with regressions. Goal planning, goal controls and transfer remain open.
 
 Software demo: `python -m autonomous_learner action-model-demo --output runs/action-model-demo.json`.
 Use a fresh path. Its five scripted action slots, naming/permutation/initial seeds,
