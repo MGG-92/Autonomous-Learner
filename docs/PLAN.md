@@ -17,8 +17,9 @@
 - [x] Shuffled streams, expiring episodic evidence, matched write/storage budgets, predefined gate.
 - [x] Three-seed delayed-memory test, imitation-only ablation, storage-only upper bound.
 - [x] Frozen-policy robustness evaluation across changed budgets, horizons, order, and observation gaps; failures documented.
-- [ ] Joint training with question selection and integration into the persistent investigation loop.
-- [ ] Learn retrieval; test changing budgets/horizons and longer retention delays.
+- [ ] Integrate the delayed-memory controller into the persistent investigation loop.
+- [ ] Joint training with question selection.
+- [ ] Learn retrieval; broaden timing/resource training and evaluate on new held-out worlds and retention delays.
 - [ ] Contradiction handling, source reliability, revision, retention curves.
 
 ## M2.5 — Minimal 3D memory and activity viewer
@@ -82,6 +83,7 @@ of curiosity or improved learning; a component animation must map to a recorded 
 - [ ] Expand internal computations and learned THINK/RECALL/STORE/REVISE choices.
 - [ ] Useful internal computations; idle when no operation has expected utility.
 - [x] Restricted human teacher CLI; rejects invalid structured replies.
+- [x] Bind restart identity/evidence and validate budgets; detect incomplete ticks before further external calls (automatic recovery remains unfinished).
 - [ ] Benchmark hypothesis revision and source reliability.
 
 ## M4 — Language track

@@ -153,7 +153,13 @@ The second invocation resumes the first. The loop persists question history and
 budgets, uses application timestamps, and stops after answering or exhausting its
 resources. Audit traces are separate from accessible memory. Use one writer per
 session. Atomic session-file replacement protects against partially written JSON;
-the session and evidence database are not one crash-atomic transaction.
+the session and evidence database are not one crash-atomic transaction. Schema-v2
+sessions bind controller weights, memory capacities/contents, teacher implementation
+type, task, and budgets. Missing or mismatched memory and interrupted ticks are
+refused before further teacher calls. Legacy sessions must stay with their original
+source; use fresh files to start a new run. Existing memory is never trimmed on open
+to accommodate a changed capacity. See the [critical audit](docs/CRITIC_AUDIT.md)
+for repaired defects, recovery limits, and unresolved research criticism.
 Add `--retention-checkpoint runs/memory/retention.pt` to run the question controller
 against learned, bounded dual memory. The two controllers are trained separately;
 this option does not imply joint optimization.

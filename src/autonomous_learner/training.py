@@ -1,6 +1,7 @@
 """Gold world access is restricted to expert supervision and external rewards."""
 from dataclasses import asdict, dataclass
 from pathlib import Path
+import math
 
 import torch
 from torch.nn import functional as F
@@ -26,6 +27,12 @@ class TrainConfig:
     test_worlds: int = 100
 
     def validate(self):
+        counts = (self.seed, self.imitation_worlds, self.epochs, self.rl_episodes, self.max_steps,
+                  self.train_start, self.validation_start, self.validation_worlds, self.test_start, self.test_worlds)
+        if any(type(value) is not int or value < 0 for value in counts):
+            raise ValueError("Seeds, counts, and budgets must be nonnegative integers")
+        if type(self.learning_rate) not in (int, float) or not math.isfinite(self.learning_rate):
+            raise ValueError("Learning rate must be finite")
         if min(self.imitation_worlds, self.epochs, self.validation_worlds, self.test_worlds, self.max_steps) < 1:
             raise ValueError("world counts, epochs, and budgets must be positive")
         if self.rl_episodes < 0 or self.learning_rate <= 0:

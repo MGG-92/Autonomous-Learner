@@ -28,8 +28,13 @@ class PublicTask:
     max_consolidations: int = 6
 
     def __post_init__(self):
+        if any(type(value) is not int for value in
+               (self.horizon, self.episodic_capacity, self.belief_capacity, self.max_consolidations)):
+            raise ValueError("Public resource budgets must be integers")
         if not self.entities or not self.abilities or len(set(self.entities)) != len(self.entities) or len(set(self.abilities)) != len(self.abilities):
             raise ValueError("Public vocabulary must be nonempty and unique")
+        if any(not isinstance(value, str) or not value.strip() for value in (*self.entities, *self.abilities)):
+            raise ValueError("Public vocabulary must contain nonempty names")
         if self.horizon < 1 or self.episodic_capacity < 1 or min(self.belief_capacity, self.max_consolidations) < 0:
             raise ValueError("Invalid public resource budgets")
 
@@ -43,6 +48,12 @@ class Record:
     fact: Fact
     observed_tick: int
     source: str = "synthetic-oracle"
+
+    def __post_init__(self):
+        if not isinstance(self.fact, Fact) or type(self.observed_tick) is not int or self.observed_tick < 0:
+            raise ValueError("Invalid evidence record or observed tick")
+        if not isinstance(self.source, str) or not self.source.strip():
+            raise ValueError("Invalid evidence source")
 
     @property
     def key(self):
@@ -90,6 +101,8 @@ class DelayedMemory:
         self.consolidations = 0
 
     def advance(self, fact: Fact | None):
+        if fact is not None and not isinstance(fact, Fact):
+            raise ValueError("Observation must be a fact or an empty tick")
         if self.tick + 1 >= self.task.horizon:
             raise ValueError("Public tick budget exhausted")
         self.tick += 1
@@ -115,7 +128,9 @@ class DelayedMemory:
         if not self.can_consolidate():
             raise ValueError("Consolidation is masked")
         visible = self.visible()
-        if len(indices) > self.task.belief_capacity or len(set(indices)) != len(indices):
+        if len(indices) > self.task.belief_capacity or any(type(i) is not int for i in indices):
+            raise ValueError("Invalid selected subset")
+        if len(set(indices)) != len(indices):
             raise ValueError("Invalid selected subset")
         if any(i < 0 or i >= len(visible) for i in indices):
             raise ValueError("Selected evidence is not accessible")
@@ -133,22 +148,38 @@ class DelayedMemory:
     @classmethod
     def load(cls, path: Path):
         data = json.loads(path.read_text(encoding="utf-8"))
-        if data.get("schema_version") != 1:
+        if not isinstance(data, dict) or type(data.get("schema_version")) is not int or data["schema_version"] != 1:
             raise ValueError("Unsupported delayed-memory state version")
+        try:
+            return cls._from_snapshot(data)
+        except (KeyError, TypeError, AttributeError) as exc:
+            raise ValueError("Invalid persisted state structure") from exc
+
+    @classmethod
+    def _from_snapshot(cls, data):
         specification = data["task"]
+        if (not isinstance(specification, dict) or not isinstance(data["episodes"], list)
+                or not isinstance(data["beliefs"], list)):
+            raise ValueError("Invalid persisted state structure")
         specification["entities"] = tuple(specification["entities"])
         specification["abilities"] = tuple(specification["abilities"])
         memory = cls(PublicTask(**specification))
         memory.tick, memory.consolidations = data["tick"], data["consolidations"]
         memory.episodes = [Record(Fact(**r["fact"]), r["observed_tick"], r["source"]) for r in data["episodes"]]
         memory.beliefs = [Record(Fact(**r["fact"]), r["observed_tick"], r["source"]) for r in data["beliefs"]]
-        if (not -1 <= memory.tick < memory.task.horizon
+        if (type(memory.tick) is not int or type(memory.consolidations) is not int
+                or not -1 <= memory.tick < memory.task.horizon
                 or not 0 <= memory.consolidations <= memory.task.max_consolidations
                 or len(memory.episodes) > memory.task.episodic_capacity
                 or len(memory.beliefs) > memory.task.belief_capacity
-                or any(not 0 <= r.observed_tick <= memory.tick for r in memory.visible())
+                or any(not 0 <= r.observed_tick <= memory.tick for r in (*memory.beliefs, *memory.episodes))
                 or any(memory.tick - r.observed_tick >= memory.task.episodic_capacity for r in memory.episodes)):
             raise ValueError("Invalid persisted resource state")
+        if memory.beliefs and memory.consolidations == 0:
+            raise ValueError("Invalid persisted resource state: beliefs without consolidation")
+        episode_ticks = [row.observed_tick for row in memory.episodes]
+        if episode_ticks != sorted(set(episode_ticks)):
+            raise ValueError("Invalid persisted resource state: episodic tick ordering")
         if any(len({r.key for r in rows}) != len(rows) for rows in (memory.beliefs, memory.episodes)):
             raise ValueError("Duplicate persisted evidence")
         return memory

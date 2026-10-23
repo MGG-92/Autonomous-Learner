@@ -57,6 +57,15 @@ explanations. Recording must preserve decisions and keep observer data inaccessi
 to the agent; measure its overhead independently of replay speed.
 See `docs/PLAN.md` for dependencies and acceptance criteria.
 
+Persistent question-loop sessions use schema-v2 identities for task/budgets, feature
+names, controller weight digests, memory settings/content digests, and teacher type.
+An ASK reserves its budget and records pending intent before contacting the teacher.
+Incomplete ticks or inconsistent state stop further actions rather than replaying an
+uncertain call. SQLite stores each observation/eviction atomically, but SQLite and
+session JSON remain separate transactions. Legacy sessions are preserved and refused
+by the new schema; automatic crash recovery and concurrent writers are unsupported.
+Observer logs never repair or augment policy memory. See `docs/CRITIC_AUDIT.md`.
+
 References: Sutton, Precup & Singh (1999), options,
 https://people.cs.umass.edu/~barto/courses/cs687/Sutton-Precup-Singh-AIJ99.pdf;
 Lewis et al. (2020), retrieval-augmented generation,

@@ -1,5 +1,6 @@
 """Learn retention priorities under a hard memory budget, separately from asking."""
 import random
+from dataclasses import asdict
 from pathlib import Path
 
 import torch
@@ -7,6 +8,7 @@ from torch import nn
 from torch.nn import functional as F
 
 from .memory import Memory
+from .integrity import controller_identity
 from .types import Fact, Observation, Query
 from .world import World
 
@@ -60,11 +62,25 @@ class DualMemory:
     """
     def __init__(self, goal: Query, scorer: RetentionController | str = "fifo", path: Path | None = None,
                  episodic_capacity: int = 4, belief_capacity: int = 3):
+        if not isinstance(scorer, RetentionController) and scorer not in ("fifo", "heuristic"):
+            raise ValueError("Unknown retention scorer")
         self.goal, self.scorer = goal, scorer
         if path:
             path.parent.mkdir(parents=True, exist_ok=True)
         self.episodes = Memory(str(path) + ".episodes.sqlite" if path else ":memory:", episodic_capacity)
-        self.beliefs = Memory(str(path) + ".beliefs.sqlite" if path else ":memory:", belief_capacity)
+        try:
+            self.beliefs = Memory(str(path) + ".beliefs.sqlite" if path else ":memory:", belief_capacity)
+        except Exception:
+            self.episodes.close()
+            raise
+
+    def session_signature(self):
+        return {"type": "DualMemory", "goal": asdict(self.goal), "features": list(MEMORY_FEATURES),
+                "episodic_capacity": self.episodes.capacity, "belief_capacity": self.beliefs.capacity,
+                "scorer": controller_identity(self.scorer)}
+
+    def session_snapshot(self):
+        return {"episodes": self.episodes.inspect(), "beliefs": self.beliefs.inspect()}
 
     def close(self):
         self.episodes.close()

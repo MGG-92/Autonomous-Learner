@@ -4,6 +4,7 @@ from copy import deepcopy
 from dataclasses import asdict, dataclass, field, replace
 from itertools import combinations
 import json
+import math
 from pathlib import Path
 import platform
 import random
@@ -39,6 +40,15 @@ class DelayedConfig:
     entropy_bonus: float = 0.002
 
     def validate(self):
+        counts = (self.train_start, self.imitation_worlds, self.imitation_epochs, self.rl_episodes,
+                  self.validation_start, self.validation_worlds, self.test_start, self.test_worlds,
+                  self.episodic_capacity, self.belief_capacity, self.max_consolidations, self.quiet_ticks)
+        if any(type(value) is not int or value < 0 for value in counts):
+            raise ValueError("Seeds, counts, and resource budgets must be nonnegative integers")
+        if (not isinstance(self.optimizer_seeds, list) or any(type(seed) is not int or seed < 0 for seed in self.optimizer_seeds)
+                or any(type(value) not in (int, float) or not math.isfinite(value)
+                       for value in (self.learning_rate, self.write_cost, self.entropy_bonus))):
+            raise ValueError("Optimizer seeds must be integers and optimization settings finite")
         if self.bootstrap_policy not in {"graph", "graph_scheduled"}:
             raise ValueError("Bootstrap policy must be a public graph heuristic")
         if not self.optimizer_seeds or len(set(self.optimizer_seeds)) != len(self.optimizer_seeds):
@@ -63,7 +73,7 @@ class DelayedConfig:
 
 def episode(policy, world_seed: int, config: DelayedConfig, optimizer_seed=42, sample=False,
             capture=False, *, reverse_stream=False, gap_ticks=0):
-    if not isinstance(gap_ticks, int) or gap_ticks < 0:
+    if type(gap_ticks) is not int or gap_ticks < 0:
         raise ValueError("Observation gaps must be nonnegative integer ticks")
     world = World.generate(world_seed)  # Environment/evaluator, not a policy input.
     facts = tuple(reversed(world.facts)) if reverse_stream else world.facts
@@ -256,9 +266,20 @@ def load_checkpoint(path: Path):
 
 
 def paired_interval(rows: list[dict], baseline: str, samples=2000) -> dict:
+    if not rows or type(samples) is not int or samples < 1 or baseline == "learned":
+        raise ValueError("Need nonempty paired measurements, a distinct baseline, and positive resample count")
     by_world = {}
     for row in rows:
-        by_world.setdefault(row["world_seed"], {}).setdefault(row["optimizer_seed"], {})[row["policy"]] = row["utility"]
+        policies = by_world.setdefault(row["world_seed"], {}).setdefault(row["optimizer_seed"], {})
+        if row["policy"] in policies:
+            raise ValueError("Duplicate world/optimizer/policy measurement")
+        if type(row["utility"]) not in (int, float) or not math.isfinite(row["utility"]):
+            raise ValueError("Utility measurements must be finite")
+        policies[row["policy"]] = row["utility"]
+    expected_seeds = set(next(iter(by_world.values())))
+    for seeds in by_world.values():
+        if set(seeds) != expected_seeds or any("learned" not in p or baseline not in p for p in seeds.values()):
+            raise ValueError("Every world needs the same optimizer seeds and complete learned/baseline pairs")
     differences = [sum(policies["learned"] - policies[baseline] for policies in seeds.values()) / len(seeds)
                    for seeds in by_world.values()]
     rng = random.Random(197)

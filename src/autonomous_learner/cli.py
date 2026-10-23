@@ -157,6 +157,21 @@ def main():
         from .teachers import HumanTeacher, LocalLMTeacher
         world = World.generate(args.seed)
         args.session.parent.mkdir(parents=True, exist_ok=True)
+        expected_type = "DualMemory" if args.retention_checkpoint else "Memory"
+        memory_paths = ([Path(str(args.session.with_suffix("")) + suffix)
+                         for suffix in (".episodes.sqlite", ".beliefs.sqlite")]
+                        if args.retention_checkpoint else [args.session.with_suffix(".sqlite")])
+        if args.session in memory_paths:
+            parser.error("Session JSON and evidence database paths must be different")
+        if args.session.exists():
+            state = json.loads(args.session.read_text(encoding="utf-8"))
+            if not isinstance(state, dict) or type(state.get("schema_version")) is not int or state["schema_version"] != 2:
+                parser.error("Preserve legacy session files and resume with their original source; use a fresh path here")
+            signature = state.get("signature")
+            if not isinstance(signature, dict) or not isinstance(signature.get("memory"), dict):
+                parser.error("Invalid session signature; preserve files and investigate")
+            if signature["memory"].get("type") != expected_type or any(not p.is_file() for p in memory_paths):
+                parser.error("Session memory type differs or an evidence database is missing; preserve files and investigate")
         if args.retention_checkpoint:
             from .memory_policy import DualMemory, load_retention
             memory = DualMemory(world.goal(), load_retention(args.retention_checkpoint),
