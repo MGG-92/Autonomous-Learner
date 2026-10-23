@@ -88,6 +88,10 @@ def main():
     p.add_argument("--output", type=Path, default=Path("runs/replication"))
     m = commands.add_parser("memory-experiment")
     m.add_argument("--output", type=Path, default=Path("runs/memory-experiment"))
+    dm = commands.add_parser("delayed-memory", help="Learn memory control without the specific future goal")
+    dm.add_argument("--config", type=Path, default=Path("configs/delayed-memory.json"))
+    dm.add_argument("--output", type=Path, default=Path("runs/delayed-memory"))
+    dm.add_argument("--phase", choices=["validation", "final"], default="validation")
     r = commands.add_parser("run", help="Run bounded autonomous ticks; repeat to resume")
     r.add_argument("--session", type=Path, default=Path("runs/session.json"))
     r.add_argument("--seed", type=int, default=900_001)
@@ -135,6 +139,11 @@ def main():
     elif args.command == "memory-experiment":
         from .memory_policy import memory_experiment
         print(json.dumps(memory_experiment(args.output), indent=2))
+    elif args.command == "delayed-memory":
+        from .delayed_training import DelayedConfig, experiment as delayed_experiment
+        config = DelayedConfig(**json.loads(args.config.read_text(encoding="utf-8")))
+        report = delayed_experiment(config, args.output, args.phase)
+        print(json.dumps({"gate": report["gate"], "results": report["results_by_seed"]}, indent=2))
     elif args.command == "run":
         from .loop import PersistentLoop
         from .teachers import HumanTeacher, LocalLMTeacher
