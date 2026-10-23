@@ -122,10 +122,11 @@ def test_offline_storage_bound_is_below_perfect_recall():
 
 def test_training_loss_checkpoint_and_masked_gradient(tmp_path):
     config = small_config()
-    trained, initial, curve, selected = train(config, 42)
+    trained, initial, curve, selected, (imitation, imitation_selected) = train(config, 42)
     imitation = [row for row in curve if row["stage"] == "imitation"]
     assert imitation[-1]["loss"] < imitation[0]["loss"]
     assert all(torch.isfinite(p).all() for p in trained.parameters())
+    assert imitation_selected["stage"] in {"initial", "imitation"}
     path = tmp_path / "checkpoint.pt"
     save_checkpoint(path, trained, config, selected)
     restored, restored_config = load_checkpoint(path)
@@ -155,3 +156,15 @@ def test_invalid_configs_and_inaccessible_evidence():
         memory.consolidate([-1])
     with pytest.raises(ValueError, match="tick budget"):
         memory.advance(None)
+
+
+def test_publication_check_accepts_github_pr_service_but_rejects_personal_email():
+    import importlib.util
+    from pathlib import Path
+    spec = importlib.util.spec_from_file_location("publication", Path(__file__).parents[1] / "scripts/publication_check.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    assert module.public_email("noreply@github.com")
+    assert module.public_email("123+tester@users.noreply.github.com")
+    assert not module.public_email("person@example.com")
+    assert not module.public_email("tester@users.noreply.github.com.example.com")

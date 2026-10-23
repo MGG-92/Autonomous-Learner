@@ -15,6 +15,15 @@ complete merely because a prototype runs.
 
 ## Environment and version control
 
+Current increment: `feature/delayed-goal-memory`, starting from `ce7a6f5`. The user
+now requires feature branches and PRs for meaningful changes. Do not develop directly
+on main. The delayed-goal protocol and initial implementation are committed; 31 local
+tests pass. The first validation attempt failed because the dynamic expert exhausted
+writes early. A scheduled graph expert was selected using validation only; the second
+validation attempt passed the preliminary gate. Final test worlds (2000000..2000199)
+remain unopened at this checkpoint. Finish source review/CI, run the frozen final
+experiment, publish sanitized results, and merge the reviewed PR after checks pass.
+
 - Local virtual environment `.venv`, Python 3.12.14; see README to recreate elsewhere.
 - Installed PyTorch 2.14.1+cpu, pytest 9.1.1, NumPy 2.5.4, Transformers 4.57.6.
 - PUBLIC remote: https://github.com/MGG-92/Autonomous-Learner; branch `main` tracks origin.
@@ -82,7 +91,7 @@ at 600000, using 4 questions. This is deployment integration, not joint optimiza
 ## Immediate next actions when the user says continue
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
-   and the current public remote/CI. Run the 20-test suite using the local venv.
+   and the current public remote/CI. Run the current test suite using the local venv.
 2. Next research increment: remove the helpful fixed proof-before-distractors ordering
    and supplied future-query assumption. Build delayed goals with memory pressure,
    learn consolidation/admission timing, and test against budget-matched heuristics.

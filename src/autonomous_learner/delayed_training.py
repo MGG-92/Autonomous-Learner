@@ -1,5 +1,6 @@
 """Reproducible delayed-query experiments; hidden truth stays at reward/evaluation boundaries."""
 import csv
+from copy import deepcopy
 from dataclasses import asdict, dataclass, field
 from itertools import combinations
 import json
@@ -20,13 +21,14 @@ from .world import World
 @dataclass(frozen=True)
 class DelayedConfig:
     optimizer_seeds: list[int] = field(default_factory=lambda: [7, 42, 97])
+    bootstrap_policy: str = "graph_scheduled"
     train_start: int = 700_000
     imitation_worlds: int = 120
     imitation_epochs: int = 16
     rl_episodes: int = 240
     validation_start: int = 800_000
     validation_worlds: int = 40
-    test_start: int = 900_000
+    test_start: int = 2_000_000
     test_worlds: int = 200
     episodic_capacity: int = 2
     belief_capacity: int = 6
@@ -37,6 +39,8 @@ class DelayedConfig:
     entropy_bonus: float = 0.002
 
     def validate(self):
+        if self.bootstrap_policy not in {"graph", "graph_scheduled"}:
+            raise ValueError("Bootstrap policy must be a public graph heuristic")
         if not self.optimizer_seeds or len(set(self.optimizer_seeds)) != len(self.optimizer_seeds):
             raise ValueError("Use nonempty unique optimizer seeds")
         if min(self.imitation_worlds, self.imitation_epochs, self.validation_worlds, self.test_worlds, self.episodic_capacity) < 1:
@@ -124,7 +128,7 @@ def demonstrations(config: DelayedConfig):
             if not memory.can_consolidate():
                 continue
             rank, gate = encode(memory)
-            indices, _, _ = choose(memory, "graph")
+            indices, _, _ = choose(memory, config.bootstrap_policy)
             proposal = graph_proposal(memory)
             target = torch.tensor([i in proposal for i in range(len(rank))], dtype=torch.float32)
             examples.append((rank, gate, int(indices is not None), target))
@@ -184,6 +188,10 @@ def train(config: DelayedConfig, seed: int, progress=None):
             losses.append(float(loss.detach()))
         measure("imitation", epoch + 1, sum(losses) / len(losses))
 
+    # Copy without consuming RNG: adding an ablation must not change RL sampling.
+    imitation = deepcopy(policy)
+    imitation.load_state_dict(best_state)
+    imitation_selection = dict(selected)
     baseline = 0.0
     for i in range(config.rl_episodes):
         result, log_probs, entropies = episode(policy, config.train_start + config.imitation_worlds + i,
@@ -204,7 +212,7 @@ def train(config: DelayedConfig, seed: int, progress=None):
         if (i + 1) % 40 == 0 or i + 1 == config.rl_episodes:
             measure("reinforce", i + 1, value)
     policy.load_state_dict(best_state)
-    return policy.eval(), initial.eval(), curve, selected
+    return policy.eval(), initial.eval(), curve, selected, (imitation.eval(), imitation_selection)
 
 
 def offline_bound(world: World, capacity: int) -> float:
@@ -220,12 +228,14 @@ def offline_bound(world: World, capacity: int) -> float:
 
 
 def save_checkpoint(path: Path, policy: MemoryController, config: DelayedConfig, selected: dict):
-    torch.save({"state_dict": policy.state_dict(), "config": asdict(config), "selected": selected,
+    torch.save({"schema_version": 1, "state_dict": policy.state_dict(), "config": asdict(config), "selected": selected,
                 "rank_features": RANK_FEATURES, "gate_features": GATE_FEATURES}, path)
 
 
 def load_checkpoint(path: Path):
     data = torch.load(path, map_location="cpu", weights_only=True)
+    if data.get("schema_version") != 1:
+        raise ValueError("Unsupported delayed-memory checkpoint version")
     if tuple(data["rank_features"]) != RANK_FEATURES or tuple(data["gate_features"]) != GATE_FEATURES:
         raise ValueError("Delayed-memory feature schema differs")
     config = DelayedConfig(**data["config"])
@@ -260,25 +270,28 @@ def experiment(config: DelayedConfig, output: Path, phase: str = "validation", p
     revision = subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     dirty = bool(subprocess.check_output(["git", "status", "--porcelain"], text=True).strip())
     began = time.perf_counter()
-    results, all_rows, curves, selections = {}, [], {}, {}
+    results, all_rows, curves, selections, imitation_selections = {}, [], {}, {}, {}
     for seed in config.optimizer_seeds:
         callback = lambda row: progress(json.dumps(row)) if progress else None
-        policy, initial, curve, selected = train(config, seed, callback)
+        policy, initial, curve, selected, (imitation, imitation_selected) = train(config, seed, callback)
         save_checkpoint(output / f"seed-{seed}.pt", policy, config, selected)
+        save_checkpoint(output / f"seed-{seed}-imitation.pt", imitation, config, imitation_selected)
         curves[str(seed)], selections[str(seed)] = curve, selected
+        imitation_selections[str(seed)] = imitation_selected
         results[str(seed)] = {}
-        for name, model in [("learned", policy), ("untrained", initial), ("random", "random"),
+        for name, model in [("learned", policy), ("imitation_only", imitation), ("untrained", initial), ("random", "random"),
                             ("fifo", "fifo"), ("graph", "graph"), ("graph_scheduled", "graph_scheduled")]:
             metrics, rows = evaluate(model, start, worlds, config, seed)
             results[str(seed)][name] = metrics
             all_rows.extend({"optimizer_seed": seed, "policy": name, **row} for row in rows)
     bounds = [offline_bound(World.generate(i), config.belief_capacity) for i in range(start, start + worlds)]
-    comparisons = {name: paired_interval(all_rows, name) for name in ("untrained", "fifo", "graph", "graph_scheduled")}
+    comparisons = {name: paired_interval(all_rows, name) for name in ("imitation_only", "untrained", "fifo", "graph", "graph_scheduled")}
     improved = all(result["learned"]["utility"] > result["untrained"]["utility"] for result in results.values())
     passed = improved and comparisons["fifo"]["world_bootstrap95"][0] > 0
     report = {"protocol": "docs/experiments/delayed-goal-memory.md", "phase": phase, "config": asdict(config),
               "evaluation_start": start, "evaluation_worlds": worlds, "results_by_seed": results,
-              "selected_checkpoints": selections, "curves": curves, "paired_comparisons": comparisons,
+              "selected_checkpoints": selections, "imitation_checkpoints": imitation_selections,
+              "curves": curves, "paired_comparisons": comparisons,
               "references": {"no_memory_accuracy": 0.0, "unlimited_storage_accuracy": 1.0,
                              "offline_best_subset_mean_accuracy": sum(bounds) / len(bounds),
                              "offline_bound_is_operational": False},
@@ -290,6 +303,7 @@ def experiment(config: DelayedConfig, output: Path, phase: str = "validation", p
               "limitations": ["Supplied monotonic inference and engineered structural features",
                               "Public vocabulary, query distribution, and horizon; only specific question withheld",
                               "Supervised graph-heuristic bootstrap; not independent discovery of memory rules",
+                              "Retention fills available belief slots; admission count is not learned",
                               "Fixed episode TTL and capacities; retrieval and belief revision not learned",
                               "Only three optimizer seeds in main protocol; bootstrap interval covers worlds only"]}
     (output / "report.json").write_text(json.dumps(report, indent=2), encoding="utf-8")

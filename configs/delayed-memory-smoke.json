@@ -1,5 +1,6 @@
 {
   "optimizer_seeds": [42],
+  "bootstrap_policy": "graph_scheduled",
   "train_start": 1100000,
   "imitation_worlds": 12,
   "imitation_epochs": 4,

@@ -40,6 +40,10 @@ fine-tuning on separate training worlds. Expert selection may search bounded vis
 subsets; its logic is supplied, and imitation must be reported honestly. Validation
 utility alone selects checkpoints, with earlier checkpoints winning ties.
 
+Also freeze the best imitation-only checkpoint before RL and evaluate it on the same
+delayed questions as an ablation. Selecting an RL-stage checkpoint on validation is
+not itself evidence of an RL benefit on unseen worlds.
+
 Compare untrained, random, evenly scheduled FIFO, dynamic graph heuristic, and evenly
 scheduled graph heuristic. Every operational policy has the SAME hard memory/write
 limits. Also report no-memory, unlimited-storage reference, and an offline best-subset
@@ -49,7 +53,7 @@ bound. The offline bound sees the entire stream and is not an operational baseli
 
 Configuration: `configs/delayed-memory.json`; optimizer seeds 7, 42, 97.
 Training seeds start at 700000 (120 imitation worlds + 240 RL worlds); validation
-800000..800039; final tests 900000..900199. Splits must be checked for overlap.
+800000..800039; final tests 2000000..2000199. Splits must be checked for overlap.
 Unit-test and smoke configurations use different ranges. Hyperparameters may be
 debugged using training/validation only; final reports must include every main seed.
 
@@ -70,3 +74,19 @@ separate comparison; do not imply it from beating FIFO. Failure leaves M2 incomp
 Report the best-subset storage bound so a low absolute accuracy is not misrepresented
 as a model failure when the storage budget makes perfect recall impossible. Do not
 claim broad memory management, learned retrieval, source reliability, or logic learning.
+
+## Validation-only development note
+
+The first implementation (`8ae776f`) bootstrapped the dynamic graph heuristic.
+On validation worlds it front-loaded writes, and all optimizer seeds selected the
+initial WAIT policy (zero utility). The stronger scheduled graph baseline reached
+about 20% validation accuracy. Before opening the final test split, the bootstrap
+teacher was changed to that scheduled baseline. Numerical training/resource settings
+remain unchanged. Before opening any final tests, the reserved test range was moved
+from 900000 to 2000000 because the original range included the preexisting interactive
+demo seed 900001. This is a seed-bookkeeping correction, not a response to test outcomes.
+`bootstrap_policy` is explicit in configs/reports;
+the old teacher remains reproducible with `bootstrap_policy: "graph"`. This is a
+validation-driven development decision, not a claim that timing was independently
+discovered from scratch. The deployed neural policy can choose either action at any
+valid tick; the schedule is not hardcoded into its inference path.
