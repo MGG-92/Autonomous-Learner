@@ -1,0 +1,2537 @@
+{
+  "schema_version": 1,
+  "protocol": "docs/experiments/delayed-memory-robustness.md",
+  "evaluation_start": 2100000,
+  "evaluation_worlds": 100,
+  "training_config": {
+    "optimizer_seeds": [
+      7,
+      42,
+      97
+    ],
+    "bootstrap_policy": "graph_scheduled",
+    "train_start": 700000,
+    "imitation_worlds": 120,
+    "imitation_epochs": 16,
+    "rl_episodes": 240,
+    "validation_start": 800000,
+    "validation_worlds": 40,
+    "test_start": 2000000,
+    "test_worlds": 200,
+    "episodic_capacity": 2,
+    "belief_capacity": 6,
+    "max_consolidations": 6,
+    "quiet_ticks": 2,
+    "write_cost": 0.01,
+    "learning_rate": 0.003,
+    "entropy_bonus": 0.002
+  },
+  "scenarios": {
+    "reference": {},
+    "reverse_order": {
+      "reverse_stream": true
+    },
+    "observation_gaps": {
+      "gap_ticks": 2
+    },
+    "long_quiet_delay": {
+      "quiet_ticks": 10
+    },
+    "small_belief": {
+      "belief_capacity": 3
+    },
+    "large_belief": {
+      "belief_capacity": 9
+    },
+    "few_writes": {
+      "max_consolidations": 3
+    },
+    "many_writes": {
+      "max_consolidations": 9
+    }
+  },
+  "checkpoint_source": {
+    "git_commit": "d675f4b38749c16b7054644b1ca846beed90d946",
+    "git_dirty": false,
+    "python": "3.12.14",
+    "torch": "2.14.1+cpu",
+    "elapsed_seconds": 23.419915899983607
+  },
+  "checkpoints": {
+    "seed-7": {
+      "sha256": "3b3762e4bb5f64f5c31eaa99ae2232d0ad8cfe0461d00191afec8b76cd395a78",
+      "selection": {
+        "stage": "reinforce",
+        "iteration": 40,
+        "validation_utility": 0.19327777777777777
+      }
+    },
+    "seed-7-imitation": {
+      "sha256": "d5335c19b9b5e4ff52ae28cfa8b8cedb9d4b0b72da966f292f45642757e4ec98",
+      "selection": {
+        "stage": "imitation",
+        "iteration": 13,
+        "validation_utility": 0.15505555555555556
+      }
+    },
+    "seed-42": {
+      "sha256": "0057059749bdc635cecd41c358bf57cddaf0ccffeeb1b41e4ee4233289c35920",
+      "selection": {
+        "stage": "imitation",
+        "iteration": 11,
+        "validation_utility": 0.17124999999999999
+      }
+    },
+    "seed-42-imitation": {
+      "sha256": "8fff9110134e3bbf4f3d6489fae6de4a80262c6c7cffd880b922a2bb10c939ed",
+      "selection": {
+        "stage": "imitation",
+        "iteration": 11,
+        "validation_utility": 0.17124999999999999
+      }
+    },
+    "seed-97": {
+      "sha256": "f02f86dc983925ba6193e1c3c7526074b2b97dab7734dcc302ffb89808e0b26e",
+      "selection": {
+        "stage": "reinforce",
+        "iteration": 240,
+        "validation_utility": 0.1872222222222222
+      }
+    },
+    "seed-97-imitation": {
+      "sha256": "d35a51d318e047d5a84ff3bef4b64bc4a9410ae2f4a0a4bb0cd1a01a5524eeda",
+      "selection": {
+        "stage": "imitation",
+        "iteration": 9,
+        "validation_utility": 0.13074999999999998
+      }
+    }
+  },
+  "results": {
+    "reference": {
+      "7": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.2333333333333333,
+          "coverage": 0.2333333333333333,
+          "utility": 0.1739333333333333,
+          "writes": 5.94,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.19444444444444442,
+          "coverage": 0.19444444444444442,
+          "utility": 0.14344444444444443,
+          "writes": 5.1,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.048888888888888885,
+          "coverage": 0.048888888888888885,
+          "utility": -0.00981111111111111,
+          "writes": 5.87,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.06111111111111111,
+          "coverage": 0.06111111111111111,
+          "utility": 0.011111111111111106,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.19555555555555554,
+          "coverage": 0.19555555555555554,
+          "utility": 0.14555555555555555,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "42": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.2011111111111111,
+          "coverage": 0.2011111111111111,
+          "utility": 0.1473111111111111,
+          "writes": 5.38,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.2011111111111111,
+          "coverage": 0.2011111111111111,
+          "utility": 0.1473111111111111,
+          "writes": 5.38,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.03666666666666667,
+          "coverage": 0.03666666666666667,
+          "utility": -0.021633333333333334,
+          "writes": 5.83,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.06111111111111111,
+          "coverage": 0.06111111111111111,
+          "utility": 0.011111111111111106,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.19555555555555554,
+          "coverage": 0.19555555555555554,
+          "utility": 0.14555555555555555,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "97": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.2288888888888889,
+          "coverage": 0.2288888888888889,
+          "utility": 0.16898888888888888,
+          "writes": 5.99,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.16555555555555554,
+          "coverage": 0.16555555555555554,
+          "utility": 0.12065555555555556,
+          "writes": 4.49,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.042222222222222223,
+          "coverage": 0.042222222222222223,
+          "utility": -0.016277777777777776,
+          "writes": 5.85,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.06111111111111111,
+          "coverage": 0.06111111111111111,
+          "utility": 0.011111111111111106,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.19555555555555554,
+          "coverage": 0.19555555555555554,
+          "utility": 0.14555555555555555,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      }
+    },
+    "reverse_order": {
+      "7": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.24555555555555553,
+          "coverage": 0.24555555555555553,
+          "utility": 0.18635555555555555,
+          "writes": 5.92,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.17555555555555555,
+          "coverage": 0.17555555555555555,
+          "utility": 0.12425555555555555,
+          "writes": 5.13,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.04,
+          "coverage": 0.04,
+          "utility": -0.0187,
+          "writes": 5.87,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.03888888888888889,
+          "coverage": 0.03888888888888889,
+          "utility": -0.011111111111111113,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.04666666666666666,
+          "coverage": 0.04666666666666666,
+          "utility": -0.013333333333333334,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.1988888888888889,
+          "coverage": 0.1988888888888889,
+          "utility": 0.1488888888888889,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "42": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.17555555555555555,
+          "coverage": 0.17555555555555555,
+          "utility": 0.12105555555555554,
+          "writes": 5.45,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.17555555555555555,
+          "coverage": 0.17555555555555555,
+          "utility": 0.12105555555555554,
+          "writes": 5.45,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.05111111111111111,
+          "coverage": 0.05111111111111111,
+          "utility": -0.0071888888888888905,
+          "writes": 5.83,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.03888888888888889,
+          "coverage": 0.03888888888888889,
+          "utility": -0.011111111111111113,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.04666666666666666,
+          "coverage": 0.04666666666666666,
+          "utility": -0.013333333333333334,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.1988888888888889,
+          "coverage": 0.1988888888888889,
+          "utility": 0.1488888888888889,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "97": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.23444444444444443,
+          "coverage": 0.23444444444444443,
+          "utility": 0.17444444444444443,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.14777777777777776,
+          "coverage": 0.14777777777777776,
+          "utility": 0.10347777777777777,
+          "writes": 4.43,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.04555555555555555,
+          "coverage": 0.04555555555555555,
+          "utility": -0.012944444444444446,
+          "writes": 5.85,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.03888888888888889,
+          "coverage": 0.03888888888888889,
+          "utility": -0.011111111111111113,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.04666666666666666,
+          "coverage": 0.04666666666666666,
+          "utility": -0.013333333333333334,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.1988888888888889,
+          "coverage": 0.1988888888888889,
+          "utility": 0.1488888888888889,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      }
+    },
+    "observation_gaps": {
+      "7": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.048888888888888885,
+          "coverage": 0.048888888888888885,
+          "utility": -0.011111111111111112,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 3
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 3
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        }
+      },
+      "42": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.03333333333333333,
+          "coverage": 0.03333333333333333,
+          "utility": -0.026666666666666665,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 3
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 3
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        }
+      },
+      "97": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.04333333333333333,
+          "coverage": 0.04333333333333333,
+          "utility": -0.016666666666666666,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 3
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 3
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 1,
+          "max_belief_size": 0
+        }
+      }
+    },
+    "long_quiet_delay": {
+      "7": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.23444444444444443,
+          "coverage": 0.23444444444444443,
+          "utility": 0.18244444444444444,
+          "writes": 5.2,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.09888888888888887,
+          "coverage": 0.09888888888888887,
+          "utility": 0.061788888888888886,
+          "writes": 3.71,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.048888888888888885,
+          "coverage": 0.048888888888888885,
+          "utility": -0.00981111111111111,
+          "writes": 5.87,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.056666666666666664,
+          "coverage": 0.056666666666666664,
+          "utility": 0.026666666666666665,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.056666666666666664,
+          "coverage": 0.056666666666666664,
+          "utility": 0.026666666666666665,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "42": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.08777777777777777,
+          "coverage": 0.08777777777777777,
+          "utility": 0.048777777777777774,
+          "writes": 3.9,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.08777777777777777,
+          "coverage": 0.08777777777777777,
+          "utility": 0.048777777777777774,
+          "writes": 3.9,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.03666666666666667,
+          "coverage": 0.03666666666666667,
+          "utility": -0.021633333333333334,
+          "writes": 5.83,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.056666666666666664,
+          "coverage": 0.056666666666666664,
+          "utility": 0.026666666666666665,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.056666666666666664,
+          "coverage": 0.056666666666666664,
+          "utility": 0.026666666666666665,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "97": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.23777777777777775,
+          "coverage": 0.23777777777777775,
+          "utility": 0.17917777777777777,
+          "writes": 5.86,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.054444444444444434,
+          "coverage": 0.054444444444444434,
+          "utility": 0.02224444444444444,
+          "writes": 3.22,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.042222222222222223,
+          "coverage": 0.042222222222222223,
+          "utility": -0.016277777777777776,
+          "writes": 5.85,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.056666666666666664,
+          "coverage": 0.056666666666666664,
+          "utility": 0.026666666666666665,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.056666666666666664,
+          "coverage": 0.056666666666666664,
+          "utility": 0.026666666666666665,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      }
+    },
+    "small_belief": {
+      "7": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.09,
+          "coverage": 0.09,
+          "utility": 0.0311,
+          "writes": 5.89,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.04666666666666666,
+          "coverage": 0.04666666666666666,
+          "utility": 0.003966666666666662,
+          "writes": 4.27,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.0022222222222222222,
+          "coverage": 0.0022222222222222222,
+          "utility": -0.05547777777777777,
+          "writes": 5.77,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.0011111111111111111,
+          "coverage": 0.0011111111111111111,
+          "utility": -0.04888888888888889,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.09222222222222222,
+          "coverage": 0.09222222222222222,
+          "utility": 0.039722222222222214,
+          "writes": 5.25,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.07,
+          "coverage": 0.07,
+          "utility": 0.019999999999999993,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "42": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.04777777777777778,
+          "coverage": 0.04777777777777778,
+          "utility": 0.0013777777777777733,
+          "writes": 4.64,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.04777777777777778,
+          "coverage": 0.04777777777777778,
+          "utility": 0.0013777777777777733,
+          "writes": 4.64,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.0011111111111111111,
+          "coverage": 0.0011111111111111111,
+          "utility": -0.05768888888888888,
+          "writes": 5.88,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.0011111111111111111,
+          "coverage": 0.0011111111111111111,
+          "utility": -0.04888888888888889,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.09222222222222222,
+          "coverage": 0.09222222222222222,
+          "utility": 0.039722222222222214,
+          "writes": 5.25,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.07,
+          "coverage": 0.07,
+          "utility": 0.019999999999999993,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "97": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.08555555555555555,
+          "coverage": 0.08555555555555555,
+          "utility": 0.025855555555555552,
+          "writes": 5.97,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.03888888888888889,
+          "coverage": 0.03888888888888889,
+          "utility": 0.0038888888888888857,
+          "writes": 3.5,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.0011111111111111111,
+          "coverage": 0.0011111111111111111,
+          "utility": -0.057588888888888884,
+          "writes": 5.87,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.0011111111111111111,
+          "coverage": 0.0011111111111111111,
+          "utility": -0.04888888888888889,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.09222222222222222,
+          "coverage": 0.09222222222222222,
+          "utility": 0.039722222222222214,
+          "writes": 5.25,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.07,
+          "coverage": 0.07,
+          "utility": 0.019999999999999993,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      }
+    },
+    "large_belief": {
+      "7": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.41444444444444445,
+          "coverage": 0.41444444444444445,
+          "utility": 0.35494444444444445,
+          "writes": 5.95,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.3477777777777778,
+          "coverage": 0.3477777777777778,
+          "utility": 0.29217777777777776,
+          "writes": 5.56,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.14777777777777776,
+          "coverage": 0.14777777777777776,
+          "utility": 0.08967777777777779,
+          "writes": 5.81,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.18777777777777774,
+          "coverage": 0.18777777777777774,
+          "utility": 0.13777777777777778,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.2611111111111111,
+          "coverage": 0.2611111111111111,
+          "utility": 0.2111111111111111,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "42": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.3422222222222222,
+          "coverage": 0.3422222222222222,
+          "utility": 0.2856222222222222,
+          "writes": 5.66,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.3422222222222222,
+          "coverage": 0.3422222222222222,
+          "utility": 0.2856222222222222,
+          "writes": 5.66,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.14444444444444443,
+          "coverage": 0.14444444444444443,
+          "utility": 0.08664444444444444,
+          "writes": 5.78,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.18777777777777774,
+          "coverage": 0.18777777777777774,
+          "utility": 0.13777777777777778,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.2611111111111111,
+          "coverage": 0.2611111111111111,
+          "utility": 0.2111111111111111,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "97": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.3422222222222222,
+          "coverage": 0.3422222222222222,
+          "utility": 0.2823222222222222,
+          "writes": 5.99,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.26555555555555554,
+          "coverage": 0.26555555555555554,
+          "utility": 0.21665555555555557,
+          "writes": 4.89,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.14777777777777776,
+          "coverage": 0.14777777777777776,
+          "utility": 0.08897777777777778,
+          "writes": 5.88,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.18777777777777774,
+          "coverage": 0.18777777777777774,
+          "utility": 0.13777777777777778,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.044444444444444446,
+          "coverage": 0.044444444444444446,
+          "utility": -0.015555555555555555,
+          "writes": 6.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.2611111111111111,
+          "coverage": 0.2611111111111111,
+          "utility": 0.2111111111111111,
+          "writes": 5.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 9
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      }
+    },
+    "few_writes": {
+      "7": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.06888888888888889,
+          "coverage": 0.06888888888888889,
+          "utility": 0.03888888888888888,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.03666666666666667,
+          "coverage": 0.03666666666666667,
+          "utility": 0.006766666666666666,
+          "writes": 2.99,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.014444444444444444,
+          "coverage": 0.014444444444444444,
+          "utility": -0.015555555555555555,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.01,
+          "coverage": 0.01,
+          "utility": -0.01,
+          "writes": 2.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 4
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.01,
+          "coverage": 0.01,
+          "utility": -0.01,
+          "writes": 2.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 4
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "42": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.041111111111111105,
+          "coverage": 0.041111111111111105,
+          "utility": 0.01121111111111111,
+          "writes": 2.99,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.041111111111111105,
+          "coverage": 0.041111111111111105,
+          "utility": 0.01121111111111111,
+          "writes": 2.99,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.013333333333333332,
+          "coverage": 0.013333333333333332,
+          "utility": -0.016666666666666666,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.01,
+          "coverage": 0.01,
+          "utility": -0.01,
+          "writes": 2.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 4
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.01,
+          "coverage": 0.01,
+          "utility": -0.01,
+          "writes": 2.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 4
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "97": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.07444444444444444,
+          "coverage": 0.07444444444444444,
+          "utility": 0.04444444444444444,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.05,
+          "coverage": 0.05,
+          "utility": 0.0202,
+          "writes": 2.98,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.015555555555555553,
+          "coverage": 0.015555555555555553,
+          "utility": -0.014444444444444444,
+          "writes": 3.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.01,
+          "coverage": 0.01,
+          "utility": -0.01,
+          "writes": 2.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 4
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": -0.03,
+          "writes": 3.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 3
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.01,
+          "coverage": 0.01,
+          "utility": -0.01,
+          "writes": 2.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 4
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      }
+    },
+    "many_writes": {
+      "7": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.26555555555555554,
+          "coverage": 0.26555555555555554,
+          "utility": 0.19115555555555552,
+          "writes": 7.44,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.19666666666666666,
+          "coverage": 0.19666666666666666,
+          "utility": 0.14476666666666665,
+          "writes": 5.19,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.03777777777777778,
+          "coverage": 0.03777777777777778,
+          "utility": -0.03712222222222222,
+          "writes": 7.49,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.04666666666666666,
+          "coverage": 0.04666666666666666,
+          "utility": -0.03333333333333334,
+          "writes": 8.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.2311111111111111,
+          "coverage": 0.2311111111111111,
+          "utility": 0.1442111111111111,
+          "writes": 8.69,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.2833333333333333,
+          "coverage": 0.2833333333333333,
+          "utility": 0.20333333333333328,
+          "writes": 8.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "42": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.21444444444444444,
+          "coverage": 0.21444444444444444,
+          "utility": 0.15904444444444443,
+          "writes": 5.54,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.21444444444444444,
+          "coverage": 0.21444444444444444,
+          "utility": 0.15904444444444443,
+          "writes": 5.54,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.03888888888888889,
+          "coverage": 0.03888888888888889,
+          "utility": -0.036611111111111115,
+          "writes": 7.55,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.04666666666666666,
+          "coverage": 0.04666666666666666,
+          "utility": -0.03333333333333334,
+          "writes": 8.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.2311111111111111,
+          "coverage": 0.2311111111111111,
+          "utility": 0.1442111111111111,
+          "writes": 8.69,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.2833333333333333,
+          "coverage": 0.2833333333333333,
+          "utility": 0.20333333333333328,
+          "writes": 8.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      },
+      "97": {
+        "learned": {
+          "worlds": 100,
+          "accuracy": 0.2577777777777778,
+          "coverage": 0.2577777777777778,
+          "utility": 0.17237777777777777,
+          "writes": 8.54,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "imitation_only": {
+          "worlds": 100,
+          "accuracy": 0.17444444444444443,
+          "coverage": 0.17444444444444443,
+          "utility": 0.12934444444444443,
+          "writes": 4.51,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "untrained": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        },
+        "random": {
+          "worlds": 100,
+          "accuracy": 0.04555555555555555,
+          "coverage": 0.04555555555555555,
+          "utility": -0.031044444444444447,
+          "writes": 7.66,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "fifo": {
+          "worlds": 100,
+          "accuracy": 0.04666666666666666,
+          "coverage": 0.04666666666666666,
+          "utility": -0.03333333333333334,
+          "writes": 8.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph": {
+          "worlds": 100,
+          "accuracy": 0.2311111111111111,
+          "coverage": 0.2311111111111111,
+          "utility": 0.1442111111111111,
+          "writes": 8.69,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "graph_scheduled": {
+          "worlds": 100,
+          "accuracy": 0.2833333333333333,
+          "coverage": 0.2833333333333333,
+          "utility": 0.20333333333333328,
+          "writes": 8.0,
+          "selective_accuracy": 1.0,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 6
+        },
+        "no_memory": {
+          "worlds": 100,
+          "accuracy": 0.0,
+          "coverage": 0.0,
+          "utility": 0.0,
+          "writes": 0.0,
+          "selective_accuracy": null,
+          "capacity_violations": 0,
+          "max_episodic_size": 2,
+          "max_belief_size": 0
+        }
+      }
+    }
+  },
+  "paired_comparisons": {
+    "reference": {
+      "fifo": {
+        "mean_paired_utility_difference": 0.1523,
+        "world_bootstrap95": [
+          0.12947037037037035,
+          0.17415555555555554
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "graph_scheduled": {
+        "mean_paired_utility_difference": 0.017855555555555548,
+        "world_bootstrap95": [
+          -0.0073259259259259345,
+          0.04354444444444444
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "imitation_only": {
+        "mean_paired_utility_difference": 0.02627407407407407,
+        "world_bootstrap95": [
+          0.012870370370370367,
+          0.039240740740740736
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      }
+    },
+    "reverse_order": {
+      "fifo": {
+        "mean_paired_utility_difference": 0.17172962962962962,
+        "world_bootstrap95": [
+          0.1545222222222222,
+          0.1877925925925926
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "graph_scheduled": {
+        "mean_paired_utility_difference": 0.011729629629629621,
+        "world_bootstrap95": [
+          -0.016248148148148157,
+          0.03755555555555554
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "imitation_only": {
+        "mean_paired_utility_difference": 0.04435555555555555,
+        "world_bootstrap95": [
+          0.03192962962962963,
+          0.057222222222222216
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      }
+    },
+    "observation_gaps": {
+      "fifo": {
+        "mean_paired_utility_difference": 0.03,
+        "world_bootstrap95": [
+          0.03,
+          0.03
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "graph_scheduled": {
+        "mean_paired_utility_difference": 0.03,
+        "world_bootstrap95": [
+          0.03,
+          0.03
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "imitation_only": {
+        "mean_paired_utility_difference": 0.0,
+        "world_bootstrap95": [
+          0.0,
+          0.0
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      }
+    },
+    "long_quiet_delay": {
+      "fifo": {
+        "mean_paired_utility_difference": 0.11013333333333333,
+        "world_bootstrap95": [
+          0.09188888888888888,
+          0.12768518518518518
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "graph_scheduled": {
+        "mean_paired_utility_difference": 0.11013333333333333,
+        "world_bootstrap95": [
+          0.09188888888888888,
+          0.12768518518518518
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "imitation_only": {
+        "mean_paired_utility_difference": 0.09252962962962963,
+        "world_bootstrap95": [
+          0.08057037037037036,
+          0.10498518518518518
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      }
+    },
+    "small_belief": {
+      "fifo": {
+        "mean_paired_utility_difference": 0.06833333333333333,
+        "world_bootstrap95": [
+          0.062377777777777775,
+          0.07405555555555556
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "graph_scheduled": {
+        "mean_paired_utility_difference": -0.0005555555555555515,
+        "world_bootstrap95": [
+          -0.011299999999999994,
+          0.010588888888888892
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "imitation_only": {
+        "mean_paired_utility_difference": 0.016366666666666668,
+        "world_bootstrap95": [
+          0.008859259259259261,
+          0.023537037037037037
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      }
+    },
+    "large_belief": {
+      "fifo": {
+        "mean_paired_utility_difference": 0.16985185185185184,
+        "world_bootstrap95": [
+          0.1391814814814815,
+          0.20149999999999998
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "graph_scheduled": {
+        "mean_paired_utility_difference": 0.09651851851851852,
+        "world_bootstrap95": [
+          0.06557407407407406,
+          0.12813333333333332
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "imitation_only": {
+        "mean_paired_utility_difference": 0.042811111111111105,
+        "world_bootstrap95": [
+          0.02411851851851851,
+          0.06139629629629629
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      }
+    },
+    "few_writes": {
+      "fifo": {
+        "mean_paired_utility_difference": 0.04151481481481482,
+        "world_bootstrap95": [
+          0.026699999999999998,
+          0.0567
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "graph_scheduled": {
+        "mean_paired_utility_difference": 0.04151481481481482,
+        "world_bootstrap95": [
+          0.026699999999999998,
+          0.0567
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "imitation_only": {
+        "mean_paired_utility_difference": 0.01878888888888889,
+        "world_bootstrap95": [
+          0.008014814814814813,
+          0.029629629629629627
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      }
+    },
+    "many_writes": {
+      "fifo": {
+        "mean_paired_utility_difference": 0.20752592592592592,
+        "world_bootstrap95": [
+          0.1862703703703704,
+          0.22672592592592594
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "graph_scheduled": {
+        "mean_paired_utility_difference": -0.029140740740740724,
+        "world_bootstrap95": [
+          -0.04237037037037036,
+          -0.016170370370370356
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      },
+      "imitation_only": {
+        "mean_paired_utility_difference": 0.029807407407407404,
+        "world_bootstrap95": [
+          0.016977777777777772,
+          0.04268148148148147
+        ],
+        "bootstrap_samples": 2000,
+        "interpretation": "Optimizer seeds averaged within world; interval over worlds only"
+      }
+    }
+  },
+  "environment": {
+    "git_commit": "ebd209995ed0cd6565fdd5923f60baae754185e1",
+    "git_dirty": false,
+    "python": "3.12.14",
+    "torch": "2.14.1+cpu",
+    "elapsed_seconds": 25.269032399985008
+  },
+  "limitations": [
+    "Evaluation only: no retraining, selection, or new success gate",
+    "Exploratory unadjusted intervals; worlds shared across seeds and scenarios",
+    "Fixed graph family and public horizons; supplied inference and features",
+    "Quiet-delay extension cannot decay permanent belief storage",
+    "Observation gaps change horizon and opportunities to consolidate together",
+    "Episodic capacity and TTL remain coupled and fixed at training values"
+  ]
+}

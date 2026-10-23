@@ -8,6 +8,11 @@ the specific future-question hint and proof-first ordering. Its scoped gate pass
 mean learned accuracy was 22.61%, versus 4.44% FIFO and a 33.33% storage-only bound.
 The original, easier experiments below remain unchanged for comparison.
 
+[Frozen robustness evaluation](delayed-robustness-v1/README.md) now tests resource
+and timing shifts on 100 fresh shared worlds. All learned seeds fail with gaps
+between observations, and the scheduled graph wins with nine allowed writes.
+Hard resource limits hold; this does not establish broad memory robustness.
+
 ## Question-selection replication
 
 Source: `3666831e3571d0f52ed48b84abeb0d55f2bb1136`, clean working tree.

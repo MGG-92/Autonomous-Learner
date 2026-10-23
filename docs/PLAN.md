@@ -16,6 +16,7 @@
 - [x] Learned WAIT/CONSOLIDATE and retention scores, without the specific future question.
 - [x] Shuffled streams, expiring episodic evidence, matched write/storage budgets, predefined gate.
 - [x] Three-seed delayed-memory test, imitation-only ablation, storage-only upper bound.
+- [x] Frozen-policy robustness evaluation across changed budgets, horizons, order, and observation gaps; failures documented.
 - [ ] Joint training with question selection and integration into the persistent investigation loop.
 - [ ] Learn retrieval; test changing budgets/horizons and longer retention delays.
 - [ ] Contradiction handling, source reliability, revision, retention curves.
