@@ -14,9 +14,61 @@ consequences, and goals. Mathematics is a diagnostic, not the destination. C2's 
 bounded comparison is complete; build the small structured action-world bridge in
 `docs/PLAN.md` before prolonged arithmetic optimization. Test mechanism
 transfer and acquired abstractions separately from renamed-object generalization.
-No action-world learning, learned planning, or abstraction discovery is implemented.
+The action-world core now updates transition beliefs within supplied templates;
+no scored world-learning comparison, learned planning or abstraction discovery exists.
 
-## Latest increment — action-world development contract
+## Latest increment — experience-updated transition model and development sampler
+
+Implemented `action_model.py`: independent uniform priors over 45 public effects
+per action, conditioned only on experienced full-state transitions. Predictions
+integrate fixed hypothetical effects across an entire sequence (up to three actions),
+not independent resampling at each step. True effect instances and mechanism IDs
+stay outside the core. Reset erases posterior restrictions, raw observations and
+work counters. Contradictions yield explicit global model-class failure.
+This is actual evidence-conditioned belief learning with supplied inference and
+primitives; no parameter optimization, new vocabulary or learned search is claimed.
+
+`action_sampling.py` enumerates 2744 unique canonical mechanisms and samples only
+development identities uniformly without replacement. Partitions: 1934 development,
+410 validation, 400 future final, including the two named-fixture exclusions.
+Episode slots are independently permuted before public naming; execution rejects
+non-development or forged identities. Enumeration uses supplied hypotheses to define
+splits; it is not final-world execution or performance evaluation. Cached public
+effect tables preserve the original canonical hash (checked against uncached code).
+The learner's independent labeled-effect prior is NOT uniform over these canonical
+worlds. Model-relative probabilities must not be called population calibration.
+
+Added `action-model-demo`: five scripted development-fixture actions, public trace,
+before/after/reset predictions, seeds and source metadata, preserved in ignored
+`runs/`. The demo records 27/6/3 remaining effect candidates by action and restores
+the exact prior on reset. It does not score a probe against the oracle, train an
+investigation policy, achieve goals or measure transfer. Full protocol/config stays
+development-only; no full experiment runner or final phase is implemented.
+
+Latest audit: transition-model/sampler entry in `docs/AUDIT_LOG.md`. Checks: 111 tests
+passed, including nine new cases. The decisive rollout fixture observes 100 -> 000:
+fixed set-zero/toggle hypotheses imply 000 after two actions from 000, whereas the
+incorrect independent-step approximation assigns 25% to 100. True hypotheses are
+retained over 12 real actions in eight development fixtures; illegal transitions
+are rejected before mutation, and misspecification/reset are explicit. Pure core
+imports no Torch/Transformers/language/sampler modules. Legacy demo also passed.
+The adjacent record-validation gap was reproduced from committed source: an illegal
+action and mixed catalogs were previously accepted; the new validator rejects both.
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m pytest tests/test_action_model.py -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/action-model-start-demo.sqlite
+.\.venv\Scripts\python.exe -m autonomous_learner action-model-demo --output runs/action-model-software-demo-v1.json
+```
+
+Next: add controlled investigation and prediction scoring on development worlds,
+then supplied open-loop goal planning. Keep all baselines, actual seen/unseen panel
+coverage and real/simulated cost counters; freeze source/config before recording
+performance. Do not promote scripted examples or software fixtures into benchmark
+claims. C1/C2 results and paused local work are preserved.
+
+## Preserved action-world development contract
 
 Added `docs/experiments/structured-action-world.md` and proposed settings in
 `configs/action-world-development.json` (protocol-only, no runner). Implemented
@@ -34,7 +86,7 @@ seen/unseen coverage, and later supplied planning from acquired dynamics. Goal
 selection must be independent of oracle reachability. No learner, learned strategy,
 planning success, general reasoning or transfer is demonstrated by this increment.
 
-Latest audit: action-world contract in `docs/AUDIT_LOG.md`. Checks: 102 tests passed,
+That increment's audit: action-world contract in `docs/AUDIT_LOG.md`. Checks: 102 tests passed,
 including 14 new cases for order-sensitive interactions, no-op budgets, rejected
 calls, immutable label-free public records, distinct effect hypotheses and all 36
 object/action renamings. Legacy demo and C1 smoke passed. Commands (fresh paths):
@@ -46,7 +98,7 @@ object/action renamings. Legacy demo and C1 smoke passed. Commands (fresh paths)
 .\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery-smoke.json --output runs/action-world-rule-smoke
 ```
 
-Next: implement the development-only mechanism sampler and experience-updated
+At that increment the next task was the development-only mechanism sampler and experience-updated
 transition model; test true-hypothesis retention, erasure, and fixed-mechanism joint
 rollouts before adding a planner or claiming measured world learning. Preserve all
 existing frozen reports; do not tune arithmetic or open final worlds to bypass the
@@ -348,11 +400,12 @@ The learned timing failure remains unresolved and requires new training/evidence
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. The action-world development protocol and simulator contract are implemented;
-   no world learner or runner exists. Implement development-only unique-mechanism
-   sampling with fixture exclusions and independent slot permutations, then learn
-   transition beliefs from sequential experience. Test joint rollout consistency,
-   true-hypothesis retention, and reset erasure before supplied planning/scoring.
+2. The development sampler and transition-belief core are now implemented and
+   software-tested. Add controlled investigation and prediction scoring under
+   `docs/experiments/structured-action-world.md`, followed by supplied goal planning.
+   Keep full source/config freeze before measurement, no final phase, and proper
+   common-unseen panel coverage. Retain random/fixed/heuristic, prior/no-memory and
+   later exact-initialization controls; measure real actions and simulated work.
    Keep supplied planning separate from acquired dynamics. Preserve C2's mixed
    training evidence and open compute-matching and transfer questions; do not tune
    on opened final functions or either delayed-memory

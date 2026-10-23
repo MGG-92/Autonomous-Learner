@@ -1,7 +1,9 @@
 # Structured action-world bridge: development contract v1
 
-Status: protocol and simulator contract only. No model learner, investigation policy,
-planner, experiment runner, or performance result exists for this environment yet.
+Status: simulator, development-only semantic sampler, and transition-belief core
+implemented. No investigation policy, planner, full experiment runner, or performance
+comparison exists for this environment yet. The scripted `action-model-demo` is a
+software demonstration of belief changes and reset, not the proposed 80-world study.
 The values in `configs/action-world-development.json` are proposed development
 settings, not measurements. Preserve C1/C2 results and their negative conclusions.
 
@@ -33,7 +35,7 @@ behaviorally distinct effect hypotheses per action; discovering them is not clai
 
 `action_world.py` separates immutable `Catalog`, `Observation` and `Transition`
 records from the evaluator-owned `ActionWorld` instance and its true `Effect`s.
-The future core receives only these public records, public budgets, and a reply
+The core receives only these public records, public budgets, and a reply
 to the action it chose. Do not pass the world instance, true effect objects,
 mechanism identity, seed used for mechanism selection, evaluator reachability,
 probe targets, or researcher traces into learner state or policy features.
@@ -51,8 +53,18 @@ actual before/action/after observations. Contradictions must produce explicit
 model-class failure. Retain dependencies needed to predict entire next states and
 action sequences. In a hypothetical rollout the same unknown mechanism stays fixed
 across all steps: resampling an action effect independently at each step would
-invent a different environment. A future regression must catch this error.
+invent a different environment. The fixed-versus-resampled regression in
+`tests/test_action_model.py` catches this error.
 This is belief updating, not parameter optimization or acquired primitives.
+
+`TransitionModel` uses independent uniform priors over the 45 labeled effects of
+each action. After complete observed transitions its evidence likelihood factorizes
+by action. This prior is not uniform over the canonical world identities sampled by
+the evaluator. Predictions are model-relative; do not interpret them as calibrated
+frequencies of the sampled population. An impossible transition yields explicit
+global model-class failure. Reset clears posterior restrictions, raw transitions
+and model-work counters. Prediction requires no oracle calls and keeps actual
+effect instances outside the model. Rollouts are currently limited to three actions.
 
 ## Worlds, names, and transfer claims
 
@@ -68,7 +80,12 @@ Hash buckets from `int(identity[:8], 16) % 100`: development below 70, validatio
 70 through 84, future final 85 through 99. Named software fixtures (the three-action
 guard chain and three identical unconditional set-zero effects) and all their
 renamings are development-only regardless of hash. Implement this exclusion before
-any validation/final selection. No sampling/split runner is implemented in this increment.
+any validation/final selection. `action_sampling.py` implements the public-class
+enumeration and development-only sampler; execution rejects non-development identities.
+Enumerating supplied hypotheses defines the split and is not held-out performance
+evaluation. The complete class has 2744 unique canonical mechanisms: 1934 development,
+410 validation, 400 future final, after software-fixture exclusions. No validation
+or final world is executed by the development sampler or scripted demo.
 
 First implement and measure only 80 development identities using selection seed
 611. Seed ranges are independently assigned by purpose in the config. No final
@@ -143,4 +160,10 @@ true-hypothesis retention, joint rollout consistency, no-memory erasure, and ora
 call counts. Review at least the model and evaluator boundaries. Persist source
 hash, dirty status, all settings and seeds, actual denominators, unreachable-goal
 counts, ambiguity and negative outcomes. Publish reviewed synthetic summaries only.
-Learner implementation, all controls and measurement remain unchecked roadmap items.
+Belief updates and consistent rollouts are implemented with software regressions;
+investigation, planning, all experimental controls and scoring remain roadmap items.
+
+Software demo: `python -m autonomous_learner action-model-demo --output runs/action-model-demo.json`.
+Use a fresh path. Its five scripted action slots, naming/permutation/initial seeds,
+public transitions, predictive messages, and source metadata are recorded in ignored
+`runs/`. It does not score the probe against an oracle, optimize a policy, or test goals.

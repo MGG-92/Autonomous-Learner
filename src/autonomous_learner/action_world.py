@@ -1,5 +1,6 @@
-"""Small evaluator-owned action world. No learner or learned planner is implemented."""
+"""Evaluator-owned action world and public effect templates; core lives in action_model."""
 from dataclasses import dataclass
+from functools import lru_cache
 from itertools import permutations, product
 import hashlib
 import random
@@ -57,6 +58,12 @@ class Transition:
     action: str
     after: Observation
 
+    def __post_init__(self):
+        if not isinstance(self.before, Observation) or not isinstance(self.after, Observation):
+            raise ValueError("Transitions require public before/after observations")
+        if self.before.catalog != self.after.catalog or self.action not in self.before.catalog.actions:
+            raise ValueError("A transition must use one catalog and a legal action")
+
 
 @dataclass(frozen=True)
 class Effect:
@@ -100,6 +107,13 @@ def effect_space():
                  for guard, value in [(None, 0)] + [(g, v) for g in range(3) if g != target for v in (0, 1)])
 
 
+@lru_cache(maxsize=270)
+def _relabeled_table(effect, order):
+    relabeled = Effect(order.index(effect.target), effect.operation,
+                       None if effect.guard is None else order.index(effect.guard), effect.guard_value)
+    return bytes(bit for state in STATES for bit in relabeled.predict(state))
+
+
 def mechanism_identity(effects):
     """Evaluator-only identity, invariant under object and action renaming.
 
@@ -111,12 +125,8 @@ def mechanism_identity(effects):
         raise ValueError("Use one effect per action")
     signatures = []
     for order in permutations(range(3)):
-        relabeled = tuple(Effect(order.index(e.target), e.operation,
-                                 None if e.guard is None else order.index(e.guard), e.guard_value)
-                          for e in effects)
         # Sorting whole per-action tables quotients action names/order as well.
-        tables = sorted(bytes(bit for state in STATES for bit in effect.predict(state))
-                        for effect in relabeled)
+        tables = sorted(_relabeled_table(effect, order) for effect in effects)
         signatures.append(b"".join(tables))
     return hashlib.sha256(min(signatures)).hexdigest()
 

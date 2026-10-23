@@ -99,6 +99,8 @@ def main():
     qp = commands.add_parser("learned-investigation", help="Train a development-only model-based query policy")
     qp.add_argument("--config", type=Path, default=Path("configs/learned-investigation.json"))
     qp.add_argument("--output", type=Path, required=True)
+    ad = commands.add_parser("action-model-demo", help="Scripted transition-belief software demo, not a benchmark")
+    ad.add_argument("--output", type=Path, required=True)
     dr = commands.add_parser("delayed-robustness", help="Evaluate frozen memory policies under resource/stream shifts")
     dr.add_argument("--checkpoints", type=Path, required=True)
     dr.add_argument("--output", type=Path, required=True)
@@ -166,6 +168,14 @@ def main():
         config = QueryConfig(**json.loads(args.config.read_text(encoding="utf-8")))
         report = query_experiment(config, args.output)
         print(json.dumps(report["results_by_seed"], indent=2))
+    elif args.command == "action-model-demo":
+        from .action_demo import run as action_demo
+        report = action_demo(args.output)
+        print(json.dumps({"kind": report["kind"], "real_actions": report["real_actions"],
+                          "candidate_counts": report["candidate_counts_after_experience"],
+                          "before": report["before"]["probabilities"],
+                          "after_experience": report["after_experience"]["probabilities"],
+                          "after_reset": report["after_reset"]["probabilities"]}, indent=2))
     elif args.command == "delayed-robustness":
         from .delayed_robustness import robustness
         robustness(args.checkpoints, args.output, args.start, args.worlds)
