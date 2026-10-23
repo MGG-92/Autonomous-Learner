@@ -1,5 +1,36 @@
 # Architecture and experimental boundaries
 
+## Clarified objective and active direction
+
+The agent should acquire and revise an internal predictive/explanatory model from
+experience, choose informative experiments, and commit what it intends to communicate
+before optional linguistic rendering. The controlled core must run without an LLM,
+pretrained text embeddings, language-generated rules, or language-generated answers.
+This separates responsibility; it does not make a learner free of inductive biases.
+
+The first model-learning baseline enumerates a supplied depth-two program language
+over a finite 5x5 input domain, with modular arithmetic/min/max primitives. Equivalent
+expressions count as one semantic hypothesis. Observations filter a uniform version
+space; a supplied information-gain heuristic chooses questions. Predictions are
+distributions over outcomes, conditional on this finite model class. No parameter
+optimization, primitive discovery, or learned reasoning strategy is claimed.
+
+The environment/evaluator owns the hidden rule and reserved target outputs. The core
+receives only the public hypothesis space, legal input pairs, and observations from
+queries it actually makes. All policies share the same reserved inputs per world.
+Model reset removes both posterior restrictions and raw observations; researcher
+traces stay outside learner state. Splits use whole finite-domain behavior, preventing
+equivalent expressions from leaking across partitions. Generalization outside this
+domain/grammar and across new primitive families remains untested.
+
+Next: learn search/investigation strategies against this explicit baseline, then
+induce reusable abstractions. A future language adapter proposes typed observations
+and renders authorized structured claims; its parsing/fidelity must be evaluated
+separately, and its wording must not automatically become new cognitive evidence.
+See `docs/experiments/internal-rule-discovery.md` and C1–C4 in `docs/PLAN.md`.
+
+## Earlier controlled graph track (supporting baseline)
+
 The controlled track has no language model. A generated hidden world belongs only
 to the synthetic teacher and evaluator. The agent sees a catalog of legal questions,
 its goal, teacher observations, and its own memory. A neural candidate scorer selects

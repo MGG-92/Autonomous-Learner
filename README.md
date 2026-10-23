@@ -7,15 +7,18 @@
 > nothing less and nothing more. It is not a finished product, and its results do
 > not establish general intelligence or independent language understanding.
 
-A research prototype that learns synthetic facts through teacher interaction and
-trains a small PyTorch controller to choose useful questions. The first experiment
-separates knowledge acquisition, parameter learning, supplied inference, and language
-generation. No pretrained model or paid API is needed for the controlled track.
+A research prototype investigating a cognitive core that learns internal models
+through experience, chooses experiments, and decides what to communicate before
+optional language rendering. The first rule-discovery baseline infers unfamiliar
+finite operations from examples without an LLM. Its hypothesis language and search
+algorithm are supplied; it has not learned general reasoning or invented concepts.
+Earlier PyTorch experiments learn question selection and memory control around
+programmed graph inference. No paid API is needed for the controlled track.
 
 **Status:** under active development. See [PROJECT_STATE.md](PROJECT_STATE.md) for
 verified results, blockers, and the exact next task. See [docs/PLAN.md](docs/PLAN.md)
-for the full workflow. Broader memory management and open-ended language learning
-remain research milestones; current learned retention uses a narrow task setting.
+for the full workflow. The current priority is internal rule/model learning (C1–C4),
+with token control, further memory infrastructure, and viewer polish deferred.
 
 Preliminary results and their limits are in [reports/README.md](reports/README.md).
 
@@ -39,6 +42,22 @@ On Linux/macOS substitute `.venv/bin/python` for `.\.venv\Scripts\python.exe`.
 The bundled runtime is optional, not a project dependency.
 
 ## Observe acquisition, restart, transfer, and ablation
+
+For the active unfamiliar-rule experiment:
+
+```powershell
+.\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery-smoke.json --output runs/rules-smoke
+```
+
+The learner updates competing executable hypotheses from observations and selects
+queries with a supplied information-gain heuristic. It predicts five reserved inputs
+shared across policies and compares random, fixed/untrained, no-memory, and model-reset
+controls. Output includes an actual query trace and structured prediction messages.
+No language weights, embeddings, or generated hypotheses are used. Learning here is
+belief updating; no neural policy or reasoning algorithm is trained. See the
+[protocol](docs/experiments/internal-rule-discovery.md) before running final evaluation.
+
+The earlier graph demo remains a supporting baseline:
 
 ```powershell
 .\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/demo.sqlite
