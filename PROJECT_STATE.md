@@ -15,14 +15,15 @@ complete merely because a prototype runs.
 
 ## Environment and version control
 
-Current increment: `feature/delayed-goal-memory`, starting from `ce7a6f5`. The user
-now requires feature branches and PRs for meaningful changes. Do not develop directly
-on main. The delayed-goal protocol and initial implementation are committed; 31 local
-tests pass. The first validation attempt failed because the dynamic expert exhausted
-writes early. A scheduled graph expert was selected using validation only; the second
-validation attempt passed the preliminary gate. Final test worlds (2000000..2000199)
-remain unopened at this checkpoint. Finish source review/CI, run the frozen final
-experiment, publish sanitized results, and merge the reviewed PR after checks pass.
+Latest increment: `feature/delayed-goal-memory`, tracked in
+https://github.com/MGG-92/Autonomous-Learner/pull/1, starting from `ce7a6f5`. The user
+requires feature branches and PRs for meaningful changes; do not develop directly on
+main. Source review/local checks and PR CI passed for frozen experiment source
+`d675f4b`. The full final run is complete, the predefined scoped gate passed, and
+31 local tests pass. Inspect the PR's current head/checks/merge state: if still open,
+finish the reviewed publication/merge before starting another increment. Preserve
+source hashes with a merge commit and GitHub no-reply metadata; do not squash/rebase
+experiment commits referenced by reports. Main must remain stable until checks pass.
 
 - Local virtual environment `.venv`, Python 3.12.14; see README to recreate elsewhere.
 - Installed PyTorch 2.14.1+cpu, pytest 9.1.1, NumPy 2.5.4, Transformers 4.57.6.
@@ -57,7 +58,10 @@ experiment, publish sanitized results, and merge the reviewed PR after checks pa
 - Cached candidate pagination (200 per page), trainable residual token scorer, MORE/END,
   supervised-loss interface, and real token-selection generation driver.
 - Researcher memory inspection and Graphviz DOT export; audit logs excluded from policy.
-- 20 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed.
+- 31 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed.
+- Delayed-specific-goal benchmark: shuffled facts, expiring episodic evidence, neural
+  WAIT/CONSOLIDATE gate and retention scores, persistent bounded snapshots, graph/FIFO/
+  random/untrained/imitation controls, predefined gate, and per-world resampling.
 
 ## Measurements (preliminary; published reports available)
 
@@ -88,14 +92,37 @@ Memory reproduction from the same clean source matches prior results. Integrated
 learned question/retention controllers answered 200/200 additional worlds starting
 at 600000, using 4 questions. This is deployment integration, not joint optimization.
 
+New M2 delayed-question experiment: see `reports/delayed-memory-v1/README.md`.
+Frozen source `d675f4b38749c16b7054644b1ca846beed90d946`, clean tree; test worlds
+2000000..2000199 are now OPENED and must never be reused for tuning. Across seeds
+7/42/97, accuracy is 25.11%/18.78%/23.94% (mean 22.61%); FIFO 4.44%, strongest scheduled
+graph heuristic 19.56%, offline storage-only bound 33.33%. Zero capacity violations.
+Mean paired utility improvements: FIFO +0.1745 [0.1609, 0.1868], scheduled graph
++0.0234 [0.0067, 0.0391], imitation-only +0.0399 [0.0314, 0.0486]. Intervals resample
+worlds after averaging optimizer seeds; secondary comparisons are exploratory and
+unadjusted. One seed underperforms the strong graph baseline. Selected checkpoints
+are RL iteration 40, imitation epoch 11, RL iteration 240; the imitation ablation
+supports an RL contribution in this particular task. Inference remains supplied.
+
+Negative development result retained: the dynamic graph bootstrap exhausted writes
+early and selected idle initial checkpoints. Reproduced from the clean frozen source
+using `bootstrap_policy: graph`; all those validation gates failed. Scheduled graph
+bootstrap was selected using validation, before final tests. The old reserved 900000
+test range was moved before use to avoid demo seed 900001. See protocol/seed ledger.
+This scoped experiment passes, but M2 still lacks learned retrieval, general revision,
+source reliability, changing-horizon/budget evidence, and joint question-policy training.
+
 ## Immediate next actions when the user says continue
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. Next research increment: remove the helpful fixed proof-before-distractors ordering
-   and supplied future-query assumption. Build delayed goals with memory pressure,
-   learn consolidation/admission timing, and test against budget-matched heuristics.
-   Define and freeze validation/test splits before tuning. See M2 in `docs/PLAN.md`.
+2. Check PR #1 and finish any interrupted merge/publication first. Then start a NEW
+   feature branch. Next research increment: test the frozen delayed-memory policy on
+   changing horizons, observation order/delays, and memory/write budgets. Reserve new
+   worlds in the seed ledger before evaluation; keep old final worlds out of tuning.
+   Use failures to design broader training distributions on separate training and
+   validation ranges. Do not claim M2 complete from the single fixed-budget experiment.
+   Subsequent work: learned retrieval, source reliability/revision, joint integration.
 3. Preserve existing reports; add new experiment configs/results under new names.
    Continue documenting unsupported claims and negative results. Do not expand the
    language track merely to avoid a failed controlled experiment.
@@ -106,6 +133,7 @@ at 600000, using 4 questions. This is deployment integration, not joint optimiza
 
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner delayed-memory --config configs/delayed-memory-smoke.json --output runs/delayed-next-smoke --phase validation
 .\.venv\Scripts\python.exe -m autonomous_learner replicate --config configs/confirmatory.json --seeds 7 42 97 --output runs/replication
 .\.venv\Scripts\python.exe -m autonomous_learner memory-experiment --output runs/memory-confirmatory
 .\.venv\Scripts\python.exe -m autonomous_learner language-smoke --local-only --output runs/language-repeat.json

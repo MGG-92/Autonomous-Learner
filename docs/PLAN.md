@@ -9,12 +9,15 @@
 - [x] Tests, CI, Git history, public remote repository, continuation documentation.
 
 ## M2 — Learned memory management
-- [x] Separate bounded episodic and belief stores (consolidation timing still fixed).
+- [x] Separate bounded episodic and belief stores (original experiment used fixed timing).
 - [x] Task distribution with delayed reuse and controlled distractors; broaden later.
 - [x] Learned retention scorer versus FIFO/untrained/heuristic with hard budgets.
 - [x] Integration of frozen learned retention and question controllers in tick loop.
-- [ ] Explicit learned consolidation actions and joint training of policies.
-- [ ] Learn retrieval and consolidation timing against budget-matched heuristics.
+- [x] Learned WAIT/CONSOLIDATE and retention scores, without the specific future question.
+- [x] Shuffled streams, expiring episodic evidence, matched write/storage budgets, predefined gate.
+- [x] Three-seed delayed-memory test, imitation-only ablation, storage-only upper bound.
+- [ ] Joint training with question selection and integration into the persistent investigation loop.
+- [ ] Learn retrieval; test changing budgets/horizons and longer retention delays.
 - [ ] Contradiction handling, source reliability, revision, retention curves.
 
 ## M3 — Autonomous investigation

@@ -125,6 +125,11 @@ imitation-only, random, untrained, FIFO, and graph baselines, per-world metrics,
 storage upper bound, and an explicit success/failure gate. A failed gate is a valid
 research result and does not mark the milestone complete.
 
+The [first delayed-question report](reports/delayed-memory-v1/README.md) passed its
+scoped gate: 22.61% mean learned accuracy versus 4.44% FIFO, with a 33.33% offline
+storage-only upper bound. This is a harder task than the original 100% demonstration;
+the accuracy figures are not directly comparable across those task settings.
+
 ## Bounded autonomous investigation
 
 ```powershell
