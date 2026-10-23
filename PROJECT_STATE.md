@@ -32,8 +32,9 @@ The delayed-memory increment in https://github.com/MGG-92/Autonomous-Learner/pul
 was merged as `3f1f5dd`. Source review/local checks and PR CI passed for frozen
 experiment source `d675f4b`. The full final run is complete and the predefined scoped
 gate passed. The viewer-planning PR #2 merged as `da38854`; main CI passed.
-The current robustness increment is `codex/delayed-memory-robustness`, with evaluation
-source frozen as `ebd2099`. Check its PR/merge state when resuming. The user
+The robustness increment merged through PR #3 as `054181f`, after both Python CI
+jobs passed; evaluation source remains frozen as `ebd2099`. The current critic-audit
+increment is `codex/critic-reliability-fixes`; check its PR/merge state when resuming. The user
 requires feature branches and PRs for meaningful changes; do not develop directly
 on main. Preserve source hashes with merge commits and GitHub no-reply metadata;
 do not squash/rebase experiment commits referenced by reports. Keep main stable.
@@ -71,7 +72,7 @@ do not squash/rebase experiment commits referenced by reports. Keep main stable.
 - Cached candidate pagination (200 per page), trainable residual token scorer, MORE/END,
   supervised-loss interface, and real token-selection generation driver.
 - Researcher memory inspection and Graphviz DOT export; audit logs excluded from policy.
-- 33 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed.
+- 64 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed.
 - Delayed-specific-goal benchmark: shuffled facts, expiring episodic evidence, neural
   WAIT/CONSOLIDATE gate and retention scores, persistent bounded snapshots, graph/FIFO/
   random/untrained/imitation controls, predefined gate, and per-world resampling.
@@ -123,7 +124,7 @@ using `bootstrap_policy: graph`; all those validation gates failed. Scheduled gr
 bootstrap was selected using validation, before final tests. The old reserved 900000
 test range was moved before use to avoid demo seed 900001. See protocol/seed ledger.
 This scoped experiment passes, but M2 still lacks learned retrieval, general revision,
-source reliability, changing-horizon/budget evidence, and joint question-policy training.
+source reliability, broad timing/resource training, and joint question-policy training.
 
 Frozen robustness v1 now supplies changing-budget/horizon evidence; it does NOT
 establish broad robustness. Evaluation source `ebd209995ed0cd6565fdd5923f60baae754185e1`,
@@ -147,6 +148,43 @@ Validation of this increment: `.\.venv\Scripts\python.exe -m pytest -q` (33 pass
 `-m autonomous_learner delayed-robustness --checkpoints runs/delayed-final-v1
 --output runs/delayed-robustness-v1` (completed, 25.27 seconds). The default demo path
 already exists after the initial smoke; repeat demos must always use fresh paths.
+
+## Critic audit and reliability repairs
+
+The user requested critical review and fixes. `docs/CRITIC_AUDIT.md` records the
+reproductions, repairs, evidence, compatibility break, and remaining research limits.
+Seventeen initial regression cases failed on the prior source; the expanded suite
+now passes 64 tests. Repairs: non-destructive memory capacity checks/metadata,
+atomic observation/eviction storage, strict evidence/config/snapshot validation,
+complete paired-statistics validation, and schema-v2 persistent sessions that bind
+task/budgets, feature schema, question/retention weights, memory capacities/contents,
+and teacher implementation type. ASK intent and budget are saved before the
+teacher call. Interrupted or inconsistent ticks stop; automatic recovery is NOT
+implemented. Legacy session files are preserved/refused, not silently migrated.
+Use their original source or start fresh session/database files. Digests detect
+mismatch but are not authentication. One writer remains required.
+
+Exact local checks for this increment:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/critic-demo.sqlite
+.\.venv\Scripts\python.exe -m autonomous_learner run --session runs/critic-session.json --ticks 2
+.\.venv\Scripts\python.exe -m autonomous_learner run --session runs/critic-session.json --ticks 8
+.\.venv\Scripts\python.exe -m autonomous_learner run --session runs/critic-trained.json --checkpoint runs/replication/seed-42/controller.pt --retention-checkpoint runs/memory-confirmatory/retention.pt --ticks 2
+.\.venv\Scripts\python.exe -m autonomous_learner run --session runs/critic-trained.json --checkpoint runs/replication/seed-42/controller.pt --retention-checkpoint runs/memory-confirmatory/retention.pt --ticks 8
+.\.venv\Scripts\python.exe -m autonomous_learner experiment --config configs/smoke.json --output runs/critic-question-smoke
+.\.venv\Scripts\python.exe -m autonomous_learner delayed-memory --config configs/delayed-memory-smoke.json --output runs/critic-delayed-smoke --phase validation
+```
+
+Both CLI sessions resumed after two ticks and answered after five total. The seeded
+question smoke answered 30/30; random/untrained/no-memory answered 0/30. The short
+delayed validation smoke completed with a negative gate, learned accuracy 0/6;
+this is preserved as a software smoke, not a new successful learning result. The
+strict paired-statistics implementation reproduces the published reference
+comparison exactly from CSV without reopening worlds. No policy logic, final
+reports, checkpoint selection, or opened evaluation worlds were changed or tuned.
+The learned timing failure remains unresolved and requires new training/evidence.
 
 ## Immediate next actions when the user says continue
 

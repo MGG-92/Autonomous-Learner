@@ -5,7 +5,7 @@ import torch
 
 from .memory import Memory
 from .policy import Action, Controller, candidates, encode
-from .types import Query, Teacher
+from .types import Observation, Query, Teacher
 
 
 @dataclass
@@ -24,7 +24,7 @@ class EpisodeResult:
 
 class Agent:
     def __init__(self, memory: Memory, catalog: tuple[Query, ...], goal: Query, max_steps: int = 8):
-        if max_steps < 1:
+        if type(max_steps) is not int or max_steps < 1:
             raise ValueError("max_steps must be positive")
         self.memory, self.goal = memory, goal
         self.actions = candidates(catalog)
@@ -39,8 +39,12 @@ class Agent:
         if action.kind == "ASK":
             assert action.query is not None
             observation = teacher.ask(action.query)
-            self.asked.add(action.query)
+            if (not isinstance(observation, Observation) or observation.query != action.query or any(
+                    fact.subject != action.query.subject or fact.relation != action.query.relation
+                    or (action.query.object and fact.object != action.query.object) for fact in observation.facts)):
+                raise ValueError("Teacher evidence does not address the requested query")
             self.memory.store(observation)
+            self.asked.add(action.query)
             event.update(query=action.query.text(), facts=[asdict(f) for f in observation.facts])
             return -0.03, event
         if action.kind == "WAIT":
