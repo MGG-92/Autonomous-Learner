@@ -1,0 +1,18 @@
+{
+  "optimizer_seeds": [7, 42, 97],
+  "train_start": 700000,
+  "imitation_worlds": 120,
+  "imitation_epochs": 16,
+  "rl_episodes": 240,
+  "validation_start": 800000,
+  "validation_worlds": 40,
+  "test_start": 900000,
+  "test_worlds": 200,
+  "episodic_capacity": 2,
+  "belief_capacity": 6,
+  "max_consolidations": 6,
+  "quiet_ticks": 2,
+  "write_cost": 0.01,
+  "learning_rate": 0.003,
+  "entropy_bonus": 0.002
+}
