@@ -15,6 +15,13 @@ its negative findings. C2 remains next; take a bounded learned-search increment,
 then the structured-world bridge below before prolonged function-specific tuning.
 Neither a fixed hypothesis class nor a supplied planner is the intended end state.
 
+Long-term objective also includes learning how the agent itself works: empirical
+knowledge of reliability, capabilities, limits and effects of cognitive operations.
+This is functional self-modeling, not a consciousness claim. Keep the goal baseline
+next, then a small C5a reliability pilot; C3 abstractions and C5 can inform one
+another. C4 language rendering is not a prerequisite for C5. Details and controls:
+`docs/SELF_MODELING.md`. Do not add a narrative self-awareness layer.
+
 ### C1 — Bounded unfamiliar-rule discovery baseline
 - [x] Generate compositional expression hypotheses independently of the oracle.
 - [x] Update competing internal models from observed input/output pairs, without an LLM.
@@ -83,6 +90,11 @@ development prediction comparison is recorded in `reports/action-prediction-v1/R
 No validation/final, goal or transfer result is established. Next implement supplied
 open-loop goal planning with independent goals and prior/random-plan controls.
 
+The exhaustive planning primitive now exists in `action_planning.py`, with software
+fixtures for acquired dynamics, committed execution, tie-breaking and work counts.
+It is supplied search, not trained planning. The goal runner, controls and scored
+goal comparison remain pending; the kernel fixture is not a benchmark result.
+
 ### C3 — Learn reusable abstractions
 - [ ] Induce reusable program fragments/concepts from experience rather than adding gold rules.
 - [ ] Measure transfer and search savings on new tasks; test representation limitations.
@@ -102,6 +114,31 @@ open-loop goal planning with independent goals and prior/random-plan controls.
 
 Token-level control remains a deferred optional comparison, contingent on measured
 benefit over structured communication. Preserve old experiments and negative reports.
+
+### C5 — Functional self-modeling and metacognition (research, not implemented)
+
+After the first scored goal baseline, start C5a without waiting for language or
+general abstractions. Later stages depend on measured benefit, not persuasive output.
+
+- [ ] C5a: define a bounded, legitimate internal-observation/ordinary-feedback
+      interface; train an empirical error/success forecaster. Compare raw task confidence,
+      base-rate/scalar calibration, fixed thresholds and task-only predictors. Separate
+      reliability estimation from task success, calibration and metacognitive control.
+- [ ] C5b: predict agent-specific memory/strategy/resource effects under independently
+      varied tasks and constraints. Control task difficulty and strategy-selection bias;
+      test shuffled/stale/other-agent histories and novel capability combinations.
+- [ ] C5c: use learned forecasts to investigate, retrieve, reconsider, switch or stop.
+      Compare no-self-model, monitor-only, fixed heuristic and capacity/information-matched
+      history-based controllers. Require net benefit after all resource costs; ablate
+      the self-model without deleting the task model.
+- [ ] C5d: connect useful metacognitive control to C2 strategy learning and C3 acquired
+      abstractions/update rules; compare from-scratch/exact initialization and hold out
+      task families and internal constraints. No automatic code self-modification needed.
+
+All stages need their own development/final protocol and explicit feedback/memory
+boundaries. Existing uncertainty counts, research logs and memory-controller training
+do not demonstrate a learned self-model. Preserve negative outcomes and reject
+claims explained solely by extra feedback, memory, compute or intervention labels.
 
 ## M1 — Controlled learning experiment
 - [x] Synthetic oracle with randomized names, graph relations, explicit negatives.

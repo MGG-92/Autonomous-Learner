@@ -18,7 +18,62 @@ The action-world core now updates transition beliefs within supplied templates;
 its first development prediction comparison is complete. Goal planning, learned
 investigation, abstraction acquisition and transfer remain unmeasured/unimplemented.
 
-## Latest increment — scored action-world prediction comparison
+Self-modeling is now an explicit long-term objective: learn reliability, capability
+limits and effects of cognitive operations from ordinary experience, then test
+behavioral benefit. It is not implemented and implies no consciousness claim.
+Keep goal-directed world learning next, then a small C5a reliability pilot alongside
+later abstraction/strategy work. Language rendering is not a prerequisite.
+
+## Latest increment — self-modeling roadmap and supplied planning primitive
+
+Added `docs/SELF_MODELING.md`: critical mapping of existing components, information
+boundaries, candidate experiments and research sources. New C5 stages: empirical
+reliability forecasting; agent-specific capability/process interventions; adaptive
+metacognitive control; and links to learned strategies/abstractions. Compare no-self,
+simple calibration, task-only, matched-resource/history-based and monitor-only
+controls, including shuffled/stale self histories. No canned introspective statements,
+LLM self-awareness simulation or subjective-consciousness result is planned/claimed.
+
+Existing predictive uncertainty, memories, resets and strategy/cost records are
+potential inputs, not learned self-understanding. Any future agent-visible internal
+event interface must be distinct from inaccessible research/audit logs, omit hidden
+condition labels/gold targets and not retain forgotten task contents off budget.
+Monitor training feedback must come from explicitly available normal experience;
+the opened evaluator panels cannot be silently reused as learner experience.
+Forecasting improvements alone do not establish control benefits or an agent-specific
+self-model. Task difficulty, extra resources and strategy-selection bias need controls.
+
+Continued the existing development order with `action_planning.py`: supplied exhaustive
+open-loop search of sequences up to three actions, using only acquired dynamics and
+public start/goal. Prefer predicted success, then shorter plans, then public RNG ties.
+It reports simulated work, consumes no oracle feedback, and leaves learned evidence
+unchanged. Six new software cases cover an experience-grounded chain plan, committed
+execution, ties/shorter/empty plans, work counts, model failure and bad budgets.
+Predicted success is task-model-relative probability, not learned self-reliability.
+The primitive is not wired into a new agent policy or goal experiment yet; no new
+policy performance, goal benchmark or metacognition result is claimed.
+
+Current suite: 127 tests passed. Baseline suite was 121 before this increment.
+Commands used for software checks (choose fresh demo outputs):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m pytest tests/test_action_planning.py -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/self-model-roadmap-demo.sqlite
+.\.venv\Scripts\python.exe -m autonomous_learner action-model-demo --output runs/self-model-roadmap-action-demo.json
+```
+
+Latest audit: self-modeling roadmap/planner primitive in `docs/AUDIT_LOG.md`.
+No old config, controller, frozen protocol or report changed. Next: integrate a
+development-only goal evaluator with independent goal/start sampling, prior and
+random-plan controls, public commitment before feedback and separate reachable-goal
+analysis outside the learner. Freeze source/config before scoring; only after that
+baseline specify the C5a internal-feedback schema and reliability-learning pilot.
+Independent local formatting changes in `docs/PLAN.md` (heading/checkbox formatting)
+were observed during this work and preserved outside the commit. Do not discard or
+silently stage them on continuation; the PR contains only the intended roadmap additions.
+
+## Preserved scored action-world prediction comparison
 
 Frozen clean source/config/protocol: `b94d48acb3880e88e244f093cf196ef073cfef3f`.
 Implemented `action_investigation.py` controls (supplied one-step information gain,
@@ -53,7 +108,7 @@ score rows, 960 cost records, raw predictions/targets, shared-unseen sets, aggre
 paired differences and bootstrap intervals verified offline without rerunning worlds.
 Effect-evaluation counts independently reconstructed from public traces. Only the
 reviewed compact synthetic report is published; raw files stay in ignored `runs/`.
-Latest audit: prediction-stage entry in `docs/AUDIT_LOG.md`. 121 tests passed, plus
+That increment's audit: prediction-stage in `docs/AUDIT_LOG.md`. 121 tests passed, plus
 fresh legacy/model demos and prediction smoke. Exact commands (fresh paths):
 
 ```powershell
@@ -452,13 +507,15 @@ The learned timing failure remains unresolved and requires new training/evidence
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. The prediction-stage development comparison is complete; preserve the report
-   and its limits. Implement supplied open-loop goal planning from learned dynamics,
+2. The prediction-stage comparison and supplied planning primitive are complete;
+   preserve the report and limits. Integrate the development-only goal evaluator,
    independently sampled goals/starts, prior/no-memory and random-plan controls,
    under `docs/experiments/structured-action-world.md`. Freeze the new scope/config
    before measurement, keep a development-only phase, and report unreachable goals
    outside learner inputs. Retain earlier controls; measure real actions and
    simulated planning work. Do not claim a learned planner or mechanism transfer.
+   Then specify the small C5a reliability pilot in `docs/SELF_MODELING.md`; no
+   research/audit log or held-out target may become introspection input.
    Keep supplied planning separate from acquired dynamics. Preserve C2's mixed
    training evidence and open compute-matching and transfer questions; do not tune
    on opened final functions or either delayed-memory
