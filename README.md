@@ -19,6 +19,9 @@ The long-term objective is learning about worlds with objects, properties, actio
 and consequences, then using learned models to pursue goals and transfer knowledge.
 Mathematical rule discovery is an initial diagnostic. Action-world learning,
 reusable abstraction discovery, and transfer across world mechanisms remain untested.
+The [first action-world development contract](docs/experiments/structured-action-world.md)
+now has a tested simulator for unknown guarded actions over three objects. Its learner,
+planner and experiment runner are still pending; simulator tests are not learning results.
 
 **Status:** under active development. See [PROJECT_STATE.md](PROJECT_STATE.md) for
 verified results, blockers, and the exact next task. See [docs/PLAN.md](docs/PLAN.md)

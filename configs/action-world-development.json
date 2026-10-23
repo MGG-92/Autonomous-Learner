@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "status": "protocol_only_no_runner",
+  "phase": "development_only",
+  "worlds": 80,
+  "exploration_actions": 12,
+  "goal_actions": 3,
+  "two_action_probes": 16,
+  "policy_seeds": [7, 42, 97],
+  "selection_seed": 611,
+  "exploration_layout_start": 5000000,
+  "naming_start": 5100000,
+  "permutation_start": 5150000,
+  "panel_start": 5200000,
+  "goal_layout_start": 5300000
+}

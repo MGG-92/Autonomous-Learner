@@ -10,13 +10,49 @@ C1–C4 in `docs/PLAN.md` before further memory optimization, token control, or 
 polish. Do not drift toward an LLM-centered agent or claim prior-free learning.
 
 Broader objective: world learning with objects, properties, actions, interactions,
-consequences, and goals. Mathematics is a diagnostic, not the destination. Retain C2
-as the next bounded implementation, then design the small structured-action-world
-bridge in `docs/PLAN.md` before prolonged arithmetic optimization. Test mechanism
+consequences, and goals. Mathematics is a diagnostic, not the destination. C2's first
+bounded comparison is complete; build the small structured action-world bridge in
+`docs/PLAN.md` before prolonged arithmetic optimization. Test mechanism
 transfer and acquired abstractions separately from renamed-object generalization.
 No action-world learning, learned planning, or abstraction discovery is implemented.
 
-## Latest increment — learned investigation development comparison
+## Latest increment — action-world development contract
+
+Added `docs/experiments/structured-action-world.md` and proposed settings in
+`configs/action-world-development.json` (protocol-only, no runner). Implemented
+`action_world.py`: three objects with binary properties, three actions with hidden
+guarded set/toggle effects, immutable public observations/transitions, hard paid
+action budgets including no-ops, and no agent-accessible reset. Public hypothesis
+templates and evaluator-only true mechanisms are distinct responsibilities.
+
+Semantic identity canonicalizes whole transition behavior under object/action
+renaming. The future sampler must split unique mechanism identities, reserve named
+fixtures for development, and independently shuffle slots before naming episodes;
+none of that sampler or any final evaluation is implemented yet. The contract
+specifies consistent joint rollouts, committed prediction panels with explicit
+seen/unseen coverage, and later supplied planning from acquired dynamics. Goal
+selection must be independent of oracle reachability. No learner, learned strategy,
+planning success, general reasoning or transfer is demonstrated by this increment.
+
+Latest audit: action-world contract in `docs/AUDIT_LOG.md`. Checks: 102 tests passed,
+including 14 new cases for order-sensitive interactions, no-op budgets, rejected
+calls, immutable label-free public records, distinct effect hypotheses and all 36
+object/action renamings. Legacy demo and C1 smoke passed. Commands (fresh paths):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m pytest tests/test_action_world.py -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/action-world-start-demo.sqlite
+.\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery-smoke.json --output runs/action-world-rule-smoke
+```
+
+Next: implement the development-only mechanism sampler and experience-updated
+transition model; test true-hypothesis retention, erasure, and fixed-mechanism joint
+rollouts before adding a planner or claiming measured world learning. Preserve all
+existing frozen reports; do not tune arithmetic or open final worlds to bypass the
+mixed C2 result. Proposed 80-world/12-action/three-step settings are not measurements.
+
+## Preserved learned investigation development comparison
 
 First C2 query policy implemented and evaluated at clean source/config/protocol
 freeze `bcd7f5106425b18db217c049e0cb8a09435b20f0`. Shared 7 -> 16 -> 1 scorer uses
@@ -37,7 +73,7 @@ final result or proof of learned reasoning. No final functions were evaluated.
 
 Report: `reports/learned-investigation-v1/README.md` and `validation.json`. Verified
 all 1680 local raw rows and paired differences against aggregates without rerunning.
-Checkpoints/raw rows remain in ignored `runs/`. Current tests: 88 passed; fresh
+Checkpoints/raw rows remain in ignored `runs/`. At that increment, 88 tests passed; fresh
 legacy demo, C1 rule smoke, and new query-policy smoke passed. Commands:
 
 ```powershell
@@ -48,8 +84,8 @@ legacy demo, C1 rule smoke, and new query-policy smoke passed. Commands:
 .\.venv\Scripts\python.exe -m autonomous_learner learned-investigation --config configs/learned-investigation.json --output runs/learned-investigation-v1
 ```
 
-Latest recurring audit: C2 first development comparison in `docs/AUDIT_LOG.md`.
-Next: specify the minimal structured action-world development protocol. Keep C2
+Its recurring audit is C2 first development comparison in `docs/AUDIT_LOG.md`.
+The structured action-world development contract is now specified above. Keep C2
 compute matching, mechanism/family transfer, and reliable training benefit open;
 do not tune indefinitely for arithmetic gains or pick a favorable seed. The current
 sorted-marginal features cannot distinguish equal marginals with different joint
@@ -312,12 +348,14 @@ The learned timing failure remains unresolved and requires new training/evidence
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. The bounded C2 development comparison is complete, with mixed/negative training
-   benefit and no final evaluation. Specify the minimal structured action-world
-   development protocol next: hidden action effects, public objects/properties,
-   interventions, transition predictions, and short goal sequences. Keep supplied
-   planning separate from acquired dynamics. Preserve C2's open compute-matching
-   and transfer questions; do not tune on opened final functions or either delayed-memory
+2. The action-world development protocol and simulator contract are implemented;
+   no world learner or runner exists. Implement development-only unique-mechanism
+   sampling with fixture exclusions and independent slot permutations, then learn
+   transition beliefs from sequential experience. Test joint rollout consistency,
+   true-hypothesis retention, and reset erasure before supplied planning/scoring.
+   Keep supplied planning separate from acquired dynamics. Preserve C2's mixed
+   training evidence and open compute-matching and transfer questions; do not tune
+   on opened final functions or either delayed-memory
    final range. Use new development configs and freeze a fresh final protocol only
    when the developmental hypothesis and baselines justify opening final worlds.
    Recurring critique is required before every meaningful PR; append actual

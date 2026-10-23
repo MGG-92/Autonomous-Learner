@@ -145,3 +145,38 @@ checks actually performed and never certify that the whole system is flaw-free.
   leakage, joint transition representations, goal/planner separation, and mechanism
   transfer. C2 matched-compute/family tests and reliable optimization benefit stay
   open. Do not count documentation of these gaps as completed research milestones.
+
+## 2026-10-23 — Structured action-world development contract
+
+- Scope/source: new evaluator-owned simulator, public records and development
+  protocol; adjacent C2 representation limits and C1/C2 split/score boundaries.
+  Parent source `2c71b8f`; no old learner, protocol or measured report changed.
+- Counterexamples: acting on a guarded object before its prerequisite can consume
+  budget without changing state; reversing the order changes the result. A software
+  fixture reproduces both. Therefore observations must include pre/post state and
+  valid no-ops must count. Tests also reject illegal/exhausted actions before mutation.
+- Leakage/splits: two different hidden mechanisms yield identical initial public
+  records under the same names/state. No target, guard, operation, mechanism hash,
+  reachability or gold path is exposed. Tests cover immutable records and independent
+  naming. All 36 object/action renamings share the same behavior identity; a truly
+  different transition mechanism does not. Future splits must use this identity,
+  not seeds or ID strings, and reserve named software fixtures for development.
+- Adjacent representation critique: a canonical mechanism representative can itself
+  give public positions stable roles even with random ID strings. The protocol now
+  requires independent object/action-slot permutations after identity selection.
+  The sampler is not implemented, so this is a preventive design requirement, not
+  a repaired observed training leak. Uniform sampling must quotient multiplicities.
+- Future evaluator counterexamples: independently resampling effects during a
+  rollout breaks fixed-mechanism dynamics; choosing goals from true paths leaks
+  reachability; calling all fixed-panel tuples unseen can mislabel familiar transitions.
+  The contract requires consistent joint rollouts, independent goal sampling and
+  explicit common-unseen coverage (empty means unavailable, never resample).
+- Actual checks: 102 tests passed, including 14 action-world cases. The 45 public
+  effect templates have 45 distinct transition tables. Fresh legacy demo and C1
+  smoke passed. No world-learning experiment, policy training, final-world sampling
+  or performance comparison was run. Tests establish the simulator contract only.
+- Next audit: implementation of semantic sampling/fixture exclusions, per-episode
+  slot permutations and model updates. Require true-hypothesis retention, genuine
+  erasure, fixed-mechanism multi-step predictions, and measured oracle-call budgets
+  before planning. Unknown primitives, representation learning, general causal
+  discovery, learned planning and transfer remain open research problems.

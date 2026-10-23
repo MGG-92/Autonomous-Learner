@@ -28,14 +28,14 @@ The first query-policy optimization against this baseline is implemented in
 masses trained by prediction-reward REINFORCE, with no entropy labels or demonstrations.
 Initialization is already strong; the first development comparison does not show
 reliable improvement over it. Filtering, features, reward, and grammar remain supplied.
-See `reports/learned-investigation-v1/README.md` for the measured limits. Next specify
-the structured action-world bridge, preserving open search/transfer questions, then
+See `reports/learned-investigation-v1/README.md` for the measured limits. Next implement
+the specified action-world learner, preserving open search/transfer questions, then
 investigate reusable abstractions. A future language adapter proposes typed observations
 and renders authorized structured claims; its parsing/fidelity must be evaluated
 separately, and its wording must not automatically become new cognitive evidence.
 See `docs/experiments/internal-rule-discovery.md` and C1–C4 in `docs/PLAN.md`.
 
-## Planned bridge to world learning (not implemented)
+## Action-world bridge: simulator contract implemented, learner pending
 
 Finite function discovery is a diagnostic for a broader objective: learning predictive
 models of objects, properties, actions, interactions, and consequences, and using
@@ -63,6 +63,21 @@ compositions. Separate these claims and split whole worlds accordingly. Learning
 without any representation bias is not a requirement; learning beyond a permanently
 fixed list of complete answers is the research direction. These are future interfaces
 and evaluation requirements, not capabilities of the current implementation.
+
+`action_world.py` now supplies the initial evaluator-owned simulator: three fully
+observed binary properties and three actions with unknown guarded set/toggle effects.
+Public immutable records expose object/action IDs and observed bits, not true effect
+instances or mechanism identities. Legal actions are independent of hidden effects;
+no-ops consume budget and there is no agent-accessible reset. This is a software
+oracle/interface, not a cognitive model or a learned policy. See the v1 development
+contract in `docs/experiments/structured-action-world.md`. No study has run yet.
+
+The next learner will filter public effect hypotheses from experienced transitions
+and preserve their joint implications in rollouts. A later supplied planner must
+use the acquired model and commit a short sequence before goal feedback. Canonical
+world identities quotient object/action permutations for future split integrity;
+episode layouts must independently shuffle the slots to avoid canonical role cues.
+Sampling, belief updating, prediction scoring, planning and transfer remain pending.
 
 ## Earlier controlled graph track (supporting baseline)
 
