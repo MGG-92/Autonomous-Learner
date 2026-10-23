@@ -27,12 +27,21 @@ This baseline learns a rule within a supplied finite language by belief updating
 It does not learn its primitives, search algorithm, or reasoning strategy.
 
 ### C2 — Learn investigation/search strategies
-- [ ] Train proposal or query policies on separate development tasks without language priors.
+- [x] Train a first query policy on separate development functions without language priors
+  or query demonstrations; preserve its mixed/negative initialization comparison.
 - [ ] Compare against the C1 information-gain/program-search baseline under matched costs.
 - [ ] Hold out functions and compositions; reserve new final tasks before evaluation.
 - [ ] Ablate internal simulation/model updating and test behavior under counterexamples.
 - [ ] State the proposed transferable capability and measure observation and compute
   costs, including training amortization, before selecting a new final protocol.
+
+First bounded development comparison is complete; see
+`reports/learned-investigation-v1/README.md`. Training benefit over initialization
+is not reliable; information gain wins on Brier in all seeds. Cost counters and
+model-access/reset controls are implemented, but matched compute, family transfer,
+and reliable learned-strategy benefit remain open. Do not label C2 complete. Next
+specify the minimal structured action-world development protocol below rather than
+extensively tuning this arithmetic comparison or opening a new arithmetic final set.
 
 ### C2 bridge — Small structured action worlds
 

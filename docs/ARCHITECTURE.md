@@ -23,8 +23,14 @@ traces stay outside learner state. Splits use whole finite-domain behavior, prev
 equivalent expressions from leaking across partitions. Generalization outside this
 domain/grammar and across new primitive families remains untested.
 
-Next: learn search/investigation strategies against this explicit baseline, then
-induce reusable abstractions. A future language adapter proposes typed observations
+The first query-policy optimization against this baseline is implemented in
+`query_policy.py` and `query_training.py`: a shared scorer of sorted predictive
+masses trained by prediction-reward REINFORCE, with no entropy labels or demonstrations.
+Initialization is already strong; the first development comparison does not show
+reliable improvement over it. Filtering, features, reward, and grammar remain supplied.
+See `reports/learned-investigation-v1/README.md` for the measured limits. Next specify
+the structured action-world bridge, preserving open search/transfer questions, then
+investigate reusable abstractions. A future language adapter proposes typed observations
 and renders authorized structured claims; its parsing/fidelity must be evaluated
 separately, and its wording must not automatically become new cognitive evidence.
 See `docs/experiments/internal-rule-discovery.md` and C1–C4 in `docs/PLAN.md`.

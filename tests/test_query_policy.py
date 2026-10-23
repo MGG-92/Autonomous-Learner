@@ -7,7 +7,7 @@ import torch
 from autonomous_learner.query_policy import QueryPolicy, choose_query, query_features
 from autonomous_learner.query_training import QueryConfig, MeteredLearner, evaluate_policy, layout, run, train_policy
 from autonomous_learner.rule_experiment import scores
-from autonomous_learner.rule_induction import Hypothesis, RuleLearner, RuleSpace, build_space
+from autonomous_learner.rule_induction import Hypothesis, Program, RuleLearner, RuleSpace, build_space
 
 
 def test_features_are_outcome_permutation_invariant_but_change_with_experience():
@@ -42,6 +42,22 @@ def test_learned_query_uses_only_legal_inputs_and_exact_scan_costs():
     metrics, trace = evaluate_policy(space, hidden, legal, probes, "learned", policy, 0, 1)
     assert metrics["selection_model_value_reads"] == len(legal) * len(space.hypotheses)
     assert len(trace) == metrics["queries"] == 1 and trace[0][0] not in probes
+
+
+def test_marginal_features_cannot_express_joint_query_relationships():
+    # Public prediction-table fixture: A and C are redundant, B is independent.
+    # Program text is irrelevant to the scorer; tables define these hypotheses.
+    inputs = ((0, 0), (0, 1), (0, 2))
+    space = RuleSpace(5, inputs, tuple(Hypothesis(Program("x"), values) for values in
+                                      ((0, 0, 0), (0, 1, 0), (1, 0, 1), (1, 1, 1))))
+    learner = RuleLearner(space, inputs)
+    _, features = query_features(learner, 2, 2)
+    assert torch.equal(features[0], features[1])
+    policy = QueryPolicy()
+    assert policy(features)[0].item() == policy(features)[1].item()
+    learner.observe(inputs[2], 0)
+    assert learner.distribution(inputs[0]) == (1, 0, 0, 0, 0)
+    assert learner.distribution(inputs[1]) == (0.5, 0.5, 0, 0, 0)
 
 
 def test_reset_removes_predictions_without_changing_query_trajectory():

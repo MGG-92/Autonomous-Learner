@@ -106,3 +106,42 @@ checks actually performed and never certify that the whole system is flaw-free.
   minimal hidden mechanisms and whether proposed observations leak effect labels;
   distinguish causal intervention tests from observational prediction, and genuine
   mechanism transfer from renaming invariance. All bridge/abstraction items remain open.
+
+## 2026-10-23 — C2 first development comparison
+
+- Scope/source: query policy, trainer/evaluator, CLI/CI and adjacent C1 model/scoring
+  boundary. Frozen code/config/protocol `bcd7f5106425b18db217c049e0cb8a09435b20f0`,
+  clean tree before the three-seed run. C1 implementation/protocol/reports unchanged.
+- Critical counterexample: parameter updates and beating random do not establish a
+  training benefit. Exact initial networks reach 75.83% mean accuracy versus trained
+  75.0%; trained Brier worsens in seeds 7/97, improves in 42. All trained seeds lose
+  to information gain on Brier. Preserve this mixed result without tuning or selecting
+  a favorable seed. Existing supplied features can make an untrained scorer useful.
+- Representation limit: identical sorted predictive masses produce identical query
+  features despite potentially different joint consequences/future query value.
+  Removing coordinates/output names supplies invariance but restricts strategies;
+  this is not acquired abstraction or evidence of transferable causal reasoning.
+  An executable public-table counterexample confirms identical query features for
+  an action redundant with a third query and another independent of it; observing
+  the third query makes their distinct relationships visible to the model.
+- Integrity checks: training uses only development rule identities and training probe
+  rewards; policy input has no truth/program IDs/entropy labels. Validation uses
+  disjoint functions/layout seeds and last-episode weights, no selection. Prediction
+  targets are read after predictions; legal queries exclude probes. Prior-feature
+  ablation removes posterior access specifically, retaining history/budget/common
+  stopping. Reset clears posterior and raw observations while preserving queries.
+- Actual checks: 88 tests passed; deterministic optimization changes weights and
+  preserves the exact initialization; output relabeling leaves features/choices
+  invariant; reset gives prior predictions; one-step scan counts match exact costs.
+  Fresh legacy demo, C1 smoke and new policy smoke passed. All 1680 development rows,
+  aggregate metrics and paired differences were reviewed offline against source
+  metadata without rerunning validation. No new final tasks were opened.
+- Cost/claims: query ceilings matched, compute measured only. Both trained and
+  heuristic selection scan approximately 30000 hypothetical outputs/world; training
+  adds approximately 30.5 million reads/seed. No speedup or amortization claim.
+  No new correctness defect was reproduced in the adjacent C1 path; its existing
+  deterministic finite-class and uncertainty limitations remain explicit.
+- Next: minimal structured action-world development protocol; test hidden-effect
+  leakage, joint transition representations, goal/planner separation, and mechanism
+  transfer. C2 matched-compute/family tests and reliable optimization benefit stay
+  open. Do not count documentation of these gaps as completed research milestones.

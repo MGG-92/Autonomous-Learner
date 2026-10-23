@@ -66,6 +66,13 @@ reserved-input accuracy on 100 distinct finite rules, versus 66.60% random queri
 and 28.20% after model reset. This is evidence of bounded model learning, with
 supplied primitives and search/inference, rather than learned general reasoning.
 
+The [first learned query-policy comparison](reports/learned-investigation-v1/README.md)
+uses prediction rewards without query demonstrations. It beats random on development
+validation but does not consistently improve over initialization. Reproduce it with
+`python -m autonomous_learner learned-investigation --config configs/learned-investigation.json --output runs/query-policy`.
+The next research step is the small structured action-world bridge; this result
+does not establish a learned general reasoning strategy.
+
 The earlier graph demo remains a supporting baseline:
 
 ```powershell
