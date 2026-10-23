@@ -6,7 +6,7 @@
 - [x] Agent with structured actions and no access to hidden world state.
 - [x] Trainable question/action controller, expert bootstrap, policy-gradient fine-tuning.
 - [x] Held-out comparisons, memory ablation, checkpoints, learning curves, CLI demo.
-- [ ] Tests, CI, Git history, remote repository, continuation documentation.
+- [x] Tests, CI, Git history, public remote repository, continuation documentation.
 
 ## M2 — Learned memory management
 - [x] Separate bounded episodic and belief stores (consolidation timing still fixed).
@@ -44,6 +44,6 @@
 - [ ] Calibration and selective prediction; controlled conflicting sources.
 - [x] Multiple optimizer-seed runner and per-world Wilson intervals.
 - [ ] Broader vocabulary/distribution shifts and intervals over training seeds.
-- [ ] Memory graph inspection and learning-curve visualization.
+- [x] Memory graph inspection (Graphviz DOT) and static learning-curve visualization.
 
 Completion requires measured evidence and documented limitations, not just interfaces.

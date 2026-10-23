@@ -27,6 +27,8 @@ complete merely because a prototype runs.
   reachable history was pushed. GitHub API verified the obsolete object is absent
   from the new public repository. Never mirror-push local refs, restore obsolete
   bootstrap objects, or make the private archive public. No user work was deleted.
+  Anonymous HTTP checks confirmed public repository 200, private archive 404, and
+  obsolete commit in the clean public repository 422 (absent).
 - GitHub Actions passed the initial controlled and memory experiments on Linux.
   Check the current revision's CI after each push.
 
