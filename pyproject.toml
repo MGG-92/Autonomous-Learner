@@ -12,6 +12,7 @@ dependencies = ["torch>=2.5,<3", "numpy>=1.26,<3"]
 [project.optional-dependencies]
 dev = ["pytest>=8,<10"]
 language = ["transformers>=4.57,<5", "accelerate>=1,<2"]
+plots = ["matplotlib>=3.9,<4"]
 
 [project.scripts]
 autonomous-learner = "autonomous_learner.cli:main"

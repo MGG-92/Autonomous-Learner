@@ -20,8 +20,13 @@ complete merely because a prototype runs.
 - PUBLIC remote: https://github.com/MGG-92/Autonomous-Learner; branch `main` tracks origin.
 - `gh` authenticated as `MGG-92`. Scope credentials remain in the OS keyring, not files.
 - Repository-scoped Git identity uses the public GitHub no-reply email.
-- The private bootstrap commit was sanitized before public publication. Never rewrite
-  public history or restore the obsolete bootstrap hash.
+- Bootstrap publication correction: rewriting a branch did NOT purge GitHub's old
+  commit object. The original remote was made private and renamed to
+  `Autonomous-Learner-private-bootstrap`; retain that archive PRIVATE. A new clean
+  PUBLIC repository was created at the original project URL, and only sanitized
+  reachable history was pushed. GitHub API verified the obsolete object is absent
+  from the new public repository. Never mirror-push local refs, restore obsolete
+  bootstrap objects, or make the private archive public. No user work was deleted.
 - GitHub Actions passed the initial controlled and memory experiments on Linux.
   Check the current revision's CI after each push.
 
@@ -43,7 +48,7 @@ complete merely because a prototype runs.
 - Researcher memory inspection and Graphviz DOT export; audit logs excluded from policy.
 - 20 local tests pass. Actual trained-controller restart and dual-memory CLI smokes passed.
 
-## Measurements to date (development runs, preliminary)
+## Measurements (preliminary; published reports available)
 
 M1 seed 42: learned and heuristic 100/100 held-out worlds; random/untrained/no-memory
 0/100. Both successful policies ask 4 questions. No advantage over the heuristic;
@@ -61,18 +66,30 @@ used one forward pass. Untrained scorer emitted 8 tokens using the prior. The LM
 failed exact sentence fidelity, correctly triggering template fallback. No language
 quality benefit established. Cached model lives in ignored `runs/models/`.
 
-## Immediate next actions
+Frozen replication is complete from clean source `3666831`: optimizer seeds 7/42/97
+all answered 200/200 worlds (500000..500199). Mean teacher calls: 3/4/3, versus
+heuristic 4. Random correct counts: 0/0/1; untrained and no-memory correct counts:
+0/0/0. Selected checkpoints were imitation epochs 10/5/8, so no added RL benefit
+was established. These are 200 shared worlds across three optimizer seeds, not 600
+independent worlds. Full reports and validation curves are in `reports/`.
 
-1. Commit the tested tick/language integration, then run the frozen confirmatory
-   config over optimizer seeds 7/42/97 on NEW world seeds 500000..500199. Keep the
-   configuration unchanged even if a seed underperforms; publish the observed result.
-2. Rerun the memory experiment from clean committed source; evaluate integrated
-   learned controllers, and preserve sanitized reports under `reports/`.
-3. Update this file with results/source hashes, publication check, push, verify CI.
-4. Next research increment: remove the helpful fixed proof-before-distractors ordering
+Memory reproduction from the same clean source matches prior results. Integrated
+learned question/retention controllers answered 200/200 additional worlds starting
+at 600000, using 4 questions. This is deployment integration, not joint optimization.
+
+## Immediate next actions when the user says continue
+
+1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
+   and the current public remote/CI. Run the 20-test suite using the local venv.
+2. Next research increment: remove the helpful fixed proof-before-distractors ordering
    and supplied future-query assumption. Build delayed goals with memory pressure,
    learn consolidation/admission timing, and test against budget-matched heuristics.
-   Define and freeze validation/test splits before tuning. See `docs/PLAN.md`.
+   Define and freeze validation/test splits before tuning. See M2 in `docs/PLAN.md`.
+3. Preserve existing reports; add new experiment configs/results under new names.
+   Continue documenting unsupported claims and negative results. Do not expand the
+   language track merely to avoid a failed controlled experiment.
+4. Before pushing: publication preflight, staged diff review, tests, coherent commit,
+   push only reviewed `main`/feature branches, verify CI, update this handoff.
 
 ## Commands for continuation
 

@@ -1,0 +1,20 @@
+{
+  "question_checkpoint": "replication/seed-42",
+  "retention_checkpoint": "memory-confirmatory",
+  "test_start": 600000,
+  "results": {
+    "worlds": 200,
+    "accuracy": 1.0,
+    "accuracy_wilson95": [
+      0.9811539940816791,
+      1.0
+    ],
+    "coverage": 1.0,
+    "selective_accuracy": 1.0,
+    "mean_reward": 0.88,
+    "mean_questions": 4.0,
+    "mean_steps": 5.0,
+    "elapsed_seconds": 0.4565699000377208
+  },
+  "limitation": "Separately trained policies, simple task family, no delayed distractions in question benchmark"
+}

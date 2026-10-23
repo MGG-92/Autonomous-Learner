@@ -8,6 +8,11 @@ dist/
 runs/
 *.sqlite*
 *.pt
+*.audit.jsonl
+*.log
+.aws/
+.codex/
+attachments/
 .env
 .env.*
 !.env.example

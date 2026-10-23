@@ -1,0 +1,397 @@
+{
+  "config": {
+    "seed": 42,
+    "imitation_worlds": 160,
+    "epochs": 12,
+    "rl_episodes": 160,
+    "learning_rate": 0.003,
+    "max_steps": 8,
+    "train_start": 0,
+    "validation_start": 100000,
+    "validation_worlds": 40,
+    "test_start": 500000,
+    "test_worlds": 200
+  },
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.1+cpu",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "git_commit": "3666831e3571d0f52ed48b84abeb0d55f2bb1136",
+    "git_dirty": false
+  },
+  "checkpoint_selection": "maximum validation mean reward; ties keep earlier checkpoint",
+  "results": {
+    "learned": {
+      "worlds": 200,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9811539940816791,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.88,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.20803950005210936
+    },
+    "untrained": {
+      "worlds": 200,
+      "accuracy": 0.0,
+      "accuracy_wilson95": [
+        0.0,
+        0.018846005918320894
+      ],
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "mean_reward": -0.24,
+      "mean_questions": 8.0,
+      "mean_steps": 8.0,
+      "elapsed_seconds": 0.26114300009794533
+    },
+    "random": {
+      "worlds": 200,
+      "accuracy": 0.0,
+      "accuracy_wilson95": [
+        0.0,
+        0.018846005918320894
+      ],
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "mean_reward": -0.18825,
+      "mean_questions": 5.48,
+      "mean_steps": 6.115,
+      "elapsed_seconds": 0.1147748000221327
+    },
+    "heuristic": {
+      "worlds": 200,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9811539940816791,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.88,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.17446770006790757
+    },
+    "learned_no_memory": {
+      "worlds": 200,
+      "accuracy": 0.0,
+      "accuracy_wilson95": [
+        0.0,
+        0.018846005918320894
+      ],
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "mean_reward": -0.24,
+      "mean_questions": 8.0,
+      "mean_steps": 8.0,
+      "elapsed_seconds": 0.2695852000033483
+    }
+  },
+  "curve": [
+    {
+      "stage": "initial",
+      "iteration": 0,
+      "loss": null,
+      "worlds": 40,
+      "accuracy": 0.0,
+      "accuracy_wilson95": [
+        0.0,
+        0.08762453925039232
+      ],
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "mean_reward": -0.24,
+      "mean_questions": 8.0,
+      "mean_steps": 8.0,
+      "elapsed_seconds": 0.050526800099760294
+    },
+    {
+      "stage": "imitation",
+      "iteration": 1,
+      "loss": 3.3709216117858887,
+      "worlds": 40,
+      "accuracy": 0.0,
+      "accuracy_wilson95": [
+        0.0,
+        0.08762453925039232
+      ],
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "mean_reward": -0.24,
+      "mean_questions": 8.0,
+      "mean_steps": 8.0,
+      "elapsed_seconds": 0.05675560003146529
+    },
+    {
+      "stage": "imitation",
+      "iteration": 2,
+      "loss": 3.128733229637146,
+      "worlds": 40,
+      "accuracy": 0.0,
+      "accuracy_wilson95": [
+        0.0,
+        0.08762453925039232
+      ],
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "mean_reward": -0.24,
+      "mean_questions": 8.0,
+      "mean_steps": 8.0,
+      "elapsed_seconds": 0.05744579993188381
+    },
+    {
+      "stage": "imitation",
+      "iteration": 3,
+      "loss": 2.865504431724548,
+      "worlds": 40,
+      "accuracy": 0.0,
+      "accuracy_wilson95": [
+        0.0,
+        0.08762453925039232
+      ],
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "mean_reward": -0.24,
+      "mean_questions": 8.0,
+      "mean_steps": 8.0,
+      "elapsed_seconds": 0.05631770007312298
+    },
+    {
+      "stage": "imitation",
+      "iteration": 4,
+      "loss": 2.5564316749572753,
+      "worlds": 40,
+      "accuracy": 0.0,
+      "accuracy_wilson95": [
+        0.0,
+        0.08762453925039232
+      ],
+      "coverage": 0.0,
+      "selective_accuracy": null,
+      "mean_reward": -0.24,
+      "mean_questions": 8.0,
+      "mean_steps": 8.0,
+      "elapsed_seconds": 0.058520899969153106
+    },
+    {
+      "stage": "imitation",
+      "iteration": 5,
+      "loss": 2.199397921562195,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.04239279998000711
+    },
+    {
+      "stage": "imitation",
+      "iteration": 6,
+      "loss": 1.8147752046585084,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.0416313000023365
+    },
+    {
+      "stage": "imitation",
+      "iteration": 7,
+      "loss": 1.456012213230133,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.04606650001369417
+    },
+    {
+      "stage": "imitation",
+      "iteration": 8,
+      "loss": 1.1628755331039429,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.047284699976444244
+    },
+    {
+      "stage": "imitation",
+      "iteration": 9,
+      "loss": 0.9499018132686615,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.04073120001703501
+    },
+    {
+      "stage": "imitation",
+      "iteration": 10,
+      "loss": 0.8031885206699372,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.04172630002722144
+    },
+    {
+      "stage": "imitation",
+      "iteration": 11,
+      "loss": 0.702664977312088,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.04099319991655648
+    },
+    {
+      "stage": "imitation",
+      "iteration": 12,
+      "loss": 0.6313799500465394,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.042365800007246435
+    },
+    {
+      "stage": "reinforce",
+      "iteration": 40,
+      "loss": 0.7520873546600342,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.04185360006522387
+    },
+    {
+      "stage": "reinforce",
+      "iteration": 80,
+      "loss": 0.39348703622817993,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.08581320010125637
+    },
+    {
+      "stage": "reinforce",
+      "iteration": 120,
+      "loss": -0.01958715170621872,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.040630699950270355
+    },
+    {
+      "stage": "reinforce",
+      "iteration": 160,
+      "loss": 0.22187913954257965,
+      "worlds": 40,
+      "accuracy": 1.0,
+      "accuracy_wilson95": [
+        0.9123754607496077,
+        1.0
+      ],
+      "coverage": 1.0,
+      "selective_accuracy": 1.0,
+      "mean_reward": 0.8800000000000001,
+      "mean_questions": 4.0,
+      "mean_steps": 5.0,
+      "elapsed_seconds": 0.04203330003656447
+    }
+  ],
+  "limitations": [
+    "Scripted monotonic reasoning",
+    "Fixed FIFO memory admission/eviction",
+    "Template/structured output; no language model",
+    "Single training seed",
+    "Easy generated task family; evidence status is not calibrated confidence"
+  ],
+  "selected_checkpoint": {
+    "stage": "imitation",
+    "iteration": 5
+  }
+}

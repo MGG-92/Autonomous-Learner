@@ -1,0 +1,69 @@
+{
+  "seed": 42,
+  "train_worlds": 80,
+  "epochs": 20,
+  "train_start": 0,
+  "validation_start": 100000,
+  "validation_worlds": 10,
+  "test_start": 200000,
+  "losses": [
+    0.3246836501516794,
+    0.050751757464910806,
+    0.01913985048763846,
+    0.010477496788984067,
+    0.006573390877364497,
+    0.0044227642999765905,
+    0.0032100031752825566,
+    0.002445356307649299,
+    0.0019013342772316384,
+    0.001535461841788339,
+    0.0012644495168627288,
+    0.0010599785141254727,
+    0.0008990585215781865,
+    0.0007741432636976242,
+    0.0006790034768575998,
+    0.000596535304794088,
+    0.000529134215627748,
+    0.0004722613161184678,
+    0.0004243987595576695,
+    0.0003851586837921978
+  ],
+  "results": {
+    "learned": {
+      "worlds": 100,
+      "retention_accuracy": 1.0,
+      "episodic_capacity": 4,
+      "belief_capacity": 3
+    },
+    "untrained": {
+      "worlds": 100,
+      "retention_accuracy": 0.0,
+      "episodic_capacity": 4,
+      "belief_capacity": 3
+    },
+    "fifo": {
+      "worlds": 100,
+      "retention_accuracy": 0.0,
+      "episodic_capacity": 4,
+      "belief_capacity": 3
+    },
+    "heuristic": {
+      "worlds": 100,
+      "retention_accuracy": 1.0,
+      "episodic_capacity": 4,
+      "belief_capacity": 3
+    }
+  },
+  "limitations": [
+    "Future query is supplied as a task hint",
+    "Proof evidence precedes distractors",
+    "Consolidation timing and memory budgets are fixed",
+    "Supervised proof-retention objective; no learned retrieval or forgetting schedule"
+  ],
+  "environment": {
+    "python": "3.12.14",
+    "torch": "2.14.1+cpu",
+    "git_commit": "3666831e3571d0f52ed48b84abeb0d55f2bb1136",
+    "git_dirty": false
+  }
+}

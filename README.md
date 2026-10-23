@@ -17,6 +17,8 @@ verified results, blockers, and the exact next task. See [docs/PLAN.md](docs/PLA
 for the full workflow. Broader memory management and open-ended language learning
 remain research milestones; current learned retention uses a narrow task setting.
 
+Preliminary results and their limits are in [reports/README.md](reports/README.md).
+
 ## Setup
 
 Python 3.11+ is required. In PowerShell:

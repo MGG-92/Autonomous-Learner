@@ -1,0 +1,117 @@
+{
+  "model": "HuggingFaceTB/SmolLM2-135M-Instruct",
+  "forward_calls_for_two_pages": 1,
+  "model_revision": "12fd25f77366fa6b3b4b768ec3050bf629380bac",
+  "page_sizes": [
+    200,
+    200
+  ],
+  "all_parameters_frozen": true,
+  "candidate_examples": [
+    {
+      "id": 10654,
+      "text": " observing",
+      "probability": 0.30087313055992126
+    },
+    {
+      "id": 8218,
+      "text": " analyzing",
+      "probability": 0.10120250284671783
+    },
+    {
+      "id": 14768,
+      "text": " interacting",
+      "probability": 0.0301649309694767
+    },
+    {
+      "id": 3415,
+      "text": " exploring",
+      "probability": 0.026143042370676994
+    },
+    {
+      "id": 9684,
+      "text": " collecting",
+      "probability": 0.01927126571536064
+    }
+  ],
+  "untrained_controller_choice": " observing",
+  "render": {
+    "text": "dax can zep.",
+    "raw_proposal": "Subject: SubJECT can OBJECT.",
+    "accepted": false,
+    "fallback": true,
+    "evidence_ids": [
+      1,
+      2,
+      3
+    ]
+  },
+  "controlled_generation": {
+    "text": " observing the behavior of the agent and adjusting",
+    "trace": [
+      {
+        "action": "TOKEN",
+        "step": 0,
+        "token_id": 10654,
+        "text": " observing",
+        "log_probability": -1.2010666131973267
+      },
+      {
+        "action": "TOKEN",
+        "step": 1,
+        "token_id": 260,
+        "text": " the",
+        "log_probability": -0.9406799674034119
+      },
+      {
+        "action": "TOKEN",
+        "step": 2,
+        "token_id": 2555,
+        "text": " behavior",
+        "log_probability": -1.6202912330627441
+      },
+      {
+        "action": "TOKEN",
+        "step": 3,
+        "token_id": 282,
+        "text": " of",
+        "log_probability": -0.0699903592467308
+      },
+      {
+        "action": "TOKEN",
+        "step": 4,
+        "token_id": 260,
+        "text": " the",
+        "log_probability": -1.5917301177978516
+      },
+      {
+        "action": "TOKEN",
+        "step": 5,
+        "token_id": 7997,
+        "text": " agent",
+        "log_probability": -1.4136418104171753
+      },
+      {
+        "action": "TOKEN",
+        "step": 6,
+        "token_id": 284,
+        "text": " and",
+        "log_probability": -1.1490472555160522
+      },
+      {
+        "action": "TOKEN",
+        "step": 7,
+        "token_id": 15729,
+        "text": " adjusting",
+        "log_probability": -2.120257616043091
+      }
+    ],
+    "page_requests": 0
+  },
+  "elapsed_seconds": 5.518318500020541,
+  "limitations": [
+    "Untrained token scorer initialized to the language prior",
+    "Strict template acceptance; language benefit not established",
+    "Each new context is recomputed; only candidate pagination is cached"
+  ]
+}
