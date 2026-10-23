@@ -3,6 +3,13 @@
 This is an agentic-AI work in progress. These measurements describe narrow synthetic
 experiments, not general intelligence, independent grammar learning, or a finished product.
 
+The active [internal rule-discovery result](internal-rule-discovery-v1/README.md)
+tests unfamiliar finite operations without an LLM. Supplied information-gain
+investigation reaches 76.53% reserved-input accuracy on 100 distinct rules, versus
+66.60% random and 28.20% after model reset. Rules are inferred through observation;
+primitives, inference, and investigation algorithms are supplied. No learned
+reasoning strategy or general cognition is claimed.
+
 The newer [delayed-question memory experiment](delayed-memory-v1/README.md) removes
 the specific future-question hint and proof-first ordering. Its scoped gate passed;
 mean learned accuracy was 22.61%, versus 4.44% FIFO and a 33.33% storage-only bound.

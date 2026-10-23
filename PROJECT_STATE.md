@@ -24,8 +24,9 @@ fixed/untrained controls; no-memory and model-reset interventions; semantic rule
 splits; independent reserved input layouts. Core imports no Torch/Transformers/LM
 module. This learns rules within a supplied representation by belief updating. It
 does not train parameters, invent primitives, or learn a reasoning/search strategy.
-Protocol: `docs/experiments/internal-rule-discovery.md`. Final remains reserved
-until a clean source/config freeze. Keep the old graph final ranges barred from tuning.
+Protocol: `docs/experiments/internal-rule-discovery.md`. The selected final functions
+are now OPENED after clean source/config freeze `aedf284f0bf84a4accf3ccaab827f9a6f8af728d`.
+Keep these and the old graph final ranges barred from tuning.
 
 Latest recurring audit: `docs/AUDIT_LOG.md`, C1 source-freeze entry. Current suite:
 77 local tests passed, including core import without Torch/Transformers/language
@@ -45,6 +46,25 @@ Commands used before the source freeze (choose fresh paths to repeat):
 .\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery.json --output runs/rule-discovery-validation-v2
 .\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/rules-reorientation-demo.sqlite
 ```
+
+Frozen final command:
+`.\.venv\Scripts\python.exe -m autonomous_learner rule-discovery --config configs/rule-discovery.json --output runs/rule-discovery-final-v1 --phase final`.
+Clean source, 100 distinct final functions, five reserved inputs per function,
+query seeds 7/42/97 (exploration repeats, not optimizer seeds). Active accuracy
+76.53%, random 66.60%, fixed/untrained 54.40%, reset/no-memory 28.20%. Brier scores
+0.2460/0.4007/0.5360/0.7804 respectively. Active full-function identification is
+25% of rule/query-seed runs. Paired Brier reduction versus random +0.1547,
+rule-bootstrap95 [0.1086, 0.2007]; versus reset +0.5344 [0.4960, 0.5706].
+Exploratory/unadjusted intervals, seeds averaged within rules. Compute is not matched;
+no-memory and reset are equivalent controls. All 1500 synthetic result rows and
+aggregates were reviewed without rerunning final worlds. Report:
+`reports/internal-rule-discovery-v1/README.md`. Total evaluation after hypothesis
+construction: 1.27 seconds locally; no portable performance claim.
+
+C1 is a measured bounded rule-learning baseline, not learned inference or concept
+invention. Next is C2, under a NEW reserved final protocol. Preserve the recurring
+audit and the local paused integration branch. No LLM/token/viewer development
+should displace the internal-model research objective.
 
 ## User intent and authorization
 
@@ -237,8 +257,8 @@ The learned timing failure remains unresolved and requires new training/evidence
 
 1. Read this file, `AGENTS.md`, `docs/PLAN.md`, and `reports/README.md`; check Git status
    and the current public remote/CI. Run the current test suite using the local venv.
-2. Finish the current rule-discovery increment's validation, clean source freeze,
-   final measurement, and PR/CI/publication. Then take C2: learn query/search guidance
+2. Finish the current rule-discovery increment's PR/CI/publication if interrupted
+   (source freeze and final measurement are complete). Then take C2: learn query/search guidance
    from separate development tasks and compare it with C1 under matched observation
    and compute budgets. Reserve new final functions before evaluating a revised
    algorithm. Do not tune on opened final functions or either delayed-memory final

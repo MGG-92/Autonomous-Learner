@@ -56,6 +56,10 @@ controls. Output includes an actual query trace and structured prediction messag
 No language weights, embeddings, or generated hypotheses are used. Learning here is
 belief updating; no neural policy or reasoning algorithm is trained. See the
 [protocol](docs/experiments/internal-rule-discovery.md) before running final evaluation.
+The [first frozen result](reports/internal-rule-discovery-v1/README.md) reaches 76.53%
+reserved-input accuracy on 100 distinct finite rules, versus 66.60% random queries
+and 28.20% after model reset. This is evidence of bounded model learning, with
+supplied primitives and search/inference, rather than learned general reasoning.
 
 The earlier graph demo remains a supporting baseline:
 

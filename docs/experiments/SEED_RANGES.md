@@ -13,7 +13,7 @@ and validation may be revisited; freeze final tests before examining results.
 | Frozen delayed-memory robustness v1 | No updates; original models above | No selection | OPENED 2100000..2100099; shared across eight scenarios |
 | Delayed-memory unit/smoke | 1100000 and nearby | 1200000 and nearby | 1300000 and nearby; software checks only |
 | Interactive original demo | No parameter updates | Not applicable | 900001 (and user-selected seeds) |
-| Internal rule discovery v1 | No parameter training; development semantic hash buckets 0..69 | Semantic buckets 70..84; layout 3200000..3200099 | RESERVED semantic buckets 85..99; layout 3300000..3300099 |
+| Internal rule discovery v1 | No parameter training; development semantic hash buckets 0..69 + named reference functions | Semantic buckets 70..84; layout 3200000..3200099 | OPENED: 100 sampled rules from semantic buckets 85..99; layout 3300000..3300099 |
 
 The delayed-memory protocol originally reserved 900000..900199, then moved the range
 before any final run to avoid the preexisting demo. Different optimizer seeds share

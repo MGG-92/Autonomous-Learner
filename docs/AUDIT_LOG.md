@@ -67,3 +67,20 @@ checks actually performed and never certify that the whole system is flaw-free.
   Query costs are matched but compute costs are not. The initial result can support
   bounded model learning only. Next audit: C2 proposal/search learning under matched
   observation/compute costs and a fresh final protocol.
+
+## 2026-10-23 — Frozen C1 result review
+
+- Source: `aedf284f0bf84a4accf3ccaab827f9a6f8af728d`, clean tree; protocol/config
+  committed before opening final functions. No algorithm changes after evaluation.
+- Evidence: 100 distinct rules, 500 related held-out inputs, query seeds 7/42/97.
+  Accuracy: active 76.53%, random 66.60%, fixed 54.40%, reset/no-memory 28.20%.
+  Full-function identification: 25% of active rule/seed runs. The complete report
+  includes proper scores, exploratory rule-bootstrap intervals, and an actual trace.
+- Review: all 1500 rows checked against aggregates, query limits, unique pairs,
+  semantic partitions, validation disjointness, and clean source metadata. No final
+  rerun or tuning. No-memory/reset equivalence and unmatched compute remain explicit.
+- Interpretation: bounded internal model learning is supported; discovery of a
+  reasoning algorithm, new primitives, calibrated uncertainty, and general cognition
+  are not. Selected final functions are now opened; use a fresh protocol for C2.
+- Next audit: development-only learned search/query proposals, compute accounting,
+  function/family splits, and intervention tests that challenge model dependence.

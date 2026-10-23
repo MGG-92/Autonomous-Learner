@@ -14,7 +14,7 @@ memory infrastructure, token control, and the viewer do not establish this objec
 - [x] Choose experiments by supplied information gain; predict reserved inputs.
 - [x] Compare random, fixed/untrained query control, no-memory, and model-reset controls.
 - [x] Split semantic functions rather than renamed expressions; test model failure honestly.
-- [ ] Freeze and evaluate the first protocol; publish results and causal/uncertainty limits.
+- [x] Freeze and evaluate the first protocol; publish results and causal/uncertainty limits.
 
 This baseline learns a rule within a supplied finite language by belief updating.
 It does not learn its primitives, search algorithm, or reasoning strategy.

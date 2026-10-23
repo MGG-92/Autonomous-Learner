@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "protocol": "docs/experiments/internal-rule-discovery.md",
+  "phase": "validation",
+  "config": {
+    "worlds": 100,
+    "queries": 4,
+    "heldout_inputs": 5,
+    "query_seeds": [
+      7,
+      42,
+      97
+    ],
+    "selection_seed": 17,
+    "validation_layout_start": 3200000,
+    "final_layout_start": 3300000
+  },
+  "hypothesis_count": 1210,
+  "partition_counts": {
+    "development": 846,
+    "validation": 165,
+    "final": 199
+  },
+  "summary": {
+    "information_gain": {
+      "accuracy": 0.7260000000000001,
+      "brier": 0.2967761442848744,
+      "log_loss": 0.4436949076572947,
+      "queries": 4.0,
+      "identified_full_function": 0.19333333333333333
+    },
+    "random": {
+      "accuracy": 0.668,
+      "brier": 0.3934179793575777,
+      "log_loss": 0.6630717237751007,
+      "queries": 3.9966666666666666,
+      "identified_full_function": 0.16666666666666666
+    },
+    "fixed": {
+      "accuracy": 0.54,
+      "brier": 0.5288723073038288,
+      "log_loss": 1.0125290794135595,
+      "queries": 3.98,
+      "identified_full_function": 0.06
+    },
+    "model_reset": {
+      "accuracy": 0.256,
+      "brier": 0.7910725442251212,
+      "log_loss": 1.5821594032804345,
+      "queries": 4.0,
+      "identified_full_function": 0.0
+    },
+    "no_memory": {
+      "accuracy": 0.256,
+      "brier": 0.7910725442251212,
+      "log_loss": 1.5821594032804345,
+      "queries": 4.0,
+      "identified_full_function": 0.0
+    }
+  },
+  "paired_comparisons": {
+    "random": {
+      "mean_brier_reduction": 0.09664183507270328,
+      "rule_bootstrap95": [
+        0.040075743828481815,
+        0.14729769198389728
+      ],
+      "samples": 2000
+    },
+    "fixed": {
+      "mean_brier_reduction": 0.23209616301895442,
+      "rule_bootstrap95": [
+        0.17001847657794947,
+        0.28833043219762233
+      ],
+      "samples": 2000
+    },
+    "model_reset": {
+      "mean_brier_reduction": 0.49429639994024677,
+      "rule_bootstrap95": [
+        0.44915444525732623,
+        0.5355661734523655
+      ],
+      "samples": 2000
+    }
+  },
+  "baseline_roles": {
+    "heuristic": "information_gain",
+    "random_policy": "random",
+    "untrained_policy": "fixed (no trainable policy exists in this baseline)",
+    "no_memory": "same active observations discarded; equivalent predictions to model reset"
+  },
+  "environment": {
+    "git_commit": "ce9c632ec74c2088c4a3e6c7e24f9a820d241b20",
+    "git_dirty": true,
+    "python": "3.12.14",
+    "elapsed_seconds": 1.2772896999958903
+  },
+  "limitations": [
+    "Supplied primitives, bounded grammar, uniform prior, filtering, and query heuristic",
+    "Learning updates beliefs; no parameter optimization or learned reasoning strategy",
+    "Finite 5x5 domain and in-class rules; no unbounded arithmetic or causal discovery",
+    "Semantic function splits, not held-out primitive/family generalization",
+    "Named primitive/max/projection reference functions are development-only",
+    "Query seeds are tie/randomness repeats, not optimizer seeds",
+    "Bootstrap averages seeds within rules; exploratory unadjusted intervals",
+    "No-memory and model-reset predictions are equivalent by construction",
+    "Query ceilings matched; information-gain search uses more computation than simple controls",
+    "Posterior probabilities are model-relative; calibration outside this class is untested"
+  ],
+  "note": "Development run before source freeze; working tree was dirty; final evaluation uses the clean frozen commit."
+}
