@@ -7,6 +7,13 @@
 > nothing less and nothing more. It is not a finished product, and its results do
 > not establish general intelligence or independent language understanding.
 
+The active direction is now [Neural Volume Lab](neural-volume-lab/README.md): a
+native desktop viewer for real local token embeddings, followed by a separate
+spatial-neural-network experiment. On this Windows checkout, double-click
+`neural-volume-lab/Launch Neural Volume Lab.cmd`. The first stage has a dark 3D
+coordinate volume, token playback, orbit/zoom and a response-reference view.
+It does not yet simulate or train neurons. Earlier research below is preserved.
+
 A research prototype investigating a cognitive core that learns internal models
 through experience, chooses experiments, and decides what to communicate before
 optional language rendering. The first rule-discovery baseline infers unfamiliar
@@ -52,8 +59,8 @@ graphical views and new capability displays can follow as the core develops.
 
 **Status:** under active development. See [PROJECT_STATE.md](PROJECT_STATE.md) for
 verified results, blockers, and the exact next task. See [docs/PLAN.md](docs/PLAN.md)
-for the full workflow. The current priority is internal rule/model learning (C1–C4),
-with token control, further memory infrastructure, and viewer polish deferred.
+for the full workflow. Current work follows the native Neural Volume Lab direction;
+the earlier C1–C5 cognitive experiments and their limitations remain preserved.
 
 Preliminary results and their limits are in [reports/README.md](reports/README.md).
 

@@ -1,6 +1,24 @@
 # Architecture and experimental boundaries
 
-## Clarified objective and active direction
+## Active native embedding experiment
+
+The user redirected development to `neural-volume-lab/`. Its desktop application
+uses native PySide6 QtWidgets and QPainter perspective drawing, not a web interface.
+A frozen, pinned input-embedding table maps actual token IDs to 576-component vectors;
+consecutive triples become vertices joined in order. One fixed table-wide scale
+preserves relative component magnitudes across tokens. Token playback and camera
+changes never run the model or alter vectors. Response references are separate
+visualizations, not predicted/teacher-forced output. No NN is implemented yet.
+
+Offline export converts cached bfloat16 values exactly into read-only float32 assets,
+with source revision and checksums. The packaged runtime uses local NumPy/tokenizers
+and Qt, not Torch/Transformers, contextual inference, a browser or a network service.
+The UI identifies its pretrained source; raw component geometry is not semantic
+3D distance. Pretrained embeddings are authorized for this separate experiment.
+The earlier restrictions below continue to describe the preserved controlled studies,
+not a prohibition on the new user-requested embedding viewer.
+
+## Preserved cognitive-core objective
 
 The agent should acquire and revise an internal predictive/explanatory model from
 experience, choose informative experiments, and commit what it intends to communicate

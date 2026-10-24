@@ -1,5 +1,19 @@
 # Autonomous development contract
 
+## Active direction — Neural Volume Lab
+
+The user explicitly redirected development to `neural-volume-lab/`: first settle a
+native, directly launchable desktop embedding viewer, then investigate a spatial
+neural network. A browser application or WebView wrapper does not satisfy this
+request. Pretrained static token embeddings are explicitly permitted in this new
+track; identify their source and distinguish visualization from neural activity.
+The earlier cognitive-core roadmap below is preserved research, not the next task.
+Keep its code, protocols and results intact. No NN, teacher, learning or spontaneous
+activity is implemented in the embedding-viewer stage. Native launch, actual model
+assets, geometry fidelity and UI behavior must be verified before claiming readiness.
+
+## Preserved research context
+
 The central objective is an experience-learning cognitive core that discovers and
 uses internal models independently of pretrained language knowledge. An optional
 LLM translates approved structured observations/messages; it must not supply the
