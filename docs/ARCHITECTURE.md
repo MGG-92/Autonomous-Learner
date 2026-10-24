@@ -71,7 +71,8 @@ instances or mechanism identities. Legal actions are independent of hidden effec
 no-ops consume budget and there is no agent-accessible reset. This is a software
 oracle/interface, not a learned policy. See the v1 development
 contract in `docs/experiments/structured-action-world.md`. Prediction-only development
-results are in `reports/action-prediction-v1/README.md`; no goal study has run yet.
+results are in `reports/action-prediction-v1/README.md`. A separate goal evaluator
+is now implemented under `docs/experiments/action-goals.md`.
 
 `action_model.py` now filters the public effect hypotheses from experienced
 transitions and preserves their joint implications in rollouts of up to three
@@ -104,8 +105,12 @@ learning, new abstractions, calibrated uncertainty and transfer remain pending.
 search of sequences up to three actions using only the acquired model and public
 start/goal. It ranks predicted success, prefers shorter tied plans and uses a public
 RNG for remaining ties; it reports simulated work without querying an environment.
-Software fixtures verify planning from experienced transitions. The goal evaluator,
-independent sampling, baselines and performance measurement are still pending.
+Software fixtures verify planning from experienced transitions. `action_goals.py`
+adds independent goal/start sampling, IG/random/fixed investigation, prior-only and
+random-plan controls. It saves all policies/seeds' commitments before goal feedback
+or evaluator-only reachability. Execution receives no model and cannot replan or
+update evidence. Source/config freeze precedes the scored development measurement;
+no learned planner, self-model or mechanism-family transfer is implied.
 
 ## Functional self-modeling: proposed extension, not implemented
 

@@ -24,7 +24,42 @@ behavioral benefit. It is not implemented and implies no consciousness claim.
 Keep goal-directed world learning next, then a small C5a reliability pilot alongside
 later abstraction/strategy work. Language rendering is not a prerequisite.
 
-## Latest increment — Interactive Agent Playground roadmap
+## Latest increment — action-world goal evaluator (source freeze)
+
+Implemented `action_goals.py`, the `action-goals` CLI, development/smoke configs,
+and `docs/experiments/action-goals.md`. IG/random/fixed exploration feed the supplied
+planner; model-reset/no-memory/untrained erases IG evidence, while random-plan ignores
+it. Reset/random-plan reuse IG exploration costs, not extra investigation episodes.
+All policies and seeds persist plans before any goal execution or true reachability.
+Goal starts/targets are independently sampled without reachability rejection; frozen
+execution cannot update a model or replan. Empty subgroup denominators stay unknown.
+No trained planner, self-model, abstraction or transfer capability is implemented.
+
+Validation: 139 tests passed in 8.43 seconds after changes; fresh legacy and
+action-model demos passed. The original 127-test suite passed before changes.
+New regression cases cover cross-seed commitment order, no execution-time model
+updates, reset, unreachable goals, no-op action costs, raw reconstruction, reproducibility,
+zero goal budget and bad settings. The two-world goal smoke passed; it contains no
+reachable one-step goals, so it is software evidence only. Existing frozen prediction
+reports/configs are preserved. Source/config must be committed before the measured
+80-world development run; the report must record a clean tree and this frozen commit.
+
+Commands:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner action-goals --config configs/action-goals-smoke.json --output runs/action-goals-smoke-v1
+.\.venv\Scripts\python.exe -m autonomous_learner action-goals --config configs/action-goals.json --output runs/action-goals-v1
+.\.venv\Scripts\python.exe scripts/publication_check.py
+```
+
+Preserve independent local `docs/PLAN.md` formatting outside commits; temporarily
+stash/restore it around a clean measured run. Latest critique is the goal evaluator
+entry in `docs/AUDIT_LOG.md`. Next: execute the frozen development protocol, reconstruct
+scores/costs from saved commitments and executions, publish a compact honest report.
+Only after that baseline take the bounded P1 playground increment alongside C5a.
+
+## Previous increment — Interactive Agent Playground roadmap
 
 Added `docs/PLAYGROUND.md` and P1 in `docs/PLAN.md`. This is planning only: no
 `playground` command, event recorder or interactive action-world session exists yet.

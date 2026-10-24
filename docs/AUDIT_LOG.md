@@ -325,3 +325,30 @@ checks actually performed and never certify that the whole system is flaw-free.
 - Next audit: independent goal/start sampling, prior/random-plan information and cost
   fairness, commitment before feedback and source/config freeze in the scored goal
   runner. Later P1 must test its observer and partition boundaries before launch.
+
+## 2026-10-23 — Goal evaluator source/config freeze
+
+- Scope: `action_goals.py`, planner, investigation and simulator boundary; inspected
+  the adjacent prediction runner and preserved its frozen measurements/protocol.
+- Concrete risks: choosing only reachable goals gives hidden-mechanism information;
+  planning after another seed's outcome can contaminate decisions; feeding execution
+  replies back into the model changes an open-loop test into online learning.
+  The runner samples goals independently, persists every policy/seed commitment before
+  any goal truth, and executes without a model argument. Regressions enforce these
+  boundaries, unreachable tasks and genuine reset erasure. No old defect is claimed.
+- Fairness: reset and random-plan reuse IG exploration costs and traces; they are
+  controls, not additional investigation episodes. Same goal ceilings permit different
+  plan lengths. Prior computation is substantial: a supplied software fixture used
+  1774710 effect evaluations. Costs are measured, not matched. Random plans use the
+  full ceiling with uniform action slots, unlike shortest-tie model plans.
+- Analysis: report all goals primarily, reachable subgroups with real denominators,
+  world-paired differences after seed averaging, exploratory/unadjusted world bootstrap.
+  One goal per development mechanism cannot establish broad goal generalization.
+  Model-relative success is not learned self-reliability or empirical calibration.
+- Actual checks before freeze: new boundary tests and two-world/one-action CLI smoke
+  passed. Smoke goals happened to be unreachable; no synthetic success was substituted.
+  All 139 tests and fresh legacy/action-model demos passed. Full measurement
+  requires a committed source/config and clean tree; no reserved worlds will be opened.
+- Next: reconstruct the measured report from saved commitments, transitions and costs;
+  check source identity, same tasks, exact action counts, reachability denominators and
+  negative outcomes before publication. Goal results do not prove learned planning.

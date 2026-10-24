@@ -8,7 +8,7 @@ from .action_world import STATES, validate_state
 @dataclass(frozen=True)
 class Plan:
     actions: tuple[str, ...]
-    predicted_success: float
+    predicted_success: float | None
     evaluated_sequences: int
     effect_evaluations: int
 

@@ -1,0 +1,13 @@
+{
+  "worlds": 80,
+  "exploration_actions": 12,
+  "goal_actions": 3,
+  "policy_seeds": [7, 42, 97],
+  "selection_seed": 611,
+  "exploration_layout_start": 5000000,
+  "naming_start": 5100000,
+  "permutation_start": 5150000,
+  "goal_layout_start": 5300000,
+  "goal_target_start": 5400000,
+  "planning_start": 5500000
+}
