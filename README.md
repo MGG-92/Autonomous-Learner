@@ -8,11 +8,14 @@
 > not establish general intelligence or independent language understanding.
 
 The active direction is now [Neural Volume Lab](neural-volume-lab/README.md): a
-native desktop viewer for real local token embeddings, followed by a separate
-spatial-neural-network experiment. On this Windows checkout, double-click
+native desktop viewer with a sparse recurrent neural-network experiment and an
+offline local professor. On this Windows checkout, double-click
 `neural-volume-lab/Launch Neural Volume Lab.cmd`. The first stage has a dark 3D
 coordinate volume, token playback, orbit/zoom and a response-reference view.
-It does not yet simulate or train neurons. Earlier research below is preserved.
+It now displays actual neuron activity, fits taught response pairs by backpropagation,
+and offers editable professor proposals. The first two-pair fitting check is not
+evidence of general reasoning; a frozen-core control also succeeds. Learning is
+currently session-only. Earlier research below is preserved.
 
 A research prototype investigating a cognitive core that learns internal models
 through experience, chooses experiments, and decides what to communicate before

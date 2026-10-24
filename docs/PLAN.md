@@ -13,10 +13,20 @@ of independently acquired language knowledge. See that folder's README for launc
   explicit labels distinguishing reference visualization from training/prediction.
 - [x] E1: offline model export, checksummed read-only assets, native widget tests and
   Windows packaging/launch entry point; packaged executable verified end to end.
-- [ ] E2: settle NN stimulation and sequence encoding; define trainable silent
+- [x] E2: settle NN stimulation and sequence encoding; define trainable silent
   initialization, directed recurrence, update timing, stability and text readout.
-- [ ] E2: implement/visualize actual NN states, then test fitting and interference
-  on user-taught associations. No teacher, spontaneous activity or learning claims yet.
+- [x] E2: implement/visualize actual NN states, fit two synthetic non-copy pairs,
+  check earlier-pair replay, target isolation, silence and perturbed-state rest.
+- [x] E2: local offline professor using the existing pinned model; explicit editable
+  proposals, isolated process, native launch and E-drive caches/builds, no auto-training.
+- [ ] E3: quantify spatial aliasing and loss of within-token order; compare richer
+  encodings and recurrent versus readout-only learning on fresh multi-pair/sequence
+  tasks. The two-pair frozen-core control succeeds; no core-learning benefit established.
+- [ ] E3: add opt-in local save/load with validated checkpoint identity and replay
+  privacy, and evaluate interference beyond eight replay entries. Current learning
+  is RAM-only. Keep honest vocabulary/length limits and no generalization claims.
+- [ ] E3: investigate response spatial-pattern objectives versus the implemented
+  token-label readout. No clamped reference should be presented as a free prediction.
 
 ## Preserved cognitive-core roadmap
 

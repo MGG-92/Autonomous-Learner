@@ -1,0 +1,234 @@
+{
+  "status": "development smoke",
+  "seed": 42,
+  "architecture": {
+    "config": {
+      "side": 25,
+      "degree": 12,
+      "hidden": 96,
+      "slots": 16,
+      "vocabulary": 128,
+      "seed": 42,
+      "replay": 8
+    },
+    "neurons": 15625,
+    "connections": 187500,
+    "parameters": 1898572,
+    "updates": 0,
+    "vocabulary": 0,
+    "replay_pairs": 0
+  },
+  "code_sha256": {
+    "neural.py": "fa3675313539a51c8daa31712fba1445cf3c49620fb70fffdf6088faa112817f",
+    "embeddings.py": "4cf9d186acd2b3ef99a429b91c656ac1f53b0ea989764a39a7c3b007b7b9bcb8"
+  },
+  "runtime": {
+    "torch": "2.14.1+cpu",
+    "numpy": "2.5.4",
+    "device": "cpu",
+    "threads": 2
+  },
+  "optimizer": {
+    "name": "Adam",
+    "lr": 0.003,
+    "epochs_per_pair": 100,
+    "gradient_clip": 1.0,
+    "task_loss": "token cross entropy through first EOS; no target spatial loss"
+  },
+  "embedding": {
+    "model": "HuggingFaceTB/SmolLM2-135M-Instruct",
+    "revision": "12fd25f77366fa6b3b4b768ec3050bf629380bac",
+    "kind": "static_input_embeddings",
+    "dimensions": 576,
+    "vocabulary_size": 49152,
+    "scale": 1.9609375,
+    "scaling": "each component / maximum absolute component in the entire frozen table",
+    "max_tokens": 64,
+    "teacher": false,
+    "neural_simulation": false
+  },
+  "results": {
+    "learned_replay": {
+      "outputs": [
+        {
+          "input": "Hello",
+          "expected": "Welcome",
+          "prediction": "Welcome",
+          "exact": true
+        },
+        {
+          "input": "Goodbye",
+          "expected": "Farewell",
+          "prediction": "Farewell",
+          "exact": true
+        }
+      ],
+      "exact": 2,
+      "total": 2,
+      "training": [
+        {
+          "initial_loss": 0.693440318107605,
+          "loss": 1.2159262951172423e-05,
+          "updates": 100,
+          "replay_pairs": 1,
+          "vocabulary": 1
+        },
+        {
+          "initial_loss": 1.6308066844940186,
+          "loss": 2.622597548906924e-06,
+          "updates": 200,
+          "replay_pairs": 2,
+          "vocabulary": 4
+        }
+      ],
+      "core_parameter_l1_change": 895.163330078125
+    },
+    "frozen_recurrent_core": {
+      "outputs": [
+        {
+          "input": "Hello",
+          "expected": "Welcome",
+          "prediction": "Welcome",
+          "exact": true
+        },
+        {
+          "input": "Goodbye",
+          "expected": "Farewell",
+          "prediction": "Farewell",
+          "exact": true
+        }
+      ],
+      "exact": 2,
+      "total": 2,
+      "training": [
+        {
+          "initial_loss": 0.693440318107605,
+          "loss": 0.0011539850383996964,
+          "updates": 100,
+          "replay_pairs": 1,
+          "vocabulary": 1
+        },
+        {
+          "initial_loss": 1.3107688426971436,
+          "loss": 0.0016093412414193153,
+          "updates": 200,
+          "replay_pairs": 2,
+          "vocabulary": 4
+        }
+      ],
+      "core_parameter_l1_change": 0.0
+    },
+    "no_replay": {
+      "outputs": [
+        {
+          "input": "Hello",
+          "expected": "Welcome",
+          "prediction": "Farewell",
+          "exact": false
+        },
+        {
+          "input": "Goodbye",
+          "expected": "Farewell",
+          "prediction": "Farewell",
+          "exact": true
+        }
+      ],
+      "exact": 1,
+      "total": 2,
+      "training": [
+        {
+          "initial_loss": 0.693440318107605,
+          "loss": 1.2159262951172423e-05,
+          "updates": 100,
+          "replay_pairs": 1,
+          "vocabulary": 1
+        },
+        {
+          "initial_loss": 3.238506317138672,
+          "loss": 0.0,
+          "updates": 200,
+          "replay_pairs": 1,
+          "vocabulary": 4
+        }
+      ],
+      "core_parameter_l1_change": 575.6632080078125
+    },
+    "no_input": {
+      "outputs": [
+        {
+          "input": "Hello",
+          "expected": "Welcome",
+          "prediction": "Welcome",
+          "exact": true
+        },
+        {
+          "input": "Goodbye",
+          "expected": "Farewell",
+          "prediction": "Welcome",
+          "exact": false
+        }
+      ],
+      "exact": 1,
+      "total": 2,
+      "training": [
+        {
+          "initial_loss": 0.6931471824645996,
+          "loss": 0.4511055648326874,
+          "updates": 100,
+          "replay_pairs": 1,
+          "vocabulary": 1
+        },
+        {
+          "initial_loss": 1.479672908782959,
+          "loss": 1.0976128578186035,
+          "updates": 200,
+          "replay_pairs": 2,
+          "vocabulary": 4
+        }
+      ],
+      "core_parameter_l1_change": 0.0
+    },
+    "untrained": {
+      "outputs": [
+        {
+          "input": "Hello",
+          "expected": "Welcome",
+          "prediction": "arewellWelcome",
+          "exact": false
+        },
+        {
+          "input": "Goodbye",
+          "expected": "Farewell",
+          "prediction": "WelcomewellwellareWelcomeWelcome",
+          "exact": false
+        }
+      ],
+      "exact": 0,
+      "total": 2,
+      "training": [],
+      "core_parameter_l1_change": 0.0
+    },
+    "random_readout": {
+      "outputs": [
+        {
+          "input": "Hello",
+          "prediction": "",
+          "exact": false
+        },
+        {
+          "input": "Goodbye",
+          "prediction": "areareFFwell",
+          "exact": false
+        }
+      ],
+      "exact": 0,
+      "total": 2
+    }
+  },
+  "limits": [
+    "Two public synthetic taught pairs, no reserved evaluation data or checkpoint selection.",
+    "These are software/memorization controls, not estimates of generalization.",
+    "A frozen-core result tests whether recurrent parameter learning was necessary for this task.",
+    "No pretrained language generation participates in learner predictions."
+  ]
+}

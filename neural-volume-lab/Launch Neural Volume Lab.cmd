@@ -1,7 +1,7 @@
 @echo off
 setlocal
 set "LAB_ROOT=%~dp0.."
-set "LAB_EXE=%LAB_ROOT%\runs\neural-volume-lab\desktop\NeuralVolumeLab\NeuralVolumeLab.exe"
+set "LAB_EXE=%LAB_ROOT%\runs\neural-volume-lab\desktop-learning\NeuralVolumeLab\NeuralVolumeLab.exe"
 if exist "%LAB_EXE%" (
     start "Neural Volume Lab" "%LAB_EXE%"
     exit /b

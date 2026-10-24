@@ -24,6 +24,7 @@ def qapp():
 
 @pytest.fixture
 def native(monkeypatch, qapp):
+    monkeypatch.syspath_prepend(str(LAB))
     spec = importlib.util.spec_from_file_location("native_embeddings", LAB / "embeddings.py")
     embedding = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(embedding)
@@ -102,3 +103,29 @@ def test_empty_message_preserves_existing_view_and_displays_error(native):
     native.visualize_text()
     assert native.data is data
     assert native.error.isVisible() and "nonempty" in native.error.text()
+
+
+def test_professor_proposal_is_editable_and_never_automatically_trains(native, monkeypatch):
+    requests = []
+    monkeypatch.setattr(native.compute, "request", lambda op, **arguments: requests.append((op, arguments)) or True)
+    native.send_compute("init")
+    native.compute.result.emit({"op": "init", "result": {"active": 0, "peak": 0, "updates": 0, "activity": []}})
+    native.message.setPlainText("synthetic question")
+    native.send_compute("teacher", message=native.message.toPlainText())
+    native.compute.result.emit({"op": "teacher", "result": {"proposal": "<b>unverified</b>"}})
+    assert native.response.toPlainText() == "<b>unverified</b>"
+    assert "UNVERIFIED" in native.target_source.text()
+    assert [op for op, _ in requests] == ["init", "teacher"]
+    assert "target vocabulary empty" in native.prediction.text()
+    native.response.setPlainText("edited target")
+    native.train_pair()
+    assert requests[-1] == ("admit", {"message": "synthetic question", "target": "edited target"})
+    native.cancel_training()
+    assert native.training_batches == 0
+
+
+def test_inspector_stays_above_transport_even_with_short_volume(native):
+    native.message.setPlainText("Hello world")
+    native.visualize_text()
+    native.position_overlays()
+    assert native.inspector.geometry().bottom() < native.transport.geometry().top()

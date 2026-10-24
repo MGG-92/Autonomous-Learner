@@ -8,15 +8,37 @@ A frozen, pinned input-embedding table maps actual token IDs to 576-component ve
 consecutive triples become vertices joined in order. One fixed table-wide scale
 preserves relative component magnitudes across tokens. Token playback and camera
 changes never run the model or alter vectors. Response references are separate
-visualizations, not predicted/teacher-forced output. No NN is implemented yet.
+visualizations; explicit training and free predictions remain separate.
 
 Offline export converts cached bfloat16 values exactly into read-only float32 assets,
 with source revision and checksums. The packaged runtime uses local NumPy/tokenizers
-and Qt, not Torch/Transformers, contextual inference, a browser or a network service.
+and Qt. A native QProcess bridge starts this checkout's existing CPU Python runtime
+on request; Torch/Transformers are not duplicated into the GUI bundle. The worker
+loads a sparse recurrent learner and lazily loads the pinned professor offline.
 The UI identifies its pretrained source; raw component geometry is not semantic
 3D distance. Pretrained embeddings are authorized for this separate experiment.
 The earlier restrictions below continue to describe the preserved controlled studies,
 not a prohibition on the new user-requested embedding viewer.
+
+The learned network has 25³ units, 12 directed inputs per unit, random initial
+weights and zero initial activity. Spatial vertices become binary nearest-site
+pulses; token order is temporal, but vertex order and quantization detail are lost.
+Synchronous leaky ReLU recurrence has a projected row-L1 bound of 0.7 and an activity
+ceiling of 4. It contracts without input and cannot spontaneously leave zero.
+Readout projection and 16 ordered token slots plus EOS are learned with cross entropy,
+Adam and eight-pair replay. Targets are labels, not clamped predicted states; no
+spatial reconstruction objective is implemented. No message-to-reply lookup occurs
+at prediction. The finite target-token vocabulary is supplied readout support.
+
+User targets, unverified frozen-professor proposals, live neural activity, reference
+geometry and free network output have distinct UI roles. Explicit Train pair is
+required after editing a target. Silence preserves parameters; Reset learning erases
+them. Rest training uses perturbed states plus task rehearsal. All interaction and
+learning is RAM-only; subprocesses close with the app. There is no service, model
+download or background teacher loop. New application-controlled caches/builds stay
+under ignored runs on the checkout drive, reusing existing weights. Packaged neural
+compute requires the checkout's .venv. Two-pair fitting and numerical tests establish
+software behavior, not learned reasoning; a frozen recurrent core also fits the pairs.
 
 ## Preserved cognitive-core objective
 

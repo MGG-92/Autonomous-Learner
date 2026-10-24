@@ -8,6 +8,14 @@ import sys
 def build():
     lab = Path(__file__).resolve().parent
     output = lab.parent / "runs" / "neural-volume-lab"
+    executable = output / "desktop-learning" / "NeuralVolumeLab" / "NeuralVolumeLab.exe"
+    if sys.platform == "win32" and executable.exists():
+        # Detect Windows executable sharing locks before PyInstaller removes assets.
+        try:
+            with executable.open("r+b"):
+                pass
+        except PermissionError as error:
+            raise RuntimeError("Close the learning application before rebuilding its package") from error
     model = output / "model"
     if not (model / "manifest.json").exists():
         raise RuntimeError("Prepare local model assets with prepare_model.py first")
@@ -31,6 +39,10 @@ def build():
         raise RuntimeError("Could not generate the application icon")
     mode = "--console" if "--console" in sys.argv else "--windowed"
     build_env = dict(os.environ)
+    temporary = output / "build-temp"
+    temporary.mkdir(parents=True, exist_ok=True)
+    for key in ("TEMP", "TMP", "TMPDIR", "PYINSTALLER_CONFIG_DIR"):
+        build_env[key] = str(temporary)
     if sys.platform == "win32":
         # Unrelated toolchains on PATH can supply incompatible same-named ICU DLLs.
         # Use this environment and the OS DLL directory for dependency resolution.
@@ -41,7 +53,7 @@ def build():
     subprocess.run([sys.executable, "-m", "PyInstaller", "--clean", "--noconfirm", mode, "--onedir",
                     "--icon", str(icon_path),
                     "--name", "NeuralVolumeLab", "--paths", str(lab),
-                    "--distpath", str(output / "desktop"), "--workpath", str(output / "build"),
+                    "--distpath", str(output / "desktop-learning"), "--workpath", str(output / "build"),
                     "--specpath", str(output / "build"), "--add-data", f"{model};model",
                     "--exclude-module", "torch", "--exclude-module", "transformers",
                     "--exclude-module", "PySide6.QtWebEngineCore", "--exclude-module", "PySide6.QtWebEngineWidgets",

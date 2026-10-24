@@ -1,6 +1,77 @@
-# Project state — 2026-10-23
+# Project state — 2026-10-24
 
-## Active direction — native Neural Volume Lab embedding viewer
+## Active increment — spatial learner and offline professor
+
+The native application now runs a 25³ (15,625-unit) sparse recurrent ReLU learner,
+187,500 directed edges, 1,898,572 total parameters, seeded random weights and silent
+initial activity. It fits explicit message/target pairs through real Torch
+backpropagation, with eight-pair replay and a finite learned token-slot readout.
+Start/inject/step/run/rate/silence/train/predict/rest/reset controls expose actual
+numeric activity. Targets/reference geometry and free predictions remain separate.
+
+The local professor reuses pinned SmolLM2-135M weights already cached under runs/models,
+loads offline on CPU only when requested, and writes an editable UNVERIFIED proposal.
+It never trains automatically and never produces the learner's prediction. There
+is no service, download, autonomous background teaching, or conversation logging.
+The native GUI's isolated QProcess reuses this checkout's .venv; it does not bundle
+a second Torch/model installation. All new controlled caches/build temporaries and
+artifacts stay under ignored runs on the checkout drive. The local deployment needs
+this checkout's runtime; it is not a portable standalone compute distribution.
+
+Launch the existing `neural-volume-lab/Launch Neural Volume Lab.cmd`. It now selects
+`runs/neural-volume-lab/desktop-learning/NeuralVolumeLab/NeuralVolumeLab.exe`.
+The earlier open embedding app was left running; its initial rebuild encountered a
+Windows DLL sharing lock. A separate output folder avoids replacing that app; a
+pre-build executable lock check now prevents destructive rebuilding of an open
+learning package. No user session was closed to complete this task.
+
+Evidence: 159 tests passed, preserved legacy demo passed with a fresh database,
+real-model source and frozen-windowed-package learning checks passed. Packaged
+verification launched from runs rather than the repository root and exercised
+actual offline professor generation, fitting two non-copy associations, earlier
+pair recall, wrong-target exclusion at prediction, vertex stimulation, exact-zero
+rest, silence and perturbed-state rest training. Native screenshot inspection
+found/fixed a short-viewport inspector overlap with a bounded scroll area.
+
+Seed-42 numerical control results (two public synthetic pairs): learned/replay 2/2,
+frozen recurrent core 2/2, no replay 1/2, no input 1/2, untrained 0/2, random readout
+0/2. Report: `reports/neural-volume-learning-v1/`. This demonstrates fitting and
+replay, not a benefit from learning recurrent dynamics or general reasoning.
+No test worlds, private prompts or checkpoints were used/published.
+
+Disk observations: C free space was 40.85 GiB before work and 40.84 GiB at the
+post-build check; E was 503.91 then 503.41 GiB. These are whole-drive observations,
+not attribution of unrelated system writes. The learning package is 263.7 MiB.
+No packages/models were downloaded; large new artifacts were confined to E.
+
+Commands for this increment:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/neural-volume-lab/learning-legacy-smoke.sqlite
+.\.venv\Scripts\python.exe neural-volume-lab/check_learning.py --output runs/neural-volume-lab/learning-controls-final.json
+.\.venv\Scripts\python.exe neural-volume-lab/app.py --verify-learning-output runs/neural-volume-lab/learning-source-check
+.\.venv\Scripts\python.exe neural-volume-lab/app.py --verify-output runs/neural-volume-lab/embedding-regression-check
+.\.venv\Scripts\python.exe neural-volume-lab/build_desktop.py
+& .\runs\neural-volume-lab\desktop-learning\NeuralVolumeLab\NeuralVolumeLab.exe --verify-learning-output runs/neural-volume-lab/learning-package-check
+.\.venv\Scripts\python.exe scripts/publication_check.py
+```
+
+Use fresh report/database paths on reruns. Learning/replay are RAM-only and lost
+on close. Up to 16 input/output tokens and 127 admitted target tokens; no arbitrary
+conversation, learned abstention, or calibrated uncertainty. Targets train token
+cross entropy, not spatial reconstruction. Per-token vertex order/quantization
+information is lost; strong decay may lose long-sequence information. The row-weight
+bound guarantees contraction and zero cannot spontaneously activate. The professor
+is small/fallible and generation can truncate at 16 tokens. Its successful smoke
+is not teacher-quality validation. No pretrained LM runs inside learner prediction.
+
+Next: take E3 in docs/PLAN.md: quantify aliasing/sequence loss and compare a learned
+core against a frozen core/readout-only baseline on fresh diagnostic tasks before
+increasing complexity. Add opt-in validated local persistence later. Preserve all
+older research. Continue recurring critique before every meaningful PR.
+
+## Previous increment — native embedding viewer (historical)
 
 The user explicitly changed direction: build the embedding visualization first,
 then the spatial NN. The delivered UI must be a native launchable desktop app,
