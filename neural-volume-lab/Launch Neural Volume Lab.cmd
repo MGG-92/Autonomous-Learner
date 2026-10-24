@@ -1,9 +1,9 @@
 @echo off
 setlocal
 set "LAB_ROOT=%~dp0.."
-set "LAB_EXE=%LAB_ROOT%\runs\neural-volume-lab\desktop-learning\NeuralVolumeLab\NeuralVolumeLab.exe"
-if exist "%LAB_EXE%" (
-    start "Neural Volume Lab" "%LAB_EXE%"
+set "LAB_LAUNCH=%LAB_ROOT%\runs\neural-volume-lab\launch-desktop.cmd"
+if exist "%LAB_LAUNCH%" (
+ call "%LAB_LAUNCH%" %*
     exit /b
 )
 if not exist "%LAB_ROOT%\.venv\Scripts\pythonw.exe" (

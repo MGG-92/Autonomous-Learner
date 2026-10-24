@@ -1,5 +1,75 @@
 # Recurring critique and repair log
 
+## 2026-10-24 — learned interfaces and persistent message credit
+
+- Geometry alias: reversing coordinate groups yields the same spatial stimulus.
+  Learned full-vector input produces distinct core states in that constructed probe.
+  This removes a supplied encoding alias, not every information bottleneck.
+- Cached vectors have 576 dimensions. A learned 576→512 adapter implements the
+  requested interfaces honestly; normalization/compression remain lossy.
+- Architectural necessity failed to separate: all four variants fit 2/2 known pairs,
+  including fixed features/readout-only. Record that negative result and postpone
+  superiority claims until unfamiliar inputs and retention have been tested.
+- Continuously replacing the reply made delivery/credit ambiguous. Deliver once
+  after complete input; idle ticks cannot silently alter a message. Practice creates
+  a distinct sampled reply, with no self-generated label admission.
+- Restoring weights alone would omit optimization and replay state. Checkpoints
+  now preserve both, validate identity/topology/finite values, recover a previous
+  generation and reject competing writers. Numeric replay is private, even without
+  a saved transcript. Reset refreshes both generations to avoid resurrecting learning.
+- CPU cost: bounded online correction uses twelve updates and teacher examples five,
+  each on newest plus at most one older example. This retains the eight-entry memory
+  while bounding work; its retention quality is still unmeasured.
+- Native synthetic verification restarts the actual worker and restores fourteen
+  updates. A saturated positive reward made no measurable probability change in
+  that smoke; the dedicated unsaturated feedback tests provide directional evidence.
+
+
+## 2026-10-24 — chat, timed input and online feedback
+
+- User clarified the live flow while work was active: start brain, adjustable seconds
+  per tick, one token entering per tick, live activity/readout, strong rewards and
+  double-click correction. Implemented that flow rather than routing chat through a
+  hidden full-message prediction. Tests show no activation before a tick and no
+  future-token access in the credit/teaching context. Legacy manual diagnostics stay
+  separate and keep their older driven/undriven sequence protocol.
+- Scientific distinction: scalar feedback changes the sampled policy probabilities;
+  edited targets and professor bootstrap examples are supervised imitation. Neither
+  is relabeled general reasoning or full long-horizon RL. Rewards cannot introduce
+  unseen target vocabulary. Three-seed controls show positive/negative probability
+  changes, stronger human impact and neutral/random no-update controls. Clearing
+  replay does not change the scalar update; this is not a retrieval shortcut.
+- Credit attribution repair: bind each rendered reply to its own tick ID and stored
+  behavior probabilities/context. Double-clicking an older bubble edits that bubble,
+  not the newest response. One rating per source and correction per reply; last-eight
+  snapshots actually expire. Pausing while editing prevents ticking past the selected
+  snapshot. UI tests and worker tests cover old/recent/expired credit and reset.
+- Avoid training conflict: human corrections replace the same input's professor
+  example and block professor imitation overrides while retained. Strong human
+  rewards have default impact 5; fallible professor reward uses 0.25 weight/impact 1.
+  Ratio clipping bounds the surrogate, not actual KL/probability changes. Gradient
+  clipping and recurrent row constraints remain, but interference is not solved.
+- Professor judgment is a real frozen-model Yes/No-logit comparison, explicitly
+  unverified and uncalibrated; thresholds are supplied. Real offline smoke gave an
+  encouraging vote, not evidence of teacher reliability. It runs once after a user
+  sentence, never as an unbounded background loop or at every idle tick. Examples
+  use short respectful language; there is no scripted infant persona or fake output.
+- Source native verification exercised a real five-second timer (5.015 seconds),
+  sequential actual token input, live output, paused double-click editing, a fitted
+  correction, human reward and local professor assessment. Native screenshot review
+  corrected transcript auto-scroll after deferred layout and pinned the current
+  sampled reply beside rating controls so feedback cannot hide its subject. 172 tests and preserved
+  demo pass. Package/CI gates remain required before merge. No downloads, private
+  interactions, checkpoints or reserved evaluation data are published.
+- An app was opened during development. The existing lock precheck stopped an
+  attempted rebuild before replacing files. Final packaging now always writes a
+  fresh versioned release and updates the local launcher on success, preserving
+  open user windows and unsaved session learning without repeated directory renames.
+- Final versioned package passed all chat/real-model checks from another working
+  directory; first tick measured 5.032 seconds. The current reply stays visible
+  beside its ratings when professor history scrolls. No existing app was closed.
+
+
 ## 2026-10-23 — spatial learner and local professor
 
 - Counterexample to an overly broad learning claim: the same two taught pairs fit

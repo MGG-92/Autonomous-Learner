@@ -1,5 +1,29 @@
 # Architecture and experimental boundaries
 
+## Current native architecture — learned I/O and stable messages
+
+This section supersedes spatial stimulation and session-only descriptions below.
+The native Qt app delegates CPU learning to a local worker. Frozen 576-component
+embeddings feed a trainable 576→512 adapter, dense 512→15,625 input projection,
+stable sparse recurrent core, dense 15,625→512 output and bounded token-slot readout.
+The 20,947,564 parameters include both dense projections. Position is visualization
+only. Input tokens enter one per tick; only completed inputs or explicit practice
+produce delivered messages. Idle ticks preserve the last reply and its exact credit.
+
+Corrections fit the captured readout state plus an auxiliary full-input sequence
+loss (weight 0.25). Twelve online updates train the newest example and one rotating
+older example; professor examples use five. Replay retains eight entries. Feedback
+remains immediate, externally rewarded policy optimization, not self-labeling.
+
+Private atomic checkpoints include weights, optimizer, vocabulary, sampler and
+numeric replay. Identity/config/topology/finite-state checks guard restore;
+weights-only Torch loading, one-writer locking and a previous backup are used.
+Restored activity is silent. No raw transcript, weights or replay enter publication.
+The controlled probe does not establish that recurrence or the input adapter helps.
+
+## Historical architecture notes
+
+
 ## Active native embedding experiment
 
 The user redirected development to `neural-volume-lab/`. Its desktop application
@@ -31,14 +55,47 @@ spatial reconstruction objective is implemented. No message-to-reply lookup occu
 at prediction. The finite target-token vocabulary is supplied readout support.
 
 User targets, unverified frozen-professor proposals, live neural activity, reference
-geometry and free network output have distinct UI roles. Explicit Train pair is
-required after editing a target. Silence preserves parameters; Reset learning erases
+geometry and free network output have distinct UI roles. Manual lab targets require
+Train pair; the newer chat path below has its own explicit correction and enabled
+coaching workflow. Silence preserves parameters; Reset learning erases
 them. Rest training uses perturbed states plus task rehearsal. All interaction and
 learning is RAM-only; subprocesses close with the app. There is no service, model
 download or background teacher loop. New application-controlled caches/builds stay
 under ignored runs on the checkout drive, reusing existing weights. Packaged neural
 compute requires the checkout's .venv. Two-pair fitting and numerical tests establish
 software behavior, not learned reasoning; a frozen recurrent core also fits the pairs.
+
+### Chat and immediate feedback (user-directed extension)
+
+The default native view is a chat beside the volume. Start brain initializes silent
+activity and starts an adjustable clock (default five seconds). Each tick supplies
+exactly the next queued token pulse and applies one recurrent update; after input,
+ticks are undriven. The visible attempted reply is sampled from the actual current
+state and learned slot readout. It never calls the professor for its own output.
+Full queued input is not supplied ahead of the current token; credit/teaching uses
+the received prefix. Wall-clock pacing can be delayed by compute; requests serialize.
+
+Human +1/−1 feedback uses a clipped immediate-reward token-policy surrogate and
+SGD step 0.05 × impact (default 5), gradient-norm cap 1, one update per source/reply.
+Behavior log probabilities permit clipped reuse after teaching; this is not full
+PPO, a value model, or long-horizon RL. A live credit snapshot contains the previous
+state and pulse, with earlier state detached. Only the current transition/readout
+receives temporal credit. The last eight reply snapshots actually expire; IDs bind
+ratings and edits to the selected reply rather than the newest reply by accident.
+
+Double-clicking a reply pauses ticking and opens its actual sampled text. Teaching
+the edit uses token cross entropy on that captured context, 60 Adam updates and
+eight-example replay. It does not display the edited text as if the network said it.
+Human examples replace earlier professor examples for the same received input and
+block professor imitation overrides while retained. Ratings never fabricate targets.
+
+Optional professor coaching (on by default) runs once after a sentence is received,
+not at every idle tick or as a background job. Frozen next-token Yes/No logits yield
+an unverified reward (+1 if relative Yes support ≥0.65, −1 if ≤0.35, otherwise zero).
+This is uncalibrated and teacher correctness is not validated. Professor reward weight
+is 0.25, impact 1. A first/new-word example can teach 20 supervised updates; otherwise
+coaching gives reward only. This hybrid bootstraps vocabulary without pretending
+scalar rewards introduce unseen words. All data and weights remain session-only.
 
 ## Preserved cognitive-core objective
 

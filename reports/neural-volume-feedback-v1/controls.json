@@ -1,0 +1,534 @@
+{
+  "status": "development mechanism diagnostic",
+  "seeds": [
+    7,
+    42,
+    97
+  ],
+  "config": {
+    "config": {
+      "side": 25,
+      "degree": 12,
+      "hidden": 96,
+      "slots": 16,
+      "vocabulary": 128,
+      "seed": 42,
+      "replay": 8
+    },
+    "neurons": 15625,
+    "connections": 187500,
+    "parameters": 1898572,
+    "updates": 0,
+    "vocabulary": 0,
+    "replay_pairs": 0
+  },
+  "rows": [
+    {
+      "condition": "human_positive",
+      "seed": 7,
+      "sampled_token_ids": [
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0987437963485718,
+      "mean_log_probability_after": -1.0169017314910889,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.08184206485748291
+    },
+    {
+      "condition": "human_negative",
+      "seed": 7,
+      "sampled_token_ids": [
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": -1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0987437963485718,
+      "mean_log_probability_after": -1.1841025352478027,
+      "loss": 1.0,
+      "delta_mean_log_probability": -0.08535873889923096
+    },
+    {
+      "condition": "human_weak",
+      "seed": 7,
+      "sampled_token_ids": [
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 1,
+      "step_size": 0.05,
+      "mean_log_probability_before": -1.0987437963485718,
+      "mean_log_probability_after": -1.0820848941802979,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.016658902168273926
+    },
+    {
+      "condition": "professor_positive",
+      "seed": 7,
+      "sampled_token_ids": [
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "professor",
+      "reward": 1,
+      "weight": 0.25,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 1,
+      "step_size": 0.05,
+      "mean_log_probability_before": -1.0987437963485718,
+      "mean_log_probability_after": -1.0945658683776855,
+      "loss": -0.25,
+      "delta_mean_log_probability": 0.0041779279708862305
+    },
+    {
+      "condition": "no_reward",
+      "seed": 7,
+      "sampled_token_ids": [
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 0,
+      "weight": 1.0,
+      "update_attempted": false,
+      "updates": 0,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0987437963485718,
+      "mean_log_probability_after": -1.0987437963485718,
+      "loss": -0.0,
+      "delta_mean_log_probability": 0.0
+    },
+    {
+      "condition": "cleared_replay_positive",
+      "seed": 7,
+      "sampled_token_ids": [
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0987437963485718,
+      "mean_log_probability_after": -1.0169017314910889,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.08184206485748291
+    },
+    {
+      "condition": "human_positive",
+      "seed": 42,
+      "sampled_token_ids": [],
+      "sampled_actions_including_EOS": [
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0985440015792847,
+      "mean_log_probability_after": -0.9387162327766418,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.15982776880264282
+    },
+    {
+      "condition": "human_negative",
+      "seed": 42,
+      "sampled_token_ids": [],
+      "sampled_actions_including_EOS": [
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": -1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0985440015792847,
+      "mean_log_probability_after": -1.2722508907318115,
+      "loss": 1.0,
+      "delta_mean_log_probability": -0.17370688915252686
+    },
+    {
+      "condition": "human_weak",
+      "seed": 42,
+      "sampled_token_ids": [],
+      "sampled_actions_including_EOS": [
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 1,
+      "step_size": 0.05,
+      "mean_log_probability_before": -1.0985440015792847,
+      "mean_log_probability_after": -1.0654258728027344,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.03311812877655029
+    },
+    {
+      "condition": "professor_positive",
+      "seed": 42,
+      "sampled_token_ids": [],
+      "sampled_actions_including_EOS": [
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "professor",
+      "reward": 1,
+      "weight": 0.25,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 1,
+      "step_size": 0.05,
+      "mean_log_probability_before": -1.0985440015792847,
+      "mean_log_probability_after": -1.0902117490768433,
+      "loss": -0.25,
+      "delta_mean_log_probability": 0.008332252502441406
+    },
+    {
+      "condition": "no_reward",
+      "seed": 42,
+      "sampled_token_ids": [],
+      "sampled_actions_including_EOS": [
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 0,
+      "weight": 1.0,
+      "update_attempted": false,
+      "updates": 0,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0985440015792847,
+      "mean_log_probability_after": -1.0985440015792847,
+      "loss": -0.0,
+      "delta_mean_log_probability": 0.0
+    },
+    {
+      "condition": "cleared_replay_positive",
+      "seed": 42,
+      "sampled_token_ids": [],
+      "sampled_actions_including_EOS": [
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0985440015792847,
+      "mean_log_probability_after": -0.9387162327766418,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.15982776880264282
+    },
+    {
+      "condition": "human_positive",
+      "seed": 97,
+      "sampled_token_ids": [
+        8,
+        9,
+        9,
+        9,
+        8,
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0986064672470093,
+      "mean_log_probability_after": -1.0748740434646606,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.023732423782348633
+    },
+    {
+      "condition": "human_negative",
+      "seed": 97,
+      "sampled_token_ids": [
+        8,
+        9,
+        9,
+        9,
+        8,
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": -1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0986064672470093,
+      "mean_log_probability_after": -1.1226245164871216,
+      "loss": 1.0,
+      "delta_mean_log_probability": -0.024018049240112305
+    },
+    {
+      "condition": "human_weak",
+      "seed": 97,
+      "sampled_token_ids": [
+        8,
+        9,
+        9,
+        9,
+        8,
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 1,
+      "step_size": 0.05,
+      "mean_log_probability_before": -1.0986064672470093,
+      "mean_log_probability_after": -1.093837022781372,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.004769444465637207
+    },
+    {
+      "condition": "professor_positive",
+      "seed": 97,
+      "sampled_token_ids": [
+        8,
+        9,
+        9,
+        9,
+        8,
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "professor",
+      "reward": 1,
+      "weight": 0.25,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 1,
+      "step_size": 0.05,
+      "mean_log_probability_before": -1.0986064672470093,
+      "mean_log_probability_after": -1.0974129438400269,
+      "loss": -0.25,
+      "delta_mean_log_probability": 0.0011935234069824219
+    },
+    {
+      "condition": "no_reward",
+      "seed": 97,
+      "sampled_token_ids": [
+        8,
+        9,
+        9,
+        9,
+        8,
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 0,
+      "weight": 1.0,
+      "update_attempted": false,
+      "updates": 0,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0986064672470093,
+      "mean_log_probability_after": -1.0986064672470093,
+      "loss": -0.0,
+      "delta_mean_log_probability": 0.0
+    },
+    {
+      "condition": "cleared_replay_positive",
+      "seed": 97,
+      "sampled_token_ids": [
+        8,
+        9,
+        9,
+        9,
+        8,
+        8
+      ],
+      "sampled_actions_including_EOS": [
+        1,
+        2,
+        2,
+        2,
+        1,
+        1,
+        0
+      ],
+      "kind": "reward_feedback",
+      "source": "human",
+      "reward": 1,
+      "weight": 1.0,
+      "update_attempted": true,
+      "updates": 1,
+      "strength": 5,
+      "step_size": 0.25,
+      "mean_log_probability_before": -1.0986064672470093,
+      "mean_log_probability_after": -1.0748740434646606,
+      "loss": -1.0,
+      "delta_mean_log_probability": 0.023732423782348633
+    }
+  ],
+  "random_baseline": {
+    "kind": "fixed uniform random readout; no optimizer",
+    "seed": 42,
+    "sampled_actions": [
+      0,
+      2,
+      1,
+      1,
+      1,
+      2,
+      0,
+      2,
+      0,
+      0,
+      1,
+      2,
+      2,
+      2,
+      2,
+      2
+    ],
+    "delta_mean_log_probability": 0.0
+  },
+  "runtime": {
+    "torch": "2.14.1+cpu",
+    "numpy": "2.5.4",
+    "threads": 2,
+    "device": "cpu"
+  },
+  "source_sha256": {
+    "neural.py": "5fbe5cc4da2e109c6564175c0093ceab013c3f5a7fafb943156d67a89b957a32",
+    "worker.py": "39615c4def4f8a2913f3a1ad9332f2c8b66d9316315330b993d84b8b8ab37106"
+  },
+  "hyperparameters": {
+    "feedback_SGD_base_lr": 0.05,
+    "human_default_strength": 5,
+    "professor_strength": 1,
+    "professor_reward_weight": 0.25,
+    "gradient_clip": 1.0,
+    "per_token_ratio_clip": [
+      0.8,
+      1.2
+    ],
+    "feedback_updates_per_source_per_reply": 1
+  },
+  "limits": [
+    "Immediate scalar-reward mechanism only, not long-horizon RL or dialogue quality.",
+    "Admitted target tokens provide equal readout support; no supervised optimization precedes measurement.",
+    "No pretrained model, held-out task, checkpoint selection or private dialogue is involved.",
+    "Clipped updates can saturate; no guaranteed large change or improvement in correctness."
+  ]
+}

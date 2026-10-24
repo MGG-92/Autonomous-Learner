@@ -26,6 +26,7 @@ def verify_learning(window, app, destination):
             raise RuntimeError(window.error.text())
 
     try:
+        window.set_expert_mode(True)
         window.message.setPlainText("Hello")
         window.response.setPlainText("Welcome")
         window.visualize_text()

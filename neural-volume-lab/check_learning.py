@@ -17,7 +17,7 @@ def run():
     pairs = [(store.encode(a), store.encode(b)) for a, b in [("Hello", "Welcome"), ("Goodbye", "Farewell")]]
     rows = {}
     for name in ("learned_replay", "frozen_recurrent_core", "no_replay", "no_input", "untrained"):
-        learner = Learner()
+        learner = Learner(Config(encoding="spatial", vocabulary=128))
         if name == "frozen_recurrent_core":
             learner.network.edges.requires_grad_(False)
         edges = learner.network.edges.detach().clone()
@@ -62,7 +62,7 @@ def run():
     lab = Path(__file__).resolve().parent
     digests = {name: hashlib.sha256((lab / name).read_bytes()).hexdigest()
                for name in ("neural.py", "embeddings.py")}
-    return {"status": "development smoke", "seed": 42, "architecture": Learner().description(),
+    return {"status": "development smoke", "seed": 42, "architecture": Learner(Config(encoding="spatial", vocabulary=128)).description(),
             "code_sha256": digests, "runtime": {"torch": torch.__version__, "numpy": np.__version__, "device": "cpu", "threads": 2},
             "optimizer": {"name": "Adam", "lr": .003, "epochs_per_pair": 100, "gradient_clip": 1.,
                           "task_loss": "token cross entropy through first EOS; no target spatial loss"},

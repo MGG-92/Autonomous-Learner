@@ -1,5 +1,7 @@
 """Build an offline Windows application into ignored runs; no model downloads."""
 from pathlib import Path
+from datetime import datetime, timezone
+import json
 import os
 import subprocess
 import sys
@@ -8,14 +10,8 @@ import sys
 def build():
     lab = Path(__file__).resolve().parent
     output = lab.parent / "runs" / "neural-volume-lab"
-    executable = output / "desktop-learning" / "NeuralVolumeLab" / "NeuralVolumeLab.exe"
-    if sys.platform == "win32" and executable.exists():
-        # Detect Windows executable sharing locks before PyInstaller removes assets.
-        try:
-            with executable.open("r+b"):
-                pass
-        except PermissionError as error:
-            raise RuntimeError("Close the learning application before rebuilding its package") from error
+    # Always build a fresh release; never replace an open app or its unsaved session.
+    release = output / "desktop-builds" / datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S-%f")
     model = output / "model"
     if not (model / "manifest.json").exists():
         raise RuntimeError("Prepare local model assets with prepare_model.py first")
@@ -53,11 +49,20 @@ def build():
     subprocess.run([sys.executable, "-m", "PyInstaller", "--clean", "--noconfirm", mode, "--onedir",
                     "--icon", str(icon_path),
                     "--name", "NeuralVolumeLab", "--paths", str(lab),
-                    "--distpath", str(output / "desktop-learning"), "--workpath", str(output / "build"),
+                    "--distpath", str(release), "--workpath", str(output / "build"),
                     "--specpath", str(output / "build"), "--add-data", f"{model};model",
                     "--exclude-module", "torch", "--exclude-module", "transformers",
                     "--exclude-module", "PySide6.QtWebEngineCore", "--exclude-module", "PySide6.QtWebEngineWidgets",
                     str(lab / "app.py")], check=True, env=build_env)
+    executable = release / "NeuralVolumeLab" / "NeuralVolumeLab.exe"
+    if not executable.is_file():
+        raise RuntimeError("Build completed without the expected executable; launcher unchanged")
+    relative = str(executable.relative_to(output))
+    launcher = output / "launch-desktop.cmd"
+    temporary_launcher = launcher.with_suffix(".tmp")
+    temporary_launcher.write_text('@echo off\nstart "Neural Volume Lab" "%~dp0' + relative + '" %*\n', encoding="utf-8")
+    temporary_launcher.replace(launcher)
+    (output / "desktop-build.json").write_text(json.dumps({"executable": relative}, indent=2), encoding="utf-8")
 
 
 if __name__ == "__main__":

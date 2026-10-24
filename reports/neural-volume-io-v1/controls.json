@@ -1,0 +1,262 @@
+{
+  "status": "development diagnostic",
+  "seed": 42,
+  "device": "cpu",
+  "threads": 2,
+  "runtime": {
+    "torch": "2.14.1+cpu"
+  },
+  "epochs_per_pair": 20,
+  "pairs": [
+    [
+      "Hello",
+      "Welcome"
+    ],
+    [
+      "Goodbye",
+      "Farewell"
+    ]
+  ],
+  "conditions": {
+    "learned_io": {
+      "config": {
+        "config": {
+          "side": 25,
+          "degree": 12,
+          "hidden": 96,
+          "slots": 16,
+          "vocabulary": 512,
+          "seed": 42,
+          "replay": 8,
+          "encoding": "learned",
+          "input_dimensions": 576,
+          "input_units": 512,
+          "output_units": 512
+        },
+        "neurons": 15625,
+        "connections": 187500,
+        "parameters": 20947564,
+        "updates": 40,
+        "vocabulary": 4,
+        "replay_pairs": 2,
+        "input_units": 512,
+        "output_units": 512,
+        "input_encoding": "learned",
+        "input_connections": 8000000,
+        "output_connections": 8000000
+      },
+      "untrained_predictions": [
+        "",
+        ""
+      ],
+      "predictions": [
+        "Welcome",
+        "Farewell"
+      ],
+      "exact": 2,
+      "training": [
+        {
+          "initial_loss": 1.1131274700164795,
+          "loss": 5.364416892916779e-07,
+          "updates": 20,
+          "replay_pairs": 1,
+          "vocabulary": 1
+        },
+        {
+          "initial_loss": 2.3065104484558105,
+          "loss": 0.00011906379950232804,
+          "updates": 40,
+          "replay_pairs": 2,
+          "vocabulary": 4
+        }
+      ],
+      "training_seconds": 6.248944599996321
+    },
+    "frozen_recurrent_core": {
+      "config": {
+        "config": {
+          "side": 25,
+          "degree": 12,
+          "hidden": 96,
+          "slots": 16,
+          "vocabulary": 512,
+          "seed": 42,
+          "replay": 8,
+          "encoding": "learned",
+          "input_dimensions": 576,
+          "input_units": 512,
+          "output_units": 512
+        },
+        "neurons": 15625,
+        "connections": 187500,
+        "parameters": 20947564,
+        "updates": 40,
+        "vocabulary": 4,
+        "replay_pairs": 2,
+        "input_units": 512,
+        "output_units": 512,
+        "input_encoding": "learned",
+        "input_connections": 8000000,
+        "output_connections": 8000000
+      },
+      "untrained_predictions": [
+        "",
+        ""
+      ],
+      "predictions": [
+        "Welcome",
+        "Farewell"
+      ],
+      "exact": 2,
+      "training": [
+        {
+          "initial_loss": 1.1131274700164795,
+          "loss": 5.364416892916779e-07,
+          "updates": 20,
+          "replay_pairs": 1,
+          "vocabulary": 1
+        },
+        {
+          "initial_loss": 2.3065104484558105,
+          "loss": 0.00013561738887801766,
+          "updates": 40,
+          "replay_pairs": 2,
+          "vocabulary": 4
+        }
+      ],
+      "training_seconds": 5.207850100006908
+    },
+    "fixed_features_readout_only": {
+      "config": {
+        "config": {
+          "side": 25,
+          "degree": 12,
+          "hidden": 96,
+          "slots": 16,
+          "vocabulary": 512,
+          "seed": 42,
+          "replay": 8,
+          "encoding": "learned",
+          "input_dimensions": 576,
+          "input_units": 512,
+          "output_units": 512
+        },
+        "neurons": 15625,
+        "connections": 187500,
+        "parameters": 20947564,
+        "updates": 40,
+        "vocabulary": 4,
+        "replay_pairs": 2,
+        "input_units": 512,
+        "output_units": 512,
+        "input_encoding": "learned",
+        "input_connections": 8000000,
+        "output_connections": 8000000
+      },
+      "untrained_predictions": [
+        "",
+        ""
+      ],
+      "predictions": [
+        "Welcome",
+        "Farewell"
+      ],
+      "exact": 2,
+      "training": [
+        {
+          "initial_loss": 1.1131274700164795,
+          "loss": 3.993503014498856e-06,
+          "updates": 20,
+          "replay_pairs": 1,
+          "vocabulary": 1
+        },
+        {
+          "initial_loss": 1.946657419204712,
+          "loss": 0.004287988878786564,
+          "updates": 40,
+          "replay_pairs": 2,
+          "vocabulary": 4
+        }
+      ],
+      "training_seconds": 1.230179800069891
+    },
+    "spatial_baseline": {
+      "config": {
+        "config": {
+          "side": 25,
+          "degree": 12,
+          "hidden": 96,
+          "slots": 16,
+          "vocabulary": 128,
+          "seed": 42,
+          "replay": 8,
+          "encoding": "spatial",
+          "input_dimensions": 576,
+          "input_units": 512,
+          "output_units": 512
+        },
+        "neurons": 15625,
+        "connections": 187500,
+        "parameters": 1898572,
+        "updates": 40,
+        "vocabulary": 4,
+        "replay_pairs": 2,
+        "input_units": 0,
+        "output_units": 96,
+        "input_encoding": "spatial",
+        "input_connections": 0,
+        "output_connections": 1500000
+      },
+      "untrained_predictions": [
+        "",
+        ""
+      ],
+      "predictions": [
+        "Welcome",
+        "Farewell"
+      ],
+      "exact": 2,
+      "training": [
+        {
+          "initial_loss": 0.693440318107605,
+          "loss": 0.017376521602272987,
+          "updates": 20,
+          "replay_pairs": 1,
+          "vocabulary": 1
+        },
+        {
+          "initial_loss": 1.2013118267059326,
+          "loss": 0.140081524848938,
+          "updates": 40,
+          "replay_pairs": 2,
+          "vocabulary": 4
+        }
+      ],
+      "training_seconds": 0.586065899929963
+    }
+  },
+  "checkpoint": {
+    "restored": true,
+    "same_prediction": true,
+    "same_updates": true,
+    "same_vocabulary": true,
+    "size_MiB": 241.1773157119751
+  },
+  "alias_probe": {
+    "spatial_patterns_identical": true,
+    "learned_core_states_differ": true,
+    "dense_first_tick_active_neurons": 7871,
+    "note": "Constructed coordinate-group reversal, not a semantic generalization test"
+  },
+  "source_sha256": {
+    "neural.py": "86a7b8bf8e4a1c40f926e8724b9ba917943368f3c5709e8b23de0fb65df3ff48",
+    "checkpoint.py": "5bbcbd9c27a8dcf75154d40234026dec2b615b51b68eca2d1420b8f42fffd2d4",
+    "worker.py": "0612ddd745752bb4c55065e87f99a169337150ddebad2a9e18d78269ef0bf434"
+  },
+  "limits": [
+    "Known public synthetic development pairs only; not held-out evaluation or evidence of general reasoning.",
+    "Frozen/readout controls test functional necessity on this tiny task; no general architecture superiority claim.",
+    "The learned 576-to-512 bottleneck and normalization still lose information; they remove the coordinate-stimulation rule, not every limitation.",
+    "Checkpoint contains private numeric replay and optimizer state and remains under ignored runs; only this sanitized report is publishable."
+  ]
+}
