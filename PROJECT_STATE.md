@@ -1,6 +1,75 @@
 # Project state — 2026-10-23
 
-## Current priority after vision clarification
+## Active direction — native Neural Volume Lab embedding viewer
+
+The user explicitly changed direction: build the embedding visualization first,
+then the spatial NN. The delivered UI must be a native launchable desktop app,
+not a browser application. Work lives in `neural-volume-lab/`. Earlier cognitive
+experiments below remain preserved; do not continue their playground by default.
+
+Implemented native PySide6 QtWidgets/QPainter UI: dark 3D coordinate volume,
+orbit/zoom/reset, message and optional response-reference inputs, token chips,
+play/pause/step/pace/all-token overlay, raw coordinate inspector and local model
+status. Every selected token appears as a complete polyline. The expected response
+is view-only; there is no neural simulation, training, teacher or generated answer.
+The early browser prototype was removed after the native requirement was clarified.
+
+Pinned SmolLM2-135M-Instruct input embeddings, revision
+`12fd25f77366fa6b3b4b768ec3050bf629380bac`: 49152 tokens, 576 components, 192 vertices
+and 191 segments per token. Static table lookup only. Coordinates divide each raw
+component by the entire frozen table's max absolute value, 1.9609375; no per-token
+normalization. Camera fitting is shared across both sequences. Zero-pad incomplete
+triples; retain all dimensions. This is a component drawing, not a proven semantic
+map. The pretrained embedding source introduces pretrained information.
+
+Model export uses the existing cache, writes checksummed float32 arrays/tokenizer
+into ignored `runs/neural-volume-lab/model` and never overwrites an existing export.
+The desktop runtime uses read-only assets, NumPy/tokenizers/Qt, with no Torch,
+Transformers, browser, server, model forward pass or network requirement. Messages
+are not written to disk. Missing/corrupt assets fail explicitly. Prepared weights,
+packaged executable, screenshots and verification artifacts remain ignored.
+
+Launch: double-click `neural-volume-lab/Launch Neural Volume Lab.cmd`; the packaged
+build is `runs/neural-volume-lab/desktop/NeuralVolumeLab/NeuralVolumeLab.exe`.
+Keep that whole output directory together. Source and build instructions are in
+the lab README. The Windows package is an unsigned local build, not an installer.
+
+Commands used:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install 'PySide6>=6.8,<7' 'pyinstaller>=6.11,<7'
+.\.venv\Scripts\python.exe neural-volume-lab/prepare_model.py
+.\.venv\Scripts\python.exe neural-volume-lab/app.py --verify-output runs/neural-volume-lab/source-check-v3
+.\.venv\Scripts\python.exe neural-volume-lab/build_desktop.py
+& .\runs\neural-volume-lab\desktop\NeuralVolumeLab\NeuralVolumeLab.exe --verify-output runs/neural-volume-lab/package-check
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe scripts/publication_check.py
+```
+
+Source-mode verification passed with actual token IDs and exact component/coordinate
+reconstruction, plus native selection/reference/playback/camera/reset/validation checks.
+Visual QA corrected stylesheet-overridden font sizes and deferred-deletion ghost token
+widgets. Unit tests include fixed scaling, retained dimensions, input limits, corrupt
+assets and native interactions. Final validation: all 150 tests passed in 9.22 seconds, plus the preserved legacy
+demo. The windowed packaged executable passed real-model/native-control verification
+both from the repository and a different working directory. Reports/captures are in
+`runs/neural-volume-lab/package-release-check` and `package-cwd-check`; frozen mode
+is true and Torch/Transformers-loaded flags are false. Packaged folder is 263.7 MiB.
+The first packaged launch failed because dependency discovery selected an incompatible
+ICU DLL from an unrelated toolchain on PATH. Build-only PATH isolation and a clean
+rebuild repaired it; both console diagnosis and the final windowed build then passed.
+The earlier browser server was stopped and the native executable opened for the user. CI installs desktop extras and runs native tests offscreen
+without downloading model weights. The initial Ubuntu CI job exposed a missing
+`libEGL.so.1` at QtTest import. The workflow now installs explicit Qt runtime
+libraries (`libegl1`, `libopengl0`, `libxkbcommon0`) and sets the offscreen platform
+at job scope; the desktop tests remain enabled rather than being skipped. No scientific learning result is claimed.
+
+Next: refine the embedding UI from user feedback, then define the spatial NN's
+stimulation, temporal encoding, connectivity, initialization and readout before
+training. Keep the earlier all-zero/ReLU gradient problem and point-order collisions
+explicit. Do not implement fake neural animation or quietly call a teacher.
+
+## Preserved priority after the earlier vision clarification
 
 The user clarified that the goal is an independently learning cognitive core:
 experience -> internal models/hypotheses -> experiments/predictions/revision ->

@@ -380,3 +380,49 @@ checks actually performed and never certify that the whole system is flaw-free.
   history-to-agent leakage. C5a needs declared ordinary internal feedback and sparse
   success/base-rate controls; evaluator reports cannot become its training memory.
   A broader goal panel needs a separate protocol before measurement. No final tuning.
+
+## 2026-10-23 — Native Neural Volume Lab embedding viewer
+
+- Scope: explicit new user direction, isolated native desktop app and adjacent
+  embedding/asset pipeline. Existing experiments and reports remain unchanged.
+  User rejected a web application; the browser prototype was replaced with native
+  QtWidgets/QPainter, not a WebView. The NN/teacher stage remains unimplemented.
+- Fidelity: pinned static input vectors, all 576 components grouped into 192 XYZ
+  vertices. One table-wide linear scale; camera fit is separate and shared across
+  both sequences. Repeat-token identity and exact coordinate reconstruction were
+  checked against actual local data. No model generation or fabricated neural firing.
+- Counterexamples: per-token normalization would change relative shapes; silently
+  truncating vectors or text would hide information. Tests require fixed scaling,
+  retained/padded components and explicit input-limit errors. Missing/corrupt assets
+  fail rather than produce synthetic substitute vectors. Markup-like input is plain.
+- Native visual review found overridden font sizes and briefly visible old token
+  widgets during switching. Explicit label sizing and hiding before deferred deletion
+  fixed those issues; refreshed native captures were inspected. Playback/UI tests
+  verify token stepping, reference changes, camera-invariant vectors, clear and errors.
+- Runtime boundary: local checksummed/read-only assets and NumPy/tokenizers/Qt.
+  Export alone uses the cached source model/Torch; native runtime verification checks
+  that Torch and Transformers are not loaded. Messages are not saved. Binaries,
+  weights and screenshots remain under ignored runs; no paid API or teacher is used.
+- Limits: pretrained token vectors contain pretrained information; coordinate triples
+  are not a demonstrated map of concepts. Point-set stimulation would lose coordinate
+  group order; all-zero/ReLU learning, recurrence, output decoding and stable rest
+  remain NN design questions. This is software/visualization evidence, not learning.
+- Next: verify final Windows package and CI, then get visual feedback before E2 NN
+  implementation. Preserve the native requirement and do not resume old milestones
+  merely because their historical documentation still exists.
+
+- Final evidence: 150 tests and the legacy demo passed. The first packaged startup
+  failed on QtCore import: dependency analysis had bundled an incompatible ICU DLL
+  from an unrelated PATH toolchain. The build now isolates only its child dependency
+  search to the selected runtime and OS directories, with clean analysis; no account
+  settings changed. Console diagnosis and the final windowed executable both passed
+  full real-model/native-widget verification. Launch from a different working directory
+  also passed. Frozen runtime reports confirm Torch/Transformers are not loaded.
+  Final native screenshot was inspected. The package stays local/ignored, and the
+  executable was opened for the user after stopping the superseded browser server.
+
+- CI boundary repair: the first Ubuntu job reproduced `libEGL.so.1` missing during
+  QtTest import. Added explicit Qt runtime packages and job-wide offscreen selection;
+  retained native tests. Windows source/package verification remains valid because
+  this repair affects only the headless CI environment. Both Python versions must
+  pass the revised workflow before merging.

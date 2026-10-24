@@ -1,6 +1,24 @@
 # Implementation plan
 
-## Current priority — independently learned internal models
+## Active direction — Neural Volume Lab (explicit user redirection)
+
+First settle the visual embedding system in a native, launchable desktop app, then
+investigate the spatial neural network. Work in `neural-volume-lab/`; preserve all
+older code/results. The pretrained embedding source is explicit and is not evidence
+of independently acquired language knowledge. See that folder's README for launch.
+
+- [x] E1: native dark coordinate volume, actual frozen token embeddings, consecutive
+  XYZ polylines, shared scale, token-by-token playback/selection and camera controls.
+- [x] E1: message/optional expected-response reference, raw-vector inspector and
+  explicit labels distinguishing reference visualization from training/prediction.
+- [x] E1: offline model export, checksummed read-only assets, native widget tests and
+  Windows packaging/launch entry point; packaged executable verified end to end.
+- [ ] E2: settle NN stimulation and sequence encoding; define trainable silent
+  initialization, directed recurrence, update timing, stability and text readout.
+- [ ] E2: implement/visualize actual NN states, then test fitting and interference
+  on user-taught associations. No teacher, spontaneous activity or learning claims yet.
+
+## Preserved cognitive-core roadmap
 
 The user's clarified objective is a cognitive core that discovers and manipulates
 internal models from experience, with an optional pretrained LLM for communication.
