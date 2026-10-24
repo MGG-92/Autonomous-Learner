@@ -124,7 +124,7 @@ class Engine:
         result = self.execute(request)
         if self.storage is not None:
             if request["op"] in ("admit", "train", "rest", "feedback", "coach", "correct", "reset") or (
-                    request["op"] == "init" and not self.storage.path.exists()):
+                    request["op"] == "init" and (not self.storage.path.exists() or self.storage.migrated)):
                 try:
                     self.storage.save(self.learner, reset=request["op"] == "reset")
                     self.storage_error = None
@@ -132,6 +132,7 @@ class Engine:
                     self.storage_error = f"Learning is in memory, but saving failed: {error}"
             result["storage"] = {"enabled": True, "saved": self.storage_error is None,
                                  "restored": self.storage.restored, "recovered": self.storage.recovered,
+                                 "migrated": self.storage.migrated,
                                  "updates": self.learner.updates, "error": self.storage_error}
         return result
 

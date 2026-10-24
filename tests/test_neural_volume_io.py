@@ -174,3 +174,81 @@ def test_engine_autosaves_and_restores_in_a_fresh_process_object(modules, tmp_pa
     assert resumed.learner.vocabulary == [9] and not resumed.recent_turns
     assert not resumed.handle({"op": "live_tick"})["reply"]
     resumed.close()
+
+
+def test_output_feedback_is_dense_signed_delayed_and_silent_at_rest(modules):
+    neural, _ = modules
+    net = model(neural).network
+    assert net.output_to_core.weight.shape == (125, 8)
+    state = torch.ones(125)
+    output = net.output_features(state).clamp(max=1) * state.max()
+    channel = int(output.argmax())
+    assert output[channel] > 0
+    with torch.no_grad():
+        net.edges.fill_(.1)  # Positive continuing recurrent drive.
+        net.output_to_core.weight.zero_()
+        baseline = net.tick(state)
+        net.output_to_core.weight[:, channel] = .2
+        excited = net.tick(state)
+        net.output_to_core.weight[:, channel] = -.2
+        inhibited = net.tick(state)
+        assert torch.all(excited > baseline) and torch.all(inhibited < baseline)
+        assert torch.equal(net.tick(torch.zeros(125)), torch.zeros(125))
+        net.output_to_core.weight.zero_()
+        assert torch.equal(net.tick(state), baseline)
+        # First driven tick cannot depend on its own newly generated output.
+        first = net.tick(torch.zeros(125), net.stimulus(sequence([1])["tokens"][0]))
+        net.output_to_core.weight.fill_(.01)
+        assert torch.equal(net.tick(torch.zeros(125), net.stimulus(sequence([1])["tokens"][0])), first)
+
+
+def test_feedback_learns_from_temporal_experience_and_undriven_norm_decays(modules):
+    neural, _ = modules
+    learner = model(neural)
+    learner.admit(sequence([1, 2]), sequence([9]))
+    learner.train(3)
+    net = learner.network
+    assert net.output_to_core.weight.count_nonzero() > 0
+    with torch.no_grad():
+        net.edges.fill_(10)
+        net.output_to_core.weight.fill_(10)
+        net.constrain()
+        assert torch.all(net.output_to_core.weight.abs().sum(-1) <= .200001)
+        state = torch.rand(125) * 4
+        for _ in range(60):
+            next_state = net.tick(state)
+            assert next_state.max() <= .915001 * state.max()
+            state = next_state
+        assert state.max() < .03
+
+
+def test_v1_checkpoint_upgrade_preserves_learning_and_optimizer(modules, tmp_path):
+    neural, checkpoint = modules
+    from dataclasses import replace
+    old = neural.Learner(replace(model(neural).config, output_feedback=False))
+    old.admit(sequence([1, 2]), sequence([9]))
+    old.train(3)
+    store = checkpoint.BrainStore(tmp_path / "brain.pt", IDENTITY)
+    store.save(old)
+    data = torch.load(store.path, weights_only=True)
+    data["schema"] = 1
+    data["config"].pop("output_feedback")
+    torch.save(data, store.path)
+    original = store.path.read_bytes()
+    fresh = model(neural)
+    assert store.restore(fresh) and store.migrated
+    assert store.path.read_bytes() == original  # Restore itself does not rewrite learning.
+    assert fresh.updates == old.updates and fresh.example_metadata == old.example_metadata
+    assert fresh.predict(sequence([1, 2])) == old.predict(sequence([1, 2]))
+    assert not fresh.network.output_to_core.weight.count_nonzero()
+    for key, value in old.network.state_dict().items():
+        assert torch.equal(value, fresh.network.state_dict()[key])
+    for key, state in old.optimizer.state_dict()["state"].items():
+        assert torch.equal(state["exp_avg"], fresh.optimizer.state_dict()["state"][key]["exp_avg"])
+    fresh.train(1)  # New parameter gets valid fresh Adam moments, old moments survive.
+    store.save(fresh)
+    assert store.previous.read_bytes() == original
+    again = model(neural)
+    assert store.restore(again) and not store.migrated
+    assert again.updates == 4
+    store.close()

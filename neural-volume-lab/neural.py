@@ -20,6 +20,7 @@ class Config:
     input_dimensions: int = 576
     input_units: int = 512
     output_units: int = 512
+    output_feedback: bool = True
 
 
 class SpatialNetwork(nn.Module):
@@ -52,6 +53,10 @@ class SpatialNetwork(nn.Module):
             self.encoder = nn.Linear(n, output_units, bias=False)
             self.decoder = nn.Linear(output_units, (config.slots + 1) * config.vocabulary)
             nn.init.zeros_(self.decoder.bias)
+            if config.encoding == "learned" and config.output_feedback:
+                self.output_to_core = nn.Linear(output_units, n, bias=False)
+                # Start as the previous model, then learn signed feedback.
+                nn.init.zeros_(self.output_to_core.weight)
         self.register_buffer("activity", torch.zeros(n), persistent=False)
 
     def pulse(self, points):
@@ -86,6 +91,11 @@ class SpatialNetwork(nn.Module):
 
     def tick(self, state, pulse=None):
         drive = (state[self.sources] * self.edges).sum(-1)
+        if hasattr(self, "output_to_core"):
+            # The output of the previous state influences the next state. Gating
+            # by activity magnitude prevents layer normalization amplifying silence.
+            feedback = self.output_features(state).clamp(max=1) * state.abs().amax()
+            drive = drive + self.output_to_core(feedback)
         if pulse is not None:
             drive = drive + (self.input_to_core(self.input_features(pulse)) if self.config.encoding == "learned" else pulse)
         return (.15 * state + .85 * F.relu(drive)).clamp(max=4)
@@ -104,9 +114,15 @@ class SpatialNetwork(nn.Module):
 
     @torch.no_grad()
     def constrain(self):
-        # Row L1 bound + leak is a strict contraction without external input.
+        # For nonnegative activity, each undriven step shrinks its infinity norm:
+        # .15 + .85 * (.7 + .2) = .915. This is decay to silence, not a claim
+        # of pairwise Lipschitz contraction through the normalized output layer.
         total = self.edges.abs().sum(-1, keepdim=True)
         self.edges.mul_((.7 / total.clamp(min=.7)).clamp(max=1))
+        if hasattr(self, "output_to_core"):
+            weights = self.output_to_core.weight
+            total = weights.abs().sum(-1, keepdim=True)
+            weights.mul_((.2 / total.clamp(min=.2)).clamp(max=1))
 
 
 class Learner:
@@ -330,4 +346,5 @@ class Learner:
                 "output_units": self.config.output_units if self.config.encoding == "learned" else self.config.hidden,
                 "input_encoding": self.config.encoding,
                 "input_connections": self.config.side ** 3 * self.config.input_units if self.config.encoding == "learned" else 0,
-                "output_connections": self.config.side ** 3 * (self.config.output_units if self.config.encoding == "learned" else self.config.hidden)}
+                "output_connections": self.config.side ** 3 * (self.config.output_units if self.config.encoding == "learned" else self.config.hidden),
+                "feedback_connections": self.network.output_to_core.weight.numel() if hasattr(self.network, "output_to_core") else 0}

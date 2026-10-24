@@ -13,7 +13,8 @@ Double-click `neural-volume-lab/Launch Neural Volume Lab.cmd` on the prepared
 Windows checkout. One token enters each adjustable tick; a stable reply arrives
 after the final token. Ratings, double-click corrections and explicit Try again
 practice provide external learning feedback. Learned 512-unit input/output layers
-connect to every recurrent neuron; embedding coordinates only affect visualization.
+connect to every recurrent neuron; learned signed output feedback affects the next
+neural tick. Embedding coordinates only affect visualization.
 Weights and bounded numeric replay save automatically under ignored local runs.
 The two-pair development controls all succeed, including fixed features with a
 trained readout; this is not evidence of general reasoning or architectural superiority.

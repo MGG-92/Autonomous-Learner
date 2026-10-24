@@ -19,7 +19,8 @@ def run(output):
     conditions = {}
     checkpoint_result = None
     for name in ("learned_io", "frozen_recurrent_core", "fixed_features_readout_only", "spatial_baseline"):
-        config = Config() if name != "spatial_baseline" else Config(encoding="spatial", vocabulary=128)
+        # Preserve this v1 diagnostic's architecture after adding output feedback.
+        config = Config(output_feedback=False) if name != "spatial_baseline" else Config(encoding="spatial", vocabulary=128)
         learner = Learner(config)
         if name in ("frozen_recurrent_core", "fixed_features_readout_only"):
             learner.network.edges.requires_grad_(False)
@@ -43,7 +44,7 @@ def run(output):
             brain = BrainStore(output / "private-checkpoint" / "brain.pt", identity)
             before = learner.predict(pairs[0][0])
             brain.save(learner)
-            fresh = Learner()
+            fresh = Learner(config)
             brain.restore(fresh)
             checkpoint_result = {"restored": True, "same_prediction": fresh.predict(pairs[0][0]) == before,
                 "same_updates": fresh.updates == learner.updates, "same_vocabulary": fresh.vocabulary == learner.vocabulary,
@@ -52,7 +53,7 @@ def run(output):
     first = pairs[0][0]["tokens"][0]
     permuted = dict(first, vector=[v for p in reversed(first["points"]) for v in [x * store.scale for x in p]],
                     points=list(reversed(first["points"])))
-    dense, spatial = Learner(), Learner(Config(encoding="spatial", vocabulary=128))
+    dense, spatial = Learner(Config(output_feedback=False)), Learner(Config(encoding="spatial", vocabulary=128))
     with torch.no_grad():
         a = dense.network.tick(torch.zeros_like(dense.network.activity), dense.network.stimulus(first))
         b = dense.network.tick(torch.zeros_like(dense.network.activity), dense.network.stimulus(permuted))

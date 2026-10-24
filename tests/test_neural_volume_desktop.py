@@ -246,3 +246,46 @@ def test_delivered_message_does_not_change_on_idle_ticks_and_practice_is_explici
     native.compute.result.emit({"op": "speak", "result": {"reply": True, "practice": True, "turn_id": 2,
         "prediction": "another reply", "active": 0}})
     assert old.text() == "hi" and native.chat.latest_reply is not old
+
+
+def test_chat_punctuation_is_utf8_and_dynamic_text_stays_literal(native, qapp):
+    chat = native.chat
+    native.set_expert_mode(False)
+    assert chat.bad.text() == "Needs work  \u2212"
+    assert chat.send.text() == "Send message  \u2197"
+    assert chat.composer.placeholderText() == "Talk to the learner\u2026  Enter to send"
+    assert "Short messages \u00b7 16 tokens" in chat.save_note.text()
+    chat.queued("<b>hello</b>", {"message_id": 1, "queued": 1})
+    chat.show_tick({"reply": True, "turn_id": 1, "prediction": "<b>hi</b>", "received": 1, "total": 1, "active": 0})
+    chat.coached({"teaching": None, "verdict": "Review", "reward": 0, "proposal": "<i>example</i>"})
+    assert chat.latest_reply.textFormat() == Qt.TextFormat.PlainText
+    assert chat.live.text() == "<b>hi</b>"
+    assert chat.latest_reply.message_role.text().startswith("NETWORK \u00b7 ")
+    assert "Reply delivered \u00b7" not in chat.progress.text()  # Professor status is current.
+    assert not any(marker in (LAB / "chat.py").read_text(encoding="utf-8")
+                   for marker in ("\u00c2\u00b7", "\u00e2\u20ac", "\u00e2\u2020", "\u00e2\u02c6"))
+
+
+@pytest.mark.parametrize("size", [(1120, 760), (1320, 920)])
+def test_long_reply_scrolls_and_correction_does_not_overlap(native, qapp, size):
+    native.set_expert_mode(False)
+    native.resize(*size)
+    chat = native.chat
+    text = "Line of a synthetic reply\n" * 16
+    chat.queued("hello", {"message_id": 1, "queued": 1})
+    chat.show_tick({"reply": True, "turn_id": 1, "prediction": text, "received": 1, "total": 1, "active": 0})
+    chat.composer.setPlainText("Draft to keep")
+    for _ in range(3): qapp.processEvents()
+    assert chat.live_scroll.verticalScrollBar().maximum() > 0
+    chat.live_scroll.verticalScrollBar().setValue(chat.live_scroll.verticalScrollBar().maximum())
+    assert chat.live.text() == text
+    chat.open_editor()
+    for _ in range(3): qapp.processEvents()
+    assert not chat.compose_panel.isVisible()
+    assert chat.corrected_text.height() >= 60
+    assert chat.corrected_text.geometry().bottom() < chat.save.geometry().top()
+    assert chat.editor.height() >= chat.editor.minimumSizeHint().height()
+    assert chat.save_note.geometry().bottom() < chat.height()
+    chat.close_editor()
+    qapp.processEvents()
+    assert chat.compose_panel.isVisible() and chat.composer.toPlainText() == "Draft to keep"

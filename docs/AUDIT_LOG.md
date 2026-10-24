@@ -1,5 +1,44 @@
 # Recurring critique and repair log
 
+## 2026-10-24 — output feedback and native formatting repair
+
+Scope: neural.py/chat.py plus adjacent checkpoint migration, worker timing and
+legacy control protocol. Reproduced actual UI corruption and checked source Unicode
+codepoints: UTF-8 punctuation had been re-encoded through the Windows default codec.
+Explicit UTF-8 repair restores minus, arrow, ellipsis and middle dots. Added exact
+widget/dynamic-label regressions; literal user text remains plain text.
+
+Minimum-size counterexample: a long reply required 222px but was capped at 85px;
+the correction panel measured 109px against a 142px minimum and its text field
+intersected the buttons. Pinned reply now scrolls; correcting hides the independent
+composer and preserves drafts. At 1120×760 and 1320×920, controls no longer overlap;
+all 13 desktop tests also pass with QT_SCALE_FACTOR=1.5.
+
+Feedback risk: directly recycling normalized output can amplify tiny remaining
+activity. Gate by previous activity magnitude, clip feature amplitude and project
+signed feedback rows to L1≤0.2 alongside recurrent rows≤0.7. Controlled regressions
+reproduce excitation/inhibition, delay, gradients, silence and undriven norm decay.
+This proves neither brain realism nor pairwise contraction through normalization.
+
+Data-loss review: changing the architecture would otherwise reject existing brains.
+Matching schema-1 checkpoints upgrade with old weights/moments/replay intact; new
+feedback starts at zero. Regression verifies original bytes are unchanged on restore,
+old bytes remain as backup after save, and resumed Adam training/roundtrip succeed.
+Legacy I/O diagnostic explicitly disables feedback to preserve its protocol; its
+fresh full-model rerun still fits 2/2 in all four controls and restores the checkpoint.
+
+186 tests and the preserved demo pass. Source and packaged actual-worker chat
+smokes pass (correction/reward/professor/restart). The seeded feedback development
+probe retains 1/2 pairs in both conditions. Feedback weights acquire both signs and
+ablating them changes state/logits, but a task benefit is absent. No checkpoint
+selection, extra tuning or held-out claims. No new defect found in the reviewed
+reply-credit and offline professor paths. Raw private checkpoints remain ignored.
+
+Next audit: retention/interference and actual temporal-credit coverage, whether any
+benefit exceeds a trained readout, and a separately falsifiable stopping objective.
+Do not infer general reasoning or autonomous correct learning from visible activity.
+
+
 ## 2026-10-24 — learned interfaces and persistent message credit
 
 - Geometry alias: reversing coordinate groups yields the same spatial stimulus.

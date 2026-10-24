@@ -1,5 +1,39 @@
 # Architecture and experimental boundaries
 
+## Current extension — delayed output-to-volume feedback
+
+The learned interface now includes a separate dense 512→15,625 signed feedback
+matrix, in addition to the existing dense 15,625→512 output matrix. Core-to-core
+connectivity remains sparse. New parameters start at zero, preserving the previous
+model's initial function; total model size is 28,947,564 parameters. For state h:
+
+`o = ReLU(layer_norm(W_out h))`
+`f = min(o, 1) * max(abs(h))`
+`h_next = clamp(.15 h + .85 ReLU(W_rec h + W_back f + input_drive), max=4)`
+
+Every output can excite/suppress every core unit through independently learned
+signed weights on the following tick. This is continuous neural output, not a
+sampled-word/professor feedback loop. Forward training and live ticking share this
+transition; no separate hidden recurrent state is introduced. Row L1 limits of
+0.7 on recurrence and 0.2 on feedback give undriven nonnegative activity a peak
+bound of 0.915 per tick. Gating avoids normalized output amplifying tiny residual
+activity; zero remains silent. This does not prove pairwise contraction through
+normalization or teach stopping automatically at message delivery.
+
+Checkpoint schema 2 upgrades matching schema-1 brains by preserving all existing
+weights, optimizer moments, vocabulary, sampler and replay, appending zero feedback
+weights and fresh optimizer state only for the new matrix. Existing private paths
+remain valid. Old-generation bytes survive as the previous backup when saved.
+Incompatible architectures still fail explicitly. Trained primary size is about
+333 MiB plus one backup, on the project drive.
+
+Chat source is consistently UTF-8. Long pinned replies scroll, correction mode
+temporarily hides the normal composer without losing its draft, and editor controls
+retain enough height at the minimum window size. No training protocol changed for
+these formatting repairs. The historical v1 I/O probe explicitly disables feedback
+so a rerun is not silently a different architecture.
+
+
 ## Current native architecture — learned I/O and stable messages
 
 This section supersedes spatial stimulation and session-only descriptions below.

@@ -1,5 +1,21 @@
 # Implementation plan
 
+## Current user-requested extension — feedback and formatting
+
+- [x] Dense signed output→core feedback, shared live/training transition, one-tick
+  delay, bounded excitation/inhibition and zero-state silence.
+- [x] Matching v1 checkpoint upgrade preserves learned parameters, optimizer/replay
+  and sampler; added feedback starts at zero.
+- [x] Repair corrupted UTF-8 labels, scroll long replies and prevent correction
+  field/button overlap; verify minimum size and 150% display scaling.
+- [x] Seeded feedback-on/off smoke and causal ablation: both retain 1/2 known pairs,
+  no demonstrated performance benefit. Preserve negative retention result.
+- [ ] Next: matched-budget retention/interference and feedback ablations with
+  disjoint validation/test inputs. Do not tune on final worlds or grow the network
+  to mask this result. Test any proposed learned response-stopping objective
+  separately from supplied decay, zero gating and manual stop/silence controls.
+
+
 ## Current user-priority increment — learned I/O, persistence and messaging
 
 - [x] Replace coordinate stimulation with learned 512-unit input/output layers

@@ -9,7 +9,7 @@ import torch
 
 
 class BrainStore:
-    SCHEMA = 1
+    SCHEMA = 2
 
     def __init__(self, path, identity):
         self.path = Path(path).resolve()
@@ -34,6 +34,29 @@ class BrainStore:
             raise RuntimeError("Another app owns this saved brain. Keep one learning window running at a time.") from error
         self.restored = False
         self.recovered = False
+        self.migrated = False
+
+    def upgrade(self, data, learner):
+        """Preserve v1 learning; append a silent feedback layer and fresh moments."""
+        if data.get("schema") != 1:
+            return data, False
+        config = asdict(learner.config)
+        legacy_config = {k: v for k, v in config.items() if k != "output_feedback"}
+        if data.get("config") != legacy_config or not config["output_feedback"]:
+            raise ValueError("Saved brain architecture does not match; original checkpoint preserved")
+        upgraded = dict(data, schema=self.SCHEMA, config=config)
+        if hasattr(learner.network, "output_to_core"):
+            if "output_to_core.weight" in data["network"]:
+                raise ValueError("Unexpected feedback layer in legacy checkpoint")
+            upgraded["network"] = dict(data["network"], **{
+                "output_to_core.weight": torch.zeros_like(learner.network.output_to_core.weight)})
+            for key, optimizer in (("optimizer", learner.optimizer), ("feedback_optimizer", learner.feedback_optimizer)):
+                groups = data[key]["param_groups"]
+                expected = optimizer.state_dict()["param_groups"]
+                if len(groups) != 1 or groups[0]["params"] != expected[0]["params"][:-1]:
+                    raise ValueError("Invalid legacy optimizer parameter order")
+                upgraded[key] = dict(data[key], param_groups=[dict(groups[0], params=expected[0]["params"])])
+        return upgraded, True
 
     @staticmethod
     def finite(value):
@@ -91,7 +114,7 @@ class BrainStore:
             try:
                 if candidate.stat().st_size > 512 * 1024 ** 2:
                     raise ValueError("Saved brain exceeds the local size bound")
-                data = torch.load(candidate, map_location="cpu", weights_only=True)
+                data, migrated = self.upgrade(torch.load(candidate, map_location="cpu", weights_only=True), learner)
                 self.validate(data, learner)
                 learner.network.load_state_dict(data["network"])
                 learner.optimizer.load_state_dict(data["optimizer"])
@@ -104,6 +127,7 @@ class BrainStore:
                 learner.network.activity.zero_()
                 self.restored = True
                 self.recovered = candidate == self.previous
+                self.migrated = migrated
                 return True
             except Exception as error:
                 failures.append(f"{candidate.name}: {type(error).__name__}: {error}")
