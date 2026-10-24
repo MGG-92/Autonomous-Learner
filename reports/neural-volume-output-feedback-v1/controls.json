@@ -1,0 +1,165 @@
+{
+  "status": "development smoke",
+  "seed": 42,
+  "perturbation_seed": 93,
+  "threads": 2,
+  "torch": "2.14.1+cpu",
+  "device": "cpu",
+  "updates_per_pair": 12,
+  "pairs": [
+    [
+      "Hello world",
+      "Welcome"
+    ],
+    [
+      "Goodbye world",
+      "Farewell"
+    ]
+  ],
+  "conditions": {
+    "no_feedback": {
+      "description": {
+        "config": {
+          "side": 25,
+          "degree": 12,
+          "hidden": 96,
+          "slots": 16,
+          "vocabulary": 512,
+          "seed": 42,
+          "replay": 8,
+          "encoding": "learned",
+          "input_dimensions": 576,
+          "input_units": 512,
+          "output_units": 512,
+          "output_feedback": false
+        },
+        "neurons": 15625,
+        "connections": 187500,
+        "parameters": 20947564,
+        "updates": 24,
+        "vocabulary": 4,
+        "replay_pairs": 2,
+        "input_units": 512,
+        "output_units": 512,
+        "input_encoding": "learned",
+        "input_connections": 8000000,
+        "output_connections": 8000000,
+        "feedback_connections": 0
+      },
+      "training": [
+        {
+          "initial_loss": 1.0441677570343018,
+          "loss": 2.026555648626527e-06,
+          "updates": 12,
+          "replay_pairs": 1,
+          "vocabulary": 1,
+          "stored_replay_pairs": 1,
+          "online_updates": 12,
+          "kind": "bounded_online_teaching"
+        },
+        {
+          "initial_loss": 2.23769211769104,
+          "loss": 0.551521360874176,
+          "updates": 24,
+          "replay_pairs": 2,
+          "vocabulary": 4,
+          "stored_replay_pairs": 2,
+          "online_updates": 12,
+          "kind": "bounded_online_teaching"
+        }
+      ],
+      "predictions": [
+        "Welcome",
+        "Welcome"
+      ],
+      "exact": 1,
+      "undriven_peak_before": 3.999912977218628,
+      "undriven_peak_after_60_ticks": 2.89429790015505e-40,
+      "maximum_undriven_peak_ratio": 0.38419538736343384,
+      "causal_probe": null,
+      "seconds": 5.516833100002259
+    },
+    "feedback": {
+      "description": {
+        "config": {
+          "side": 25,
+          "degree": 12,
+          "hidden": 96,
+          "slots": 16,
+          "vocabulary": 512,
+          "seed": 42,
+          "replay": 8,
+          "encoding": "learned",
+          "input_dimensions": 576,
+          "input_units": 512,
+          "output_units": 512,
+          "output_feedback": true
+        },
+        "neurons": 15625,
+        "connections": 187500,
+        "parameters": 28947564,
+        "updates": 24,
+        "vocabulary": 4,
+        "replay_pairs": 2,
+        "input_units": 512,
+        "output_units": 512,
+        "input_encoding": "learned",
+        "input_connections": 8000000,
+        "output_connections": 8000000,
+        "feedback_connections": 8000000
+      },
+      "training": [
+        {
+          "initial_loss": 1.0441677570343018,
+          "loss": 1.9669512312248116e-06,
+          "updates": 12,
+          "replay_pairs": 1,
+          "vocabulary": 1,
+          "stored_replay_pairs": 1,
+          "online_updates": 12,
+          "kind": "bounded_online_teaching"
+        },
+        {
+          "initial_loss": 2.2421555519104004,
+          "loss": 0.5380148887634277,
+          "updates": 24,
+          "replay_pairs": 2,
+          "vocabulary": 4,
+          "stored_replay_pairs": 2,
+          "online_updates": 12,
+          "kind": "bounded_online_teaching"
+        }
+      ],
+      "predictions": [
+        "Welcome",
+        "Welcome"
+      ],
+      "exact": 1,
+      "undriven_peak_before": 3.999912977218628,
+      "undriven_peak_after_60_ticks": 3.3397374992162743e-37,
+      "maximum_undriven_peak_ratio": 0.43499845266342163,
+      "causal_probe": {
+        "nonzero_weights": 4107565,
+        "positive_weights": 1891111,
+        "negative_weights": 2216454,
+        "maximum_row_L1": 0.20000006258487701,
+        "same_input_state_max_difference_after_feedback_ablation": 0.5929313898086548,
+        "same_input_logits_max_difference_after_feedback_ablation": 0.047388553619384766
+      },
+      "seconds": 10.492410100065172
+    }
+  },
+  "source_sha256": {
+    "neural.py": "665eca0920f8e1172053afe10fe1f3628194f6af5ceb1cd99d0916d2356378de",
+    "checkpoint.py": "264626b77707b7888fcc42fb103eac019b3dac90279b1a6363d7be7990866a56",
+    "worker.py": "7ba40b36ec63206c1b95bbcf5317f5c0707d977202dbe1f19c883cc69056fe63",
+    "check_output_feedback.py": "689612451be8aadcee31753b98a8273c31bc862141898dd68e17a91e115b5caf"
+  },
+  "limits": [
+    "Known development pairs, no held-out evaluation or checkpoint selection.",
+    "The feedback ablation tests an effect on internal computation, not improved task performance.",
+    "Matched update counts and shared initial existing weights; added feedback parameters change capacity.",
+    "No evidence of general conversation, general reasoning or learned automatic stopping after a delivered message.",
+    "Feedback uses previous tick's continuous output units, not sampled text tokens or professor output."
+  ]
+}

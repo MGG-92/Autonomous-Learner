@@ -129,7 +129,7 @@ class Volume(QWidget):
         painter.fillRect(self.rect(), gradient)
         painter.setFont(QFont("Segoe UI", 8))
         painter.setPen(QColor("#839fae"))
-        painter.drawText(28, 30, "●   INPUT 512   →   RECURRENT CORE 15,625   →   OUTPUT 512" if self.neural else "●   NEURAL VOLUME LAB")
+        painter.drawText(28, 30, "●   INPUT 512   →   CORE 15,625   ↔   OUTPUT 512" if self.neural else "●   NEURAL VOLUME LAB")
         if self.neural:
             painter.setPen(QPen(QColor(105, 150, 168, 26), 1.2))
             painter.drawPoints(QPolygonF(self.project(self.neuron_positions)))
@@ -249,7 +249,7 @@ class Volume(QWidget):
 class Window(QMainWindow):
     def __init__(self, store=None, checkpoint=None):
         super().__init__()
-        self.setWindowTitle("Neural Volume Lab · Learned I/O")
+        self.setWindowTitle("Neural Volume Lab · Output Feedback")
         self.setMinimumSize(1120, 760)
         self.resize(1320, 920)
         self.store = store or EmbeddingStore()
@@ -282,7 +282,7 @@ class Window(QMainWindow):
         titles = QVBoxLayout()
         titles.setSpacing(4)
         titles.addWidget(label("N E U R A L   V O L U M E   L A B", 10, "#d9e7ea", True))
-        titles.addWidget(label("NEURAL MESSAGING / 04", 8, "#7995a5"))
+        titles.addWidget(label("NEURAL MESSAGING / 05", 8, "#7995a5"))
         head.addLayout(titles)
         head.addStretch()
         self.mode_button = button("Inspect network", lambda: self.set_expert_mode(not self.expert_mode))

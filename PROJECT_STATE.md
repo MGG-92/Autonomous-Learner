@@ -1,5 +1,56 @@
 # Project state — 2026-10-24
 
+## Current extension — output feedback and formatting (2026-10-24)
+
+Latest audit: docs/AUDIT_LOG.md, output feedback/native formatting repair. Source
+now fixes the screenshot's corrupted minus/arrow/ellipsis/dots with explicit UTF-8,
+scrolls long pinned replies and prevents correction input/buttons overlapping at
+minimum size. While editing, the normal composer is hidden and its draft retained.
+No user chat/checkpoints were reset or published.
+
+The learned network adds 8,000,000 independently signed output→core weights:
+512 outputs each feed every one of 15,625 volume units on the following tick.
+Total parameters: 28,947,564. New weights start at zero, then learn from temporal
+training. Internal core edges remain sparse. Activity-gated bounded output and
+row-L1 constraints preserve undriven decay (peak bound 0.915/tick) and exact-zero
+silence; sampled words do not feed back. Automatic stopping on message delivery
+has not been learned or supplied by this change.
+
+Matching schema-1 checkpoints upgrade to schema 2, retaining all earlier learned
+weights, optimizer moments, vocabulary, sampler and eight numeric replay contexts.
+The added matrix starts at zero; old primary bytes remain in the previous backup.
+Same private checkpoint path; trained primary now about 333 MiB, on project drive.
+
+Commands/evidence:
+- `.venv/Scripts/python.exe -m pytest -q`: 186 passed in 26.52 seconds.
+- `.venv/Scripts/python.exe -m autonomous_learner demo --memory runs/demo-output-feedback-v1.sqlite`:
+  passed, including restart and memory ablation.
+- `QT_SCALE_FACTOR=1.5 .venv/Scripts/python.exe -m pytest tests/test_neural_volume_desktop.py -q`
+  (set environment using the host shell): all 13 desktop tests pass.
+- `.venv/Scripts/python.exe neural-volume-lab/check_output_feedback.py --output runs/neural-volume-lab/output-feedback-development-v1`:
+  seed 42, matched twelve updates/pair; both conditions retain 1/2 known pairs.
+  4,107,565 feedback weights become nonzero, with both signs. Ablation changes
+  internal state/logits, but there is no measured response-performance improvement.
+  Sanitized report: reports/neural-volume-output-feedback-v1; no checkpoint tuning.
+- `.venv/Scripts/python.exe neural-volume-lab/app.py --verify-chat-output runs/neural-volume-lab/output-feedback-source-v1`:
+  actual-worker correction/reward/offline professor/restart passed.
+- `.venv/Scripts/python.exe neural-volume-lab/build_desktop.py`: rebuilt native
+  executable. Launched generated package from runs with `--verify-chat-output` and
+  isolated output-feedback-package-v1: passed. Launcher points to this fresh build.
+- `.venv/Scripts/python.exe neural-volume-lab/check_io.py --output runs/neural-volume-lab/io-legacy-protocol-v1`:
+  the preserved feedback-disabled protocol still fits 2/2 pairs in all four controls,
+  including checkpoint restoration; original published reports remain unchanged.
+
+Remaining limits: tiny known development examples, sixteen token slots, 511 target
+IDs, eight replay examples, immediate policy credit, unverified professor, lossy
+embedding adapter. Formatting fixes do not establish retention or language skill.
+Next task/audit focus: matched-budget retention/interference controls and temporal
+credit, plus independently tested stopping supervision if proposed. Prior studies
+and their negative findings remain intact below.
+
+## Historical state before this extension
+
+
 ## Current increment — learned I/O, saved brain and stable messaging
 
 Supersedes geometric stimulation, session-only learning and changing-every-tick
