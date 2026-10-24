@@ -18,7 +18,9 @@ abstractions; avoid adding perception or language complexity before testing the 
 Functional self-modeling is an explicit long-term objective: learn reliability,
 capabilities and effects of cognitive actions from ordinary experience, then test
 whether this improves decisions. Follow `docs/SELF_MODELING.md` and C5 in the plan;
-keep the action-world goal baseline next. No canned self-descriptions or LLM
+preserve the measured development goal baseline and its inconclusive prior comparison.
+Next take bounded P1 observability alongside a C5a feedback protocol. No canned
+self-descriptions or LLM
 self-awareness simulation counts as evidence, and functional benefits imply no
 subjective-consciousness result. Preserve the evaluator/agent boundary: any future
 internal-observation interface must exclude research audit logs, hidden intervention

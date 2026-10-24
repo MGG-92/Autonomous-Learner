@@ -3,6 +3,13 @@
 This is an agentic-AI work in progress. These measurements describe narrow synthetic
 experiments, not general intelligence, independent grammar learning, or a finished product.
 
+The [first action-world goal comparison](action-goals-v1/README.md) scores supplied
+planning over acquired beliefs. IG achieves 10.42% success across 80 development
+goals versus prior-only 6.67%; that paired gain interval crosses zero. Only 10 goals
+are reachable. Random investigation reaches 10.83%, fixed 10.42%; no investigation
+superiority, learned planning or transfer is established. All goals remain in primary
+results, with compute and interaction costs reported separately.
+
 The [first action-world development comparison](action-prediction-v1/README.md)
 tests experience-updated predictions of state-changing actions without an LLM.
 Supplied information-gain investigation reaches 75.31% one-step and 71.80% two-step

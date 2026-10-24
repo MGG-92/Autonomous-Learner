@@ -352,3 +352,31 @@ checks actually performed and never certify that the whole system is flaw-free.
 - Next: reconstruct the measured report from saved commitments, transitions and costs;
   check source identity, same tasks, exact action counts, reachability denominators and
   negative outcomes before publication. Goal results do not prove learned planning.
+
+## 2026-10-23 — Goal baseline result and artifact reconstruction
+
+- Source/config/protocol frozen at `47aee8d1b81aad5a4e745c84df2447536549cb08`;
+  measured clean tree, 80 development mechanisms, no validation/final execution.
+- Independent checks reconstructed 1200 score/cost rows from commitments/executions,
+  independently sampled goals and canonical development identities, exhaustive true
+  reachability and plan/exploration effect counts. Recomputed every summary and world
+  bootstrap interval. 720 investigation runs / 8640 actions; 1200 goal executions /
+  2634 actions. No additional environment interactions for verification.
+- Important limitation reproduced: only 10 of the 80 independent goals are reachable.
+  Kept all 70 unreachable failures; did not resample a more favorable task set. Primary
+  IG success 10.42% versus prior 6.67%, but the +3.75 percentage point interval
+  [-1.25, 9.17] crosses zero. Random investigation 10.83%, fixed 10.42%. No reliable
+  prior advantage or IG superiority. Reachable-only 83.33% uses only 10 worlds/seed;
+  presenting that alone would conceal sparse coverage. Public report leads with limits.
+- IG versus random-plan +7.08 [1.67, 12.92] percentage points is bounded evidence
+  against that supplied control, not trained planning. Lower enumeration work with
+  conditioned candidates is supplied algorithm behavior. Compute and actual goal
+  lengths differ; matched ceilings are not matched resources. All intervals exploratory.
+- Actual checks: 139 tests, fresh demos and goal CLI smoke passed; full measurement
+  and offline reconstruction passed. Prior reports remain unchanged, independent
+  roadmap formatting is excluded from commits. No new runtime correctness defect
+  was reproduced during this result review.
+- Next: bounded P1 observer/execution parity, development-world isolation and no
+  history-to-agent leakage. C5a needs declared ordinary internal feedback and sparse
+  success/base-rate controls; evaluator reports cannot become its training memory.
+  A broader goal panel needs a separate protocol before measurement. No final tuning.

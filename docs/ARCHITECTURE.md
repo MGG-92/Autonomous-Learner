@@ -109,8 +109,10 @@ Software fixtures verify planning from experienced transitions. `action_goals.py
 adds independent goal/start sampling, IG/random/fixed investigation, prior-only and
 random-plan controls. It saves all policies/seeds' commitments before goal feedback
 or evaluator-only reachability. Execution receives no model and cannot replan or
-update evidence. Source/config freeze precedes the scored development measurement;
-no learned planner, self-model or mechanism-family transfer is implied.
+update evidence. The first clean-source development result is in
+`reports/action-goals-v1/README.md`: only 10/80 sampled goals are reachable, and IG
+versus prior has an interval crossing zero. No learned planner, self-model or
+mechanism-family transfer is demonstrated.
 
 ## Functional self-modeling: proposed extension, not implemented
 

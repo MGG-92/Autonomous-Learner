@@ -32,11 +32,17 @@ runner: `python -m autonomous_learner action-goals --config configs/action-goals
 It compares supplied planning over acquired beliefs with prior-only planning and
 random plans; commits precede feedback and unreachable goals remain in the result.
 
+The [first goal comparison](reports/action-goals-v1/README.md) finds 10.42% success
+over all 80 independently sampled goals versus 6.67% after model reset, with an
+interval crossing zero. Only 10 goals are reachable within three actions; information
+gain does not beat random/fixed investigation. This is a limited development result
+with supplied search over acquired beliefs, not learned general planning.
+
 Long-term research also includes [functional self-modeling](docs/SELF_MODELING.md):
 learning the agent's own reliability, limitations and the effects of cognitive choices
 from experience. This is planned, not demonstrated. It does not imply subjective
 consciousness or rely on generated self-descriptions. Goal-directed world learning
-remains the next experimental milestone.
+remains central; the bounded playground and reliability pilot are next.
 
 An [Interactive Agent Playground](docs/PLAYGROUND.md) is planned after the first
 scored action-world goal baseline: a small CLI for goals, step-by-step investigation,
