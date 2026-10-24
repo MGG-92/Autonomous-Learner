@@ -1,4 +1,4 @@
-"""Native Qt desktop entry point. No browser, web server or model generation."""
+"""Native Qt desktop entry point with isolated local neural/professor computation."""
 import math
 from pathlib import Path
 import sys
@@ -11,6 +11,7 @@ from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout, QLa
     QVBoxLayout, QWidget)
 
 from embeddings import EmbeddingStore
+from compute import Compute
 
 
 STYLE = """
@@ -32,6 +33,10 @@ QPlainTextEdit:focus{border:1px solid #8bcfbe}
 QScrollArea{border:0;background:transparent} QScrollArea>QWidget>QWidget{background:transparent}
 QScrollBar:horizontal{height:5px;background:#101820} QScrollBar::handle:horizontal{background:#3a535f;border-radius:2px}
 QScrollBar::add-line:horizontal,QScrollBar::sub-line:horizontal{width:0}
+QScrollBar:vertical{width:7px;background:#111d27;margin:5px 0}
+QScrollBar::handle:vertical{background:#3a535f;min-height:24px;border-radius:3px}
+QScrollBar::add-line:vertical,QScrollBar::sub-line:vertical{height:0}
+QScrollBar::add-page:vertical,QScrollBar::sub-page:vertical{background:transparent}
 QSlider::groove:horizontal{height:3px;background:#3b515d;border-radius:1px}
 QSlider::handle:horizontal{width:10px;height:10px;margin:-4px 0;background:#9ce4d1;border-radius:5px}
 QCheckBox{background:transparent;color:#9bb3bf;spacing:8px}
@@ -85,6 +90,9 @@ class Volume(QWidget):
         self.response, self.guides = False, True
         self.yaw, self.pitch, self.zoom, self.fit_zoom = .55, -.3, 1., 1.
         self.drag_position = None
+        self.neural = False
+        self.activity = []
+        self.neuron_positions = np.stack(np.meshgrid(*([np.linspace(-1, 1, 25)] * 3), indexing="ij"), -1).reshape(-1, 3)
 
     def reset_camera(self):
         self.yaw, self.pitch, self.zoom = .55, -.3, self.fit_zoom
@@ -112,6 +120,17 @@ class Volume(QWidget):
         painter.setFont(QFont("Segoe UI", 8))
         painter.setPen(QColor("#839fae"))
         painter.drawText(28, 30, "●   COORDINATE VOLUME    /    XYZ TRIPLES")
+        if self.neural:
+            painter.setPen(QPen(QColor(105, 150, 168, 26), 1.2))
+            painter.drawPoints(QPolygonF(self.project(self.neuron_positions)))
+            if self.activity:
+                ids = [pair[0] for pair in self.activity]
+                points = self.project(self.neuron_positions[ids])
+                for point, (_, value) in zip(points, self.activity):
+                    color = QColor("#9ae7d2")
+                    color.setAlpha(min(240, 50 + round(value * 180)))
+                    painter.setPen(QPen(color, min(6., 2 + value * 3), Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
+                    painter.drawPoint(point)
         if self.guides:
             radius = min(1, 1 / self.zoom)
             corners = [(x * radius, y * radius, z * radius) for x in (-1, 1) for y in (-1, 1) for z in (-1, 1)]
@@ -128,7 +147,7 @@ class Volume(QWidget):
                 painter.drawLine(pa, pb)
                 painter.setPen(QColor("#7b97a6"))
                 painter.drawText(pb + QPointF(7, -7), "XYZ"[axis])
-        if not self.tokens:
+        if not self.tokens and not self.neural:
             painter.setPen(QColor("#8bb9b1"))
             painter.setFont(QFont("Segoe UI", 9))
             painter.drawText(QRectF(0, self.height() * .35, self.width(), 30), Qt.AlignmentFlag.AlignCenter, "LANGUAGE, IN SPACE")
@@ -139,7 +158,7 @@ class Volume(QWidget):
             painter.setPen(QColor("#8fa7b4"))
             painter.drawText(QRectF(0, self.height() * .43 + 65, self.width(), 30), Qt.AlignmentFlag.AlignCenter,
                              "One token. One vector. A line through its coordinates.")
-        else:
+        elif self.tokens:
             indices = [i for i in range(len(self.tokens)) if i != self.index] if self.all_tokens else []
             indices.append(self.index)
             color = QColor("#f2bd95" if self.response else "#9ae7d2")
@@ -205,11 +224,18 @@ class Window(QMainWindow):
     def __init__(self, store=None):
         super().__init__()
         self.setWindowTitle("Neural Volume Lab")
-        self.setMinimumSize(1040, 700)
+        self.setMinimumSize(1120, 760)
         self.resize(1320, 920)
         self.store = store or EmbeddingStore()
         self.data, self.sequence, self.index = None, "message", 0
         self.metadata = None
+        self.compute = Compute(self)
+        self.compute.result.connect(self.compute_result)
+        self.compute.failed.connect(self.compute_failed)
+        self.training_batches = 0
+        self.network_ready = False
+        self.neural_timer = QTimer(self)
+        self.neural_timer.timeout.connect(lambda: self.send_compute("step"))
         self.timer = QTimer(self)
         self.timer.timeout.connect(self.advance)
         self.root = QWidget()
@@ -224,7 +250,7 @@ class Window(QMainWindow):
         titles = QVBoxLayout()
         titles.setSpacing(4)
         titles.addWidget(label("N E U R A L   V O L U M E   L A B", 10, "#d9e7ea", True))
-        titles.addWidget(label("EMBEDDING STUDY / 01", 8, "#7995a5"))
+        titles.addWidget(label("SPATIAL LEARNING / 02", 8, "#7995a5"))
         head.addLayout(titles)
         head.addStretch()
         self.status = label("●  LOADING LOCAL EMBEDDINGS", 9, "#c2ad85")
@@ -247,9 +273,13 @@ class Window(QMainWindow):
         self.loader.start()
 
     def build_inspector(self):
-        self.inspector = QFrame(self.volume, objectName="inspector")
+        self.inspector = QScrollArea(self.volume)
         self.inspector.setFixedWidth(230)
-        info = QVBoxLayout(self.inspector)
+        self.inspector.setWidgetResizable(True)
+        self.inspector.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.inspector_content = QFrame(objectName="inspector")
+        self.inspector.setWidget(self.inspector_content)
+        info = QVBoxLayout(self.inspector_content)
         info.setContentsMargins(20, 20, 20, 18)
         info.setSpacing(13)
         self.token_number = label("SELECTED TOKEN", 8)
@@ -265,7 +295,7 @@ class Window(QMainWindow):
         for widget in (self.token_number, self.token_text, self.token_piece, self.token_details,
                        label("FIRST RAW COORDINATES", 8), self.raw):
             info.addWidget(widget)
-        note = label("Vertices come from consecutive components. Segments connect them; no neurons are simulated.", 9, "#7d99a8")
+        note = label("XYZ vertices stimulate nearest grid neurons. Connecting segments are visual guides only. Activity is computed, never decorative.", 9, "#7d99a8")
         note.setWordWrap(True)
         info.addWidget(note)
         self.inspector.hide()
@@ -337,8 +367,8 @@ class Window(QMainWindow):
         self.message.setAccessibleName("Message")
         self.response = QPlainTextEdit()
         self.response.setPlaceholderText("An expected response, for comparison…")
-        self.response.setAccessibleName("Response reference, view only")
-        for title, field in (("MESSAGE", self.message), ("RESPONSE REFERENCE   /   OPTIONAL · VIEW ONLY", self.response)):
+        self.response.setAccessibleName("Expected response, editable training target")
+        for title, field in (("MESSAGE", self.message), ("EXPECTED RESPONSE   /   EDIT BEFORE TRAINING", self.response)):
             column = QVBoxLayout()
             column.setSpacing(7)
             column.addWidget(label(title, 8))
@@ -353,8 +383,9 @@ class Window(QMainWindow):
         column.addWidget(self.visualize)
         composer.addLayout(column)
         area.addLayout(composer)
+        self.build_neural_controls(area)
         footer = QHBoxLayout()
-        self.model_label = label("Local processing · frozen token embeddings · no neural simulation", 8, "#6f8b9b")
+        self.model_label = label("Local processing · frozen embeddings · compute starts on request", 8, "#6f8b9b")
         footer.addWidget(self.model_label)
         footer.addStretch()
         self.about_button = button("How this is drawn", self.toggle_about, "quiet")
@@ -366,13 +397,158 @@ class Window(QMainWindow):
         area.addWidget(self.about)
         parent_layout.addWidget(workspace)
 
+    def build_neural_controls(self, area):
+        row = QHBoxLayout()
+        self.start_network = button("Start network", lambda: self.send_compute("init"))
+        self.inject = button("Inject token", self.inject_token)
+        self.neural_step = button("Step", lambda: self.send_compute("step"))
+        self.neural_run = button("Run", self.toggle_neural_run)
+        self.silence = button("Silence", self.silence_network)
+        self.fit = button("Train pair", self.train_pair)
+        self.predict_button = button("Predict", lambda: self.send_compute("predict", message=self.message.toPlainText()))
+        self.teacher = button("Ask professor", lambda: self.send_compute("teacher", message=self.message.toPlainText()))
+        self.rest_button = button("Train rest", lambda: self.send_compute("rest", epochs=10))
+        self.erase = button("Reset learning", self.reset_learning)
+        self.compute_buttons = [self.inject, self.neural_step, self.neural_run, self.silence,
+                                self.fit, self.predict_button, self.teacher, self.rest_button, self.erase]
+        for widget in [self.start_network, *self.compute_buttons]:
+            widget.setEnabled(False)
+            row.addWidget(widget)
+        area.addLayout(row)
+        controls = QHBoxLayout()
+        controls.addWidget(label("Firing steps/s", 8))
+        self.firing_rate = QSlider(Qt.Orientation.Horizontal)
+        self.firing_rate.setRange(1, 20)
+        self.firing_rate.setValue(4)
+        self.firing_rate.setFixedWidth(100)
+        self.firing_rate.valueChanged.connect(lambda value: self.neural_timer.setInterval(round(1000 / value)))
+        controls.addWidget(self.firing_rate)
+        self.neural_status = label("15,625 neurons · sparse recurrence · not started", 8)
+        controls.addWidget(self.neural_status, 1)
+        self.stop_training = button("Stop training", self.cancel_training, "quiet")
+        self.stop_training.setEnabled(False)
+        controls.addWidget(self.stop_training)
+        area.addLayout(controls)
+        self.prediction = label("NETWORK OUTPUT   /   untrained · no prediction", 10, "#98e6cf")
+        self.prediction.setTextFormat(Qt.TextFormat.PlainText)
+        self.prediction.setWordWrap(True)
+        self.target_source = label("Target source: user · professor proposals are unverified and never train automatically", 8)
+        self.response.textChanged.connect(lambda: self.target_source.setText("Target source: edited/user supplied · train explicitly"))
+        area.addWidget(self.prediction)
+        area.addWidget(self.target_source)
+
+    def send_compute(self, op, **arguments):
+        if self.compute.busy:
+            return False
+        self.error.hide()
+        if self.compute.request(op, **arguments):
+            self.neural_status.setText({"teacher": "Professor generating offline…", "train": "Optimizing neural parameters…"}.get(op, "Computing " + op + "…"))
+            self.update_compute_controls(True)
+            return True
+        return False
+
+    def update_compute_controls(self, busy=False):
+        self.start_network.setEnabled(not busy and not self.network_ready and self.metadata is not None)
+        for widget in self.compute_buttons:
+            widget.setEnabled(self.network_ready and not busy and self.training_batches == 0)
+        self.stop_training.setEnabled(self.training_batches > 0)
+
+    def compute_failed(self, message):
+        self.training_batches = 0
+        if self.compute.process.state() == self.compute.process.ProcessState.NotRunning:
+            self.network_ready = False
+            self.volume.activity = []
+            self.volume.update()
+            self.prediction.setText("NETWORK OUTPUT   /   compute stopped · session learning lost")
+        self.neural_timer.stop()
+        self.neural_run.setText("Run")
+        self.error.setText(message)
+        self.error.show()
+        self.neural_status.setText("Operation failed · see error below")
+        self.update_compute_controls()
+
+    def compute_result(self, payload):
+        op, result = payload["op"], payload["result"]
+        if op in ("init", "reset"):
+            self.network_ready = True
+            self.volume.neural = True
+            self.volume.fit_zoom = self.volume.zoom = 1
+            self.prediction.setText("NETWORK OUTPUT   /   untrained · target vocabulary empty")
+        if "activity" in result:
+            self.volume.activity = result["activity"]
+            self.volume.update()
+            self.neural_status.setText(f"15,625 neurons · active {result['active']:,} · peak {result['peak']:.4f} · updates {result['updates']}")
+        elif op == "teacher":
+            self.response.setPlainText(result["proposal"])
+            self.target_source.setText("Target source: frozen local SmolLM2-135M · UNVERIFIED · edit, then Train pair")
+            self.neural_status.setText("Professor ready · 16-token generation limit · offline CPU")
+        elif op in ("train", "rest"):
+            loss = result.get("loss", result.get("rest_loss"))
+            self.neural_status.setText(f"{op.title()} loss {loss:.5f} · updates {result['updates']} · training metric only")
+        if op == "predict":
+            self.prediction.setText("NETWORK OUTPUT   /   " + (result["prediction"] or "[EOS / no response]"))
+        self.update_compute_controls()
+        if op == "admit" and self.training_batches > 0:
+            self.send_compute("train", epochs=10)
+        elif op == "train" and self.training_batches > 0:
+            self.training_batches -= 1
+            if self.training_batches:
+                QTimer.singleShot(0, lambda: self.send_compute("train", epochs=10) if self.training_batches else None)
+            else:
+                self.update_compute_controls()
+                self.send_compute("predict", message=self.training_message)
+
+    def inject_token(self):
+        self.send_compute("step", message=self.message.toPlainText(), index=self.index)
+
+    def toggle_neural_run(self):
+        if self.neural_timer.isActive():
+            self.neural_timer.stop()
+            self.neural_run.setText("Run")
+        else:
+            self.neural_timer.start(round(1000 / self.firing_rate.value()))
+            self.neural_run.setText("Pause")
+
+    def silence_network(self):
+        self.neural_timer.stop()
+        self.neural_run.setText("Run")
+        self.send_compute("silence")
+
+    def train_pair(self):
+        self.neural_timer.stop()
+        self.neural_run.setText("Run")
+        self.training_message = self.message.toPlainText()
+        self.training_batches = 10
+        if not self.send_compute("admit", message=self.training_message, target=self.response.toPlainText()):
+            self.training_batches = 0
+
+    def cancel_training(self):
+        self.training_batches = 0
+        self.stop_training.setEnabled(False)
+        # A bounded ten-epoch request finishes; no optimizer state is discarded.
+        if not self.compute.busy:
+            self.update_compute_controls()
+
+    def reset_learning(self):
+        from PySide6.QtWidgets import QMessageBox
+        answer = QMessageBox.question(self, "Reset learning?", "Erase this session's learned weights, target vocabulary and replay examples? Silence preserves them.")
+        if answer == QMessageBox.StandardButton.Yes:
+            self.silence_network()
+            # Reset after silence completes on the next idle event.
+            self.compute.result.connect(self.finish_reset)
+
+    def finish_reset(self, payload):
+        if payload["op"] == "silence":
+            self.compute.result.disconnect(self.finish_reset)
+            self.send_compute("reset")
+
     def eventFilter(self, watched, event):
         if watched is self.volume and event.type() == QEvent.Type.Resize and hasattr(self, "reset"):
             self.position_overlays()
         return super().eventFilter(watched, event)
 
     def position_overlays(self):
-        self.inspector.adjustSize()
+        self.inspector.setFixedHeight(min(self.inspector_content.sizeHint().height() + 4, max(180, self.volume.height() - 140)))
         self.inspector.move(self.volume.width() - 254, 55)
         self.transport.adjustSize()
         self.transport.move(max(24, (self.volume.width() - self.transport.width()) // 2), self.volume.height() - 66)
@@ -385,9 +561,10 @@ class Window(QMainWindow):
         self.metadata = metadata
         self.status.setText("●  LOCAL MODEL READY   /   OFFLINE")
         self.status.setStyleSheet("color:#9adfc9")
-        self.model_label.setText(f"SmolLM2-135M · {metadata['dimensions']} dimensions · static embeddings · no neural simulation")
-        self.about.setText(f"Frozen input embeddings, revision {metadata['revision']}. Divide all components by the same table-wide maximum absolute value ({metadata['scale']:.7g}), then group successive values into XYZ triples. Zero-pad incomplete triples; discard no dimensions. Camera fitting is shared across both messages. These are component drawings, not a validated map of concepts. No contextual inference, teacher, training, or neural activity is running. Text stays in application memory and is not saved.")
+        self.model_label.setText(f"SmolLM2-135M · {metadata['dimensions']} dimensions · frozen embeddings · local CPU compute")
+        self.about.setText(f"Frozen embeddings, revision {metadata['revision']}; shared scale {metadata['scale']:.7g}. Consecutive XYZ triples, not a validated concept map. Sparse recurrent ReLU network: 15,625 units, 12 incoming edges each, no reciprocal edges; longer cycles remain possible. Random weights, zero recurrent biases/activity. Learned fixed-slot token readout: at most 16 tokens from up to 127 admitted target tokens, with EOS; not a pretrained language decoder. Training uses eight-pair replay; Predict never reads targets or replay. Professor is a separate frozen offline LLM, not network cognition. Responses may be wrong or truncated. Run adds no random activity; zero stays zero. Text, replay and learning are RAM-only and lost on close. Packaged GUI requires this checkout's Python compute runtime.")
         self.visualize.setEnabled(True)
+        self.update_compute_controls()
 
     def model_failed(self, message):
         self.status.setText("●  MODEL UNAVAILABLE")
@@ -409,7 +586,7 @@ class Window(QMainWindow):
         self.response_tab.setText(f"Response reference  {len(response['tokens']) if response else 0}")
         self.response_tab.setEnabled(response is not None)
         extent = max(abs(v) for seq in (message, response) if seq for token in seq["tokens"] for p in token["points"] for v in p)
-        self.volume.fit_zoom = min(50, .85 / max(extent, .01))
+        self.volume.fit_zoom = 1 if self.volume.neural else min(50, .85 / max(extent, .01))
         self.volume.reset_camera()
         self.all.setChecked(False)
         self.switch("message")
@@ -460,7 +637,7 @@ class Window(QMainWindow):
         self.play.setEnabled(len(self.volume.tokens) > 1 and not self.all.isChecked())
         for i, chip in enumerate(self.chips): chip.setChecked(i == self.index)
         self.strip.ensureWidgetVisible(self.chips[self.index], 10, 0)
-        self.inspector.adjustSize()
+        self.position_overlays()
         self.volume.update()
 
     def select_manual(self, index):
@@ -525,6 +702,8 @@ class Window(QMainWindow):
 
     def closeEvent(self, event):
         self.stop()
+        self.neural_timer.stop()
+        self.compute.close()
         self.loader.wait()
         super().closeEvent(event)
 
@@ -550,6 +729,11 @@ def main():
         index = sys.argv.index("--verify-output")
         destination = Path(sys.argv[index + 1])
         window.loader.ready.connect(lambda _: QTimer.singleShot(100, lambda: verify(window, app, destination)))
+        window.loader.failed.connect(lambda _: app.exit(1))
+    if "--verify-learning-output" in sys.argv:
+        from check_learning_desktop import verify_learning
+        destination = Path(sys.argv[sys.argv.index("--verify-learning-output") + 1])
+        window.loader.ready.connect(lambda _: QTimer.singleShot(100, lambda: verify_learning(window, app, destination)))
         window.loader.failed.connect(lambda _: app.exit(1))
     window.show()
     sys.exit(app.exec())

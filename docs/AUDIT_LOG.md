@@ -1,5 +1,45 @@
 # Recurring critique and repair log
 
+## 2026-10-23 — spatial learner and local professor
+
+- Counterexample to an overly broad learning claim: the same two taught pairs fit
+  2/2 with frozen random recurrent weights and a learned readout. Full learner also
+  fits 2/2; no-replay and no-input controls score 1/2, untrained/random 0/2. Published
+  the negative architectural conclusion with exact synthetic outputs/config/source
+  digests; no general reasoning or recurrent-learning benefit is claimed.
+- The all-zero ReLU proposal cannot bootstrap ordinary backpropagation. Use random
+  weights and zero activity instead. Test real recurrent parameter changes, seeded
+  topology with no reciprocal/self edges, exact-zero invariance and undriven decay.
+  Row-L1 constraints provide stability; longer directed cycles still exist.
+- Geometry remains lossy: reversing vertex order yields the identical binary pulse,
+  although reversing token order changes recurrent state. Quantization/duplicate
+  merging and strong temporal decay remain open research limitations. Segments do
+  not stimulate neurons. Explicitly document token cross entropy versus the absent
+  spatial-pattern target objective, finite slots and finite learned output vocabulary.
+- Target leakage check: after fitting Hello/Welcome and Goodbye/Farewell, replace
+  the displayed target with a deliberately incorrect string. Native Predict still
+  returns Welcome from Hello. Separate unittest removes replay entirely after
+  fitting and still predicts both pairs. Professor proposals never auto-admit/train.
+- Rest reset/learning distinction: Silence preserves weights; perturbed-state rest
+  training rehearses task examples. Zero starts/stays zero without input. A positive
+  rest gradient is not evidence of spontaneous activity or useful autonomy.
+- Deployment/disk: reuse existing cached 135M model and CPU Torch; no downloads.
+  QProcess uses offline pinned loaders, frozen generation and bounded requests.
+  Caches/build temporaries are on the checkout drive. Packaged GUI is 263.7 MiB;
+  compute uses the existing checkout runtime. Missing workers fail explicitly.
+  No chat/checkpoint logging; learning is RAM-only and lost on close. Unexpected
+  worker exits invalidate UI session state instead of silently implying retention.
+- First rebuild encountered the earlier open package's Windows DLL lock. Build to
+  a separate learning directory and check executable sharing locks before future
+  replacement. Existing user window was not terminated. Fresh legacy smoke database
+  was required; the existing database was preserved after the CLI refused overwrite.
+- Native visual inspection found inspector content overlapping transport on a short
+  viewport. Replaced it with a bounded scrolling panel and added a geometry test.
+  159 tests pass, plus preserved demo and actual-model source/frozen-package checks;
+  package verification runs from another working directory with real professor and
+  full grid. CI must pass before merging. No reserved evaluation data was touched.
+
+
 Cadence and merge rules live in [AGENTS.md](../AGENTS.md). Review relevant open
 findings on each continuation; record a focused audit before each meaningful PR,
 repeat after substantive repairs, and broaden at milestone/final-experiment gates.
