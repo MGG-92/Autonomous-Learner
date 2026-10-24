@@ -15,16 +15,91 @@ bounded comparison is complete; build the small structured action-world bridge i
 `docs/PLAN.md` before prolonged arithmetic optimization. Test mechanism
 transfer and acquired abstractions separately from renamed-object generalization.
 The action-world core now updates transition beliefs within supplied templates;
-its first development prediction comparison is complete. Goal planning, learned
-investigation, abstraction acquisition and transfer remain unmeasured/unimplemented.
+its development prediction and supplied goal-planning comparisons are complete.
+Reliable learned-strategy benefit, abstraction acquisition and transfer remain open.
 
 Self-modeling is now an explicit long-term objective: learn reliability, capability
 limits and effects of cognitive operations from ordinary experience, then test
 behavioral benefit. It is not implemented and implies no consciousness claim.
-Keep goal-directed world learning next, then a small C5a reliability pilot alongside
-later abstraction/strategy work. Language rendering is not a prerequisite.
+Keep goal-directed world learning central. Next take bounded P1 observability and
+specify a C5a reliability pilot alongside later abstraction/strategy work. Language
+rendering is not a prerequisite.
 
-## Latest increment — Interactive Agent Playground roadmap
+## Latest increment — measured action-world goal baseline
+
+Frozen clean source/config/protocol: `47aee8d1b81aad5a4e745c84df2447536549cb08`.
+Report: `reports/action-goals-v1/README.md` and `development.json`. 80 existing
+development mechanisms, 12 exploration actions, goal ceiling three, RNG seeds
+7/42/97; one independent start/goal pair per mechanism. All plans precede goal
+feedback/reachability; execution cannot update beliefs or replan. No reserved
+worlds, policy optimization or changes to frozen prediction reports.
+
+Only 10/80 goals are reachable within the ceiling (all-goal maximum 12.5%).
+Seed-mean all-goal success: IG 10.42%, random investigation 10.83%, fixed 10.42%,
+prior/reset/no-memory/untrained 6.67%, random full-budget plan 3.33%. Reachable-only
+rates: 83.33/86.67/83.33/53.33/26.67%; denominator only 10 worlds per seed, shared
+across seeds. IG-prior gain +3.75 percentage points, world-bootstrap interval
+[-1.25, 9.17], crosses zero; IG-random -0.42 [-1.25, 0.00], fixed 0 [0, 0].
+IG-random-plan +7.08 [1.67, 12.92]. Exploratory/unadjusted intervals average seeds
+within world first. No reliable prior advantage or investigation superiority claimed.
+
+Mean actual goal actions IG/random/fixed/prior/random-plan: 1.5792/1.6958/1.7000/3/3.
+Mean plan effect evaluations: 129660.60/137116.20/132979.75/1774710/0. Compute is
+not matched; smaller supplied candidate sets reduce exhaustive enumeration work.
+720 actual investigation runs, 8640 real exploration actions; 1200 goal executions,
+2634 actual goal actions. Reset/random-plan reuse IG exploration costs/traces.
+
+Validation: 139 tests passed; fresh legacy, action-model and goal smoke demos passed.
+Offline `python runs/verify-action-goals.py` reconstructed all 1200 scores/costs,
+independent goal sampling, exhaustive true reachability, effect-count formulas,
+summary denominators and bootstrap intervals from saved artifacts without new
+world interactions. Measured runtime 483.96 seconds, Python 3.12.14, clean tree.
+Raw artifacts remain ignored; only compact reviewed synthetic results are public.
+
+Latest audit: goal result/reconstruction entry in `docs/AUDIT_LOG.md`. Limitations:
+only 10 reachable tasks, supplied stationary templates/inference/search, no trained
+planner, calibration, self-model, abstraction or family-transfer result. A broader
+goal panel requires a separately declared protocol, not reachable-goal resampling.
+Next: bounded P1 CLI over actual components with step/run/inspection parity and
+agent/observer separation; alongside that specify C5a feedback without evaluator
+logs/labels or forgotten evidence. Preserve independent local roadmap formatting.
+
+## Previous increment — action-world goal evaluator (source freeze)
+
+Implemented `action_goals.py`, the `action-goals` CLI, development/smoke configs,
+and `docs/experiments/action-goals.md`. IG/random/fixed exploration feed the supplied
+planner; model-reset/no-memory/untrained erases IG evidence, while random-plan ignores
+it. Reset/random-plan reuse IG exploration costs, not extra investigation episodes.
+All policies and seeds persist plans before any goal execution or true reachability.
+Goal starts/targets are independently sampled without reachability rejection; frozen
+execution cannot update a model or replan. Empty subgroup denominators stay unknown.
+No trained planner, self-model, abstraction or transfer capability is implemented.
+
+Validation: 139 tests passed in 8.43 seconds after changes; fresh legacy and
+action-model demos passed. The original 127-test suite passed before changes.
+New regression cases cover cross-seed commitment order, no execution-time model
+updates, reset, unreachable goals, no-op action costs, raw reconstruction, reproducibility,
+zero goal budget and bad settings. The two-world goal smoke passed; it contains no
+reachable one-step goals, so it is software evidence only. Existing frozen prediction
+reports/configs are preserved. Source/config must be committed before the measured
+80-world development run; the report must record a clean tree and this frozen commit.
+
+Commands:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner action-goals --config configs/action-goals-smoke.json --output runs/action-goals-smoke-v1
+.\.venv\Scripts\python.exe -m autonomous_learner action-goals --config configs/action-goals.json --output runs/action-goals-v1
+.\.venv\Scripts\python.exe scripts/publication_check.py
+```
+
+Preserve independent local `docs/PLAN.md` formatting outside commits; temporarily
+stash/restore it around a clean measured run. Latest critique is the goal evaluator
+entry in `docs/AUDIT_LOG.md`. Next: execute the frozen development protocol, reconstruct
+scores/costs from saved commitments and executions, publish a compact honest report.
+Only after that baseline take the bounded P1 playground increment alongside C5a.
+
+## Previous increment — Interactive Agent Playground roadmap
 
 Added `docs/PLAYGROUND.md` and P1 in `docs/PLAN.md`. This is planning only: no
 `playground` command, event recorder or interactive action-world session exists yet.

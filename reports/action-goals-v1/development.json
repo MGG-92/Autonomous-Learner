@@ -1,0 +1,1162 @@
+{
+  "schema_version": 1,
+  "phase": "development_goals_only",
+  "config": {
+    "worlds": 80,
+    "exploration_actions": 12,
+    "goal_actions": 3,
+    "policy_seeds": [
+      7,
+      42,
+      97
+    ],
+    "selection_seed": 611,
+    "exploration_layout_start": 5000000,
+    "naming_start": 5100000,
+    "permutation_start": 5150000,
+    "goal_layout_start": 5300000,
+    "goal_target_start": 5400000,
+    "planning_start": 5500000
+  },
+  "protocol": "docs/experiments/action-goals.md",
+  "results_by_seed": {
+    "7": {
+      "information_gain": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1125,
+          "mean_goal_actions": 1.5875
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.9,
+          "mean_goal_actions": 1.8
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.5571428571428572
+        }
+      },
+      "random": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1,
+          "mean_goal_actions": 1.6875
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.8,
+          "mean_goal_actions": 1.8
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.6714285714285715
+        }
+      },
+      "fixed": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1125,
+          "mean_goal_actions": 1.7
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.9,
+          "mean_goal_actions": 1.8
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.6857142857142857
+        }
+      },
+      "model_reset": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.075,
+          "mean_goal_actions": 3.0
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.6,
+          "mean_goal_actions": 3.0
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 3.0
+        }
+      },
+      "random_plan": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.0375,
+          "mean_goal_actions": 3.0
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.3,
+          "mean_goal_actions": 3.0
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 3.0
+        }
+      }
+    },
+    "42": {
+      "information_gain": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1,
+          "mean_goal_actions": 1.575
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.8,
+          "mean_goal_actions": 1.8
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.542857142857143
+        }
+      },
+      "random": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1125,
+          "mean_goal_actions": 1.6875
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.9,
+          "mean_goal_actions": 1.7
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.6857142857142857
+        }
+      },
+      "fixed": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1,
+          "mean_goal_actions": 1.7
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.8,
+          "mean_goal_actions": 1.8
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.6857142857142857
+        }
+      },
+      "model_reset": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.0625,
+          "mean_goal_actions": 3.0
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.5,
+          "mean_goal_actions": 3.0
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 3.0
+        }
+      },
+      "random_plan": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.0375,
+          "mean_goal_actions": 3.0
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.3,
+          "mean_goal_actions": 3.0
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 3.0
+        }
+      }
+    },
+    "97": {
+      "information_gain": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1,
+          "mean_goal_actions": 1.575
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.8,
+          "mean_goal_actions": 1.9
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.5285714285714285
+        }
+      },
+      "random": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1125,
+          "mean_goal_actions": 1.7125
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.9,
+          "mean_goal_actions": 1.7
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.7142857142857142
+        }
+      },
+      "fixed": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.1,
+          "mean_goal_actions": 1.7
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.8,
+          "mean_goal_actions": 1.8
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 1.6857142857142857
+        }
+      },
+      "model_reset": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.0625,
+          "mean_goal_actions": 3.0
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.5,
+          "mean_goal_actions": 3.0
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 3.0
+        }
+      },
+      "random_plan": {
+        "all": {
+          "n": 80,
+          "success_rate": 0.025,
+          "mean_goal_actions": 3.0
+        },
+        "reachable": {
+          "n": 10,
+          "success_rate": 0.2,
+          "mean_goal_actions": 3.0
+        },
+        "unreachable": {
+          "n": 70,
+          "success_rate": 0.0,
+          "mean_goal_actions": 3.0
+        }
+      }
+    }
+  },
+  "paired_success_gains": {
+    "random": {
+      "worlds": 80,
+      "mean_success_gain": -0.004166666666666667,
+      "world_bootstrap95": [
+        -0.0125,
+        0.0
+      ],
+      "per_world": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.3333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bootstrap_samples": 2000
+    },
+    "fixed": {
+      "worlds": 80,
+      "mean_success_gain": 0.0,
+      "world_bootstrap95": [
+        0.0,
+        0.0
+      ],
+      "per_world": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bootstrap_samples": 2000
+    },
+    "model_reset": {
+      "worlds": 80,
+      "mean_success_gain": 0.0375,
+      "world_bootstrap95": [
+        -0.0125,
+        0.09166666666666667
+      ],
+      "per_world": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.6666666666666667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.3333333333333333,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bootstrap_samples": 2000
+    },
+    "random_plan": {
+      "worlds": 80,
+      "mean_success_gain": 0.07083333333333333,
+      "world_bootstrap95": [
+        0.01666666666666667,
+        0.12916666666666668
+      ],
+      "per_world": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.6666666666666667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.6666666666666667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.6666666666666667,
+        0.0,
+        0.6666666666666667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -0.6666666666666666,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.6666666666666667,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "bootstrap_samples": 2000
+    }
+  },
+  "coverage": [
+    {
+      "mechanism_id": "936fc7a20126482ba8dd01658c9fc5ee0e38fc79fa1da2a005205c8a49926808",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "5fe365d30297a8604e2f59a832c7967d3190eebfbf2dcf149d3ecc97bc85ad3c",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "a8e8d6c65f305eb51baa32a5139b5dcf9e32ad4f02d60c121e1a3dd365970fd1",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "246b22771b1c456175f78254bb258cd4756273fbf76876ef0e5f230539dba358",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "a7c9533d6e804c54816ca9e52976e1a1f861f4f4db62a436681bac84bc73c719",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "5cec5e784d6be34fd78e7d47cff8dbabbbc9c8edbbd0fbbc57739742d4b84b4c",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "963550b3a954007c33851908f7fcb0a4070bcf148d9577867ca2c5fb933f3ade",
+      "reachable": true,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "0acb2df59132a11770b91041bc1fa11776856ba4b60b116986bb2b8f1e77c264",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "a622ad3298ec8fc78a2ef34d9dd6d6f5a9ae6ee35bfac7889331d3d2bedb161e",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "7bc14e4b93121fd95c3d0bcde1539f8138c26cc3f4cf1e437b474c5f6bbfe746",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "31afe53c63241d8613af1a9b01e0eb1021531e9e2c9236f9f0d488a8fc0fed4d",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "8402bf827d6e790f822ff2d064655e1633fad75d6297ca8ced11aa876126eadf",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "96831086a4350a155b4a1a12279c836824b408013f7340166d35867a422d71e2",
+      "reachable": true,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "9565865b740685cd9ef2d99f15f96ca96613c4dba1d669a38824f2d926d19991",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "a896503bc9a32fd3be74446b7d92b900bf3b6c268adb570d170e1d47f23cf4b6",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "a35fd91f32d736f789c496764d96219b8c77a1140437c13fcd897aa1e324287a",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "2b66ebe21a21b2cd814d5946c210e1926291da490ab1e5381bbd1599b60aadce",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "3ca40f81869ee3e0746a28a4717c53204dabb2a2b7367909f597035a30ef7065",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "db1a1407fb50076618442d802430be8a582e082a883d11072260506fd75d81a6",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "9bffbd4ce97a0e3a789d0bc0c597cdc3daf7a29818fcc14f5f9c6cbd0f5ed90d",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "244fa65a9cfc7f910deb63836f2ec268092c3a5ec54fdd996b9cd215adedd604",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "191dee9552d846555e1e690179eb4d7b24e457e40a8f1cb6d6bb9b1595c54304",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "4390625e40ef111444e086c521e5e8eda79695570b0bf7d13566a473abf293e7",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "bbc030805eed771a3723cca45671aecabd35fff0d785662660cd7d5be8fb6ea3",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "127cc46f9274896f118f58a0b2e9d646782beca67283b356786933cbd6463be6",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "a6072fc5bf4e58b66ce5d070cf08de066a78d90630019971565c82d88331babb",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "0f8a41581958a07098167be7d6f0ee3fd53b0496990bc67929e135b30e3a1b07",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "00f2602c661f525e3c4a3a526d8969167d96382d61790cd70ed60ebb97505abf",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "d59d569a78d4370d29d6d6f1f656f9f1d01bfd3429d24a8b9234914c799e43b4",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "c8244654afebda99a8db911223faf4163470644901e09889e72c035931a20e5d",
+      "reachable": true,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "b1ca9d86e54cdb20ab56805a051fc4bb34807050c914cf793d41430fa53202c7",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "67773fa32dd35a3162f09ccd2b3b0db0ab1584db9b66970db062bdd28cc566ee",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "854ee4a4a64291361e036bf301831921ae095f73426f77696d2a46a70223f2b6",
+      "reachable": false,
+      "reachability_effect_evaluations": 27
+    },
+    {
+      "mechanism_id": "5fb980febfbbac20a121a43f61c692a51be34a51b7add2a54b2ff302799c77bf",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "f84b7e1c65c26a68e01ab8f4cef8398cdfedc53c2f9cb0e95804b7642797e0de",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "b560f2f33cdebd1d786323f780cef5cbc14c25bf860462f46626c3d13d2d4356",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "a81ea570d0b359a1bcfa32f0b1dc2d59bf0492776095701c91e81a03faadbf86",
+      "reachable": true,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "cf79393d0227c588fd167a7472edbcecaa4f92064b23d9d48f0e3587e2612706",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "2b43061af98983db8c635d649a7d656ce3b528517def65cf5546e7d36dfb9fa9",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "082516312a42a05339433be7cf0fbf768f3bee1088e09bdcaa5d20c4c4ee6979",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "c53ce6420ba744705481ed1b302faa9967403d61d17b8106275489033248193b",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "fd52e4bd1b53007b91ffd371f9a6ed297272f47d505c925218c48aa425049f51",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "b6270ceb731115e4fd83a2a1f3780ae6dc9cd472144fb6890a2b8bf571dd10e7",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "e9a2a9ce8ce6f6ea2864656dd653b8f65f79f79391231db5afab2daeb361de9b",
+      "reachable": true,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "cc37de875159c28b7d1bb988f0e22678e353e08677595cca094b1a90f95ec23e",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "37f0abd5467f52f6b7cb03b85a123f7a31e24c5111b79f714b6781513171b2e8",
+      "reachable": true,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "07a3768e86bf544ee2afe87b0339ffd8822f77a2a232c559a479c355aab60b5b",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "42f507840c890751ec5a96b74fbff835fa4e3811daaab78092e09805c5e820bc",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "4887c1c2dfe61703d8ac4368d410312b2e35e5129f80ce1d5a5a6374320998f2",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "dea5fc3eb2961afd40204a7a05c72ff8a1d38302e0c065b72aba53597882fb10",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "c1c7e5e917f0d643f71702b358415d6a4a8f76585d30804186e8f25bfa4f0a8b",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "b8154160b4faa990a915aefae2c7e41d6d8fc00c143987e0b7145bf5cba8e0e8",
+      "reachable": true,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "167dacf7db88c6eab3df480b231f5b98ce9b6d67445ee094a58d19895eceef2d",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "2b5c9a0e0d55499c6f4fbfe7d2138cbe7a4ea58f62288fce143848badc29cba9",
+      "reachable": true,
+      "reachability_effect_evaluations": 27
+    },
+    {
+      "mechanism_id": "6484d48cb2c812e725ad707f1f0ebae832494818b470c089042787d74645d755",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "5e9aabb6cca84bebc7ba4fdabcae50e028240beb0c44f8edc8129c8d9d3ea988",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "9e7f9a4f275447bb481baca92f73a58ed31ba3591f2ce2acdb448c9e8d04a643",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "7015957385d5a80fa5938b0cb266a53bef300ca1514baf5f2a50ad62c7ecbe0c",
+      "reachable": true,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "e0eb903dbfcb6e298746ef0826d35374442a0d8caa8d31f2737e1c7c5f8ace4c",
+      "reachable": false,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "27357b67793ecad0e3421dff820d6bb7997e2f0f4fe94795cf806dab2bee85ae",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "8f26cf734a2be7db890fd9d3b911e4a4d18e26e89b59a43c6d873689457b5bc9",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "07bc3da6c7300163e7ba2b616699445e7f71f9363d55ac780a7b2c50f7bd42f7",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "4167a654bafbd6e55a631879d02f2543fca20294aef4fa0f3d02adb5fec68216",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "1f7703d51515bee09c600202fa6587424a0b801723ebef92c3d78220e18c6059",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "549e0a0d97b49c9cff5ef05c07e4d767090eb963d49a8ea5bc510f0f5f530687",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "8b06aeac124fa79456f5d90d7f32f11aa1506cb809d39d594213de25e92fe02c",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "fa033cfcbb73118c5d2f034fd757e2b293131e009074183342cb5470504322ec",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "eb80aaea513ad6dd58173899b0fcac030bb294cc3afc3398d7a3ca3c167632d8",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "c1cabcff0a929e8b65e84235f515dad1979328b8a32e2d0ce3e876d9bf8a9a35",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "ea9dc35849f1d87b743bf8dc7126d4bdf0beab90a063040a5868a1c960474ddf",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "6dc387da5745d6b21a4dabfaf4d691077abfe8484372ed827fb43643958e243c",
+      "reachable": true,
+      "reachability_effect_evaluations": 24
+    },
+    {
+      "mechanism_id": "457d692795e5552bb0a72be46d04e815b6e83671a52276bad0250d81eaf74598",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "e9a7690099ab5f9d6cddb01580d0cb36159d177e862ad7ad7274653960c3db95",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "932389a7f9f45770d7af42159cdba4a5287e4da14236a55b9422af60fd27906f",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "31aa78c7886f570d6f8ec138f0c038ccba03c8e3ee55a1430689d7579d1a16ad",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    },
+    {
+      "mechanism_id": "33e2bd6165bac7552e35bccada7c2d83da1b9d3e1aa049c992d881ca11c8ce51",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "0619a1e443b1e698882d013b71a3d3784088bf10458a0f64524e420bb085c502",
+      "reachable": false,
+      "reachability_effect_evaluations": 15
+    },
+    {
+      "mechanism_id": "f6c59869ff5637df53a184d6aa9bd3f3f73ee47ae151e228cb11214606880495",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "be6aeb5d6fcc41befcd64f6a76d1daebe20881db97cb8bbe7b2a98dd05e67c32",
+      "reachable": false,
+      "reachability_effect_evaluations": 9
+    },
+    {
+      "mechanism_id": "1503a0ce1ae8ed58b522eb9cc257e98d87c3e470592e0f60f1bd427712963300",
+      "reachable": false,
+      "reachability_effect_evaluations": 18
+    }
+  ],
+  "mean_costs": {
+    "information_gain": {
+      "real_actions": 12.0,
+      "selection_effect_evaluations": 761.5416666666666,
+      "exploration_effect_evaluations": 1043.1208333333334,
+      "selection_seconds": 0.0011570491619446936,
+      "exploration_seconds": 0.0014375895848691774,
+      "noop_actions": 9.0625,
+      "planning_seconds": 0.1195663320812552,
+      "planning_effect_evaluations": 129660.6,
+      "evaluated_sequences": 40.0,
+      "goal_actions": 1.5791666666666666,
+      "execution_seconds": 1.0987503628712147e-05,
+      "goal_noops": 0.9833333333333333
+    },
+    "random": {
+      "real_actions": 12.0,
+      "selection_effect_evaluations": 0.0,
+      "exploration_effect_evaluations": 293.57916666666665,
+      "selection_seconds": 1.7523754407496503e-05,
+      "exploration_seconds": 0.00030907749848362677,
+      "noop_actions": 9.091666666666667,
+      "planning_seconds": 0.12889172791910825,
+      "planning_effect_evaluations": 137116.2,
+      "evaluated_sequences": 40.0,
+      "goal_actions": 1.6958333333333333,
+      "execution_seconds": 1.0856663963447015e-05,
+      "goal_noops": 1.0458333333333334
+    },
+    "fixed": {
+      "real_actions": 12.0,
+      "selection_effect_evaluations": 0.0,
+      "exploration_effect_evaluations": 291.275,
+      "selection_seconds": 1.3080821857632447e-05,
+      "exploration_seconds": 0.0003135945812876647,
+      "noop_actions": 8.5875,
+      "planning_seconds": 0.12483204541689095,
+      "planning_effect_evaluations": 132979.75,
+      "evaluated_sequences": 40.0,
+      "goal_actions": 1.7,
+      "execution_seconds": 1.0755832287638137e-05,
+      "goal_noops": 1.0083333333333333
+    },
+    "model_reset": {
+      "real_actions": 12.0,
+      "selection_effect_evaluations": 761.5416666666666,
+      "exploration_effect_evaluations": 1043.1208333333334,
+      "selection_seconds": 0.0011570491619446936,
+      "exploration_seconds": 0.0014375895848691774,
+      "noop_actions": 9.0625,
+      "planning_seconds": 1.6354935824997179,
+      "planning_effect_evaluations": 1774710.0,
+      "evaluated_sequences": 40.0,
+      "goal_actions": 3.0,
+      "execution_seconds": 1.7672916874289514e-05,
+      "goal_noops": 1.9583333333333333
+    },
+    "random_plan": {
+      "real_actions": 12.0,
+      "selection_effect_evaluations": 761.5416666666666,
+      "exploration_effect_evaluations": 1043.1208333333334,
+      "selection_seconds": 0.0011570491619446936,
+      "exploration_seconds": 0.0014375895848691774,
+      "noop_actions": 9.0625,
+      "planning_seconds": 2.0927497826050966e-05,
+      "planning_effect_evaluations": 0.0,
+      "evaluated_sequences": 0.0,
+      "goal_actions": 3.0,
+      "execution_seconds": 1.6978334557885924e-05,
+      "goal_noops": 2.2041666666666666
+    }
+  },
+  "baseline_roles": {
+    "model_reset": "prior/no-memory/untrained equivalent; erased IG model; exploration costs reused",
+    "random_plan": "uniform independent action slots, full goal budget; no model; IG exploration costs reused"
+  },
+  "environment": {
+    "git_commit": "47aee8d1b81aad5a4e745c84df2447536549cb08",
+    "git_dirty": false,
+    "python": "3.12.14",
+    "population_seconds": 0.16236930002924055,
+    "elapsed_seconds": 483.96463509998284
+  },
+  "limitations": [
+    "Development only; one independent goal per mechanism; seeds share worlds and goals",
+    "Supplied templates, filtering, investigation and exhaustive planning; no parameter training",
+    "No online replanning, structural revision, acquired abstractions, self-model or family transfer",
+    "Model-relative success probabilities are not measured calibration",
+    "Same interaction ceilings; actual goal lengths differ; compute measured, not matched",
+    "Reset and random-plan reuse IG exploration trace/cost; not extra investigation runs",
+    "World bootstrap intervals exploratory, unadjusted; no seed independence assumption"
+  ],
+  "artifact_verification": {
+    "worlds": 80,
+    "score_rows": 1200,
+    "cost_rows": 1200,
+    "reachable_worlds": 10,
+    "real_investigation_runs": 720,
+    "real_investigation_actions": 8640,
+    "actual_goal_actions": 2634,
+    "checks": [
+      "scores reconstructed from committed plans and actual execution traces",
+      "canonical development mechanisms and independently sampled goals checked",
+      "true reachability checked by independent exhaustive sequence enumeration",
+      "exploration and plan effect counts reconstructed from acquired candidates",
+      "all summaries and paired world bootstrap intervals reconstructed"
+    ],
+    "new_environment_interactions_for_verification": 0
+  }
+}

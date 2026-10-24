@@ -1,0 +1,7 @@
+{
+  "worlds": 2,
+  "exploration_actions": 3,
+  "goal_actions": 1,
+  "policy_seeds": [7],
+  "selection_seed": 611
+}

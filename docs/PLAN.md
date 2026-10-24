@@ -17,8 +17,8 @@ Neither a fixed hypothesis class nor a supplied planner is the intended end stat
 
 Long-term objective also includes learning how the agent itself works: empirical
 knowledge of reliability, capabilities, limits and effects of cognitive operations.
-This is functional self-modeling, not a consciousness claim. Keep the goal baseline
-next, then a small C5a reliability pilot; C3 abstractions and C5 can inform one
+This is functional self-modeling, not a consciousness claim. The development goal
+baseline is measured; next take bounded P1 and specify a small C5a reliability pilot; C3 abstractions and C5 can inform one
 another. C4 language rendering is not a prerequisite for C5. Details and controls:
 `docs/SELF_MODELING.md`. Do not add a narrative self-awareness layer.
 
@@ -65,7 +65,7 @@ natural-language parsing, or pretrained representations are prerequisites.
 - [x] Compare supplied investigation controls and scored joint predictions with
   experience-conditioned beliefs and reset/prior controls. Preserve shared unseen
   coverage and within-class belief updates; structural/noisy revision is still open.
-- [ ] Test unseen interventions and action sequences, then goal achievement using
+- [x] Test unseen interventions and action sequences, then goal achievement using
   learned predictions. Label any supplied search/planning algorithm explicitly.
 - [ ] Compare random, untrained, heuristic, no-memory/model-reset, and from-scratch
   controls under matched interaction and declared compute budgets.
@@ -79,7 +79,7 @@ Choose the minimal environment and model family through development experiments;
 do not expose gold causal rules to make the learner appear more general.
 
 Contract: `docs/experiments/structured-action-world.md`; proposed settings:
-`configs/action-world-development.json` (full goal study not runnable yet), with
+`configs/action-world-development.json` (retained original proposal), with
 the measured prediction-only subset in `configs/action-prediction.json`. The simulator
 has three binary-property objects and three unknown guarded effects; software tests
 cover sequential interactions, action budgets, public-record boundaries and semantic
@@ -87,13 +87,16 @@ identity under all object/action renamings. The sampler and transition-belief co
 are now implemented, with a scripted `action-model-demo`. The core learns by belief
 updating within supplied templates, without parameter training. The first 80-world
 development prediction comparison is recorded in `reports/action-prediction-v1/README.md`.
-No validation/final, goal or transfer result is established. Next implement supplied
-open-loop goal planning with independent goals and prior/random-plan controls.
+No validation/final or transfer result is established. The supplied goal runner
+is now scored under `configs/action-goals.json`; see `docs/experiments/action-goals.md`.
 
-The exhaustive planning primitive now exists in `action_planning.py`, with software
-fixtures for acquired dynamics, committed execution, tie-breaking and work counts.
-It is supplied search, not trained planning. The goal runner, controls and scored
-goal comparison remain pending; the kernel fixture is not a benchmark result.
+Results: `reports/action-goals-v1/README.md`. Across 80 development goals (only
+10 reachable), IG success is 10.42% versus prior 6.67%, random investigation 10.83%
+and fixed 10.42%. The paired prior-gain interval crosses zero; no reliable prior
+advantage or investigation superiority is established. Planning uses supplied search
+over acquired dynamics, not a trained planner. Preserve this sparse-panel limitation;
+a broader goal study needs a separate protocol before measurement. Next take bounded
+P1 observability alongside specifying C5a's legitimate feedback schema.
 
 ### P1 — Interactive Agent Playground (planned)
 

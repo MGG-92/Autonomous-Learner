@@ -3,8 +3,9 @@
 Status: simulator, development-only semantic sampler, transition-belief core and
 prediction-only comparison runner implemented. The first frozen development result
 is [reported here](../../reports/action-prediction-v1/README.md); see its subset below.
-No goal planner or full goal experiment
-exists yet. The scripted `action-model-demo` is a software demonstration of belief
+The supplied planner and separate [goal runner/protocol](action-goals.md) are now
+implemented; scored goal evidence is recorded separately after its source freeze.
+The scripted `action-model-demo` is a software demonstration of belief
 changes and reset, not the proposed 80-world study.
 The values in `configs/action-world-development.json` are proposed development
 settings, not measurements. Preserve C1/C2 results and their negative conclusions.
@@ -205,7 +206,8 @@ call counts. Review at least the model and evaluator boundaries. Persist source
 hash, dirty status, all settings and seeds, actual denominators, unreachable-goal
 counts, ambiguity and negative outcomes. Publish reviewed synthetic summaries only.
 Belief updates, consistent rollouts and the prediction-stage controls/scoring are
-implemented with regressions. Goal planning, goal controls and transfer remain open.
+implemented with regressions. Goal planning/controls now have a separate development
+runner and protocol in `action-goals.md`; transfer remains open.
 
 Software demo: `python -m autonomous_learner action-model-demo --output runs/action-model-demo.json`.
 Use a fresh path. Its five scripted action slots, naming/permutation/initial seeds,

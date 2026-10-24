@@ -104,6 +104,9 @@ def main():
     ap = commands.add_parser("action-prediction", help="Development-only action-world prediction comparison")
     ap.add_argument("--config", type=Path, default=Path("configs/action-prediction.json"))
     ap.add_argument("--output", type=Path, required=True)
+    ag = commands.add_parser("action-goals", help="Development-only open-loop goal comparison")
+    ag.add_argument("--config", type=Path, default=Path("configs/action-goals.json"))
+    ag.add_argument("--output", type=Path, required=True)
     dr = commands.add_parser("delayed-robustness", help="Evaluate frozen memory policies under resource/stream shifts")
     dr.add_argument("--checkpoints", type=Path, required=True)
     dr.add_argument("--output", type=Path, required=True)
@@ -183,6 +186,11 @@ def main():
         from .action_prediction import PredictionConfig, run as action_prediction
         config = PredictionConfig(**json.loads(args.config.read_text(encoding="utf-8")))
         report = action_prediction(config, args.output, progress=lambda row: print(json.dumps(row), flush=True))
+        print(json.dumps(report["results_by_seed"], indent=2))
+    elif args.command == "action-goals":
+        from .action_goals import GoalConfig, run as action_goals
+        config = GoalConfig(**json.loads(args.config.read_text(encoding="utf-8")))
+        report = action_goals(config, args.output, progress=lambda row: print(json.dumps(row), flush=True))
         print(json.dumps(report["results_by_seed"], indent=2))
     elif args.command == "delayed-robustness":
         from .delayed_robustness import robustness
