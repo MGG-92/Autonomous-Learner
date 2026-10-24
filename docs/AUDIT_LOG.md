@@ -1,5 +1,30 @@
 # Recurring critique and repair log
 
+## 2026-10-24 — learned interfaces and persistent message credit
+
+- Geometry alias: reversing coordinate groups yields the same spatial stimulus.
+  Learned full-vector input produces distinct core states in that constructed probe.
+  This removes a supplied encoding alias, not every information bottleneck.
+- Cached vectors have 576 dimensions. A learned 576→512 adapter implements the
+  requested interfaces honestly; normalization/compression remain lossy.
+- Architectural necessity failed to separate: all four variants fit 2/2 known pairs,
+  including fixed features/readout-only. Record that negative result and postpone
+  superiority claims until unfamiliar inputs and retention have been tested.
+- Continuously replacing the reply made delivery/credit ambiguous. Deliver once
+  after complete input; idle ticks cannot silently alter a message. Practice creates
+  a distinct sampled reply, with no self-generated label admission.
+- Restoring weights alone would omit optimization and replay state. Checkpoints
+  now preserve both, validate identity/topology/finite values, recover a previous
+  generation and reject competing writers. Numeric replay is private, even without
+  a saved transcript. Reset refreshes both generations to avoid resurrecting learning.
+- CPU cost: bounded online correction uses twelve updates and teacher examples five,
+  each on newest plus at most one older example. This retains the eight-entry memory
+  while bounding work; its retention quality is still unmeasured.
+- Native synthetic verification restarts the actual worker and restores fourteen
+  updates. A saturated positive reward made no measurable probability change in
+  that smoke; the dedicated unsaturated feedback tests provide directional evidence.
+
+
 ## 2026-10-24 — chat, timed input and online feedback
 
 - User clarified the live flow while work was active: start brain, adjustable seconds

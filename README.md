@@ -7,17 +7,17 @@
 > nothing less and nothing more. It is not a finished product, and its results do
 > not establish general intelligence or independent language understanding.
 
-The active direction is now [Neural Volume Lab](neural-volume-lab/README.md): a
-native desktop viewer with a sparse recurrent neural-network experiment and an
-offline local professor. On this Windows checkout, double-click
-`neural-volume-lab/Launch Neural Volume Lab.cmd`. The first stage has a dark 3D
-coordinate volume, token playback, orbit/zoom and a response-reference view.
-The default chat view starts a timed brain: one token enters per tick, live neural
-activity drives attempted replies, ratings perform immediate reward updates, and
-double-click corrections teach examples. Optional local professor coaching gives
-unverified feedback and short examples. The first two-pair fitting check is not
-evidence of general reasoning; a frozen-core control also succeeds. Learning is
-currently session-only. Earlier research below is preserved.
+The active direction is [Neural Volume Lab](neural-volume-lab/README.md), a native
+messaging and neural-activity experiment with an optional offline professor.
+Double-click `neural-volume-lab/Launch Neural Volume Lab.cmd` on the prepared
+Windows checkout. One token enters each adjustable tick; a stable reply arrives
+after the final token. Ratings, double-click corrections and explicit Try again
+practice provide external learning feedback. Learned 512-unit input/output layers
+connect to every recurrent neuron; embedding coordinates only affect visualization.
+Weights and bounded numeric replay save automatically under ignored local runs.
+The two-pair development controls all succeed, including fixed features with a
+trained readout; this is not evidence of general reasoning or architectural superiority.
+Earlier research below is preserved.
 
 A research prototype investigating a cognitive core that learns internal models
 through experience, chooses experiments, and decides what to communicate before

@@ -1,5 +1,26 @@
 # Implementation plan
 
+## Current user-priority increment — learned I/O, persistence and messaging
+
+- [x] Replace coordinate stimulation with learned 512-unit input/output layers
+  connected to every recurrent unit; retain spatial encoding only as a control.
+- [x] Deliver stable messages after the final token; expose receiving state and
+  explicit practice sampling; preserve exact reply feedback and corrections.
+- [x] Save/restore local weights, optimizers, vocabulary and bounded private numeric
+  replay with atomic replacement, backup, validation and single-writer locking.
+- [x] Compare learned I/O, frozen recurrence, fixed features/readout and spatial
+  controls on known synthetic pairs. All fit 2/2; no superiority claim.
+- [ ] Next research: preregister disjoint development/validation/test inputs and
+  matched update budgets; measure retention/interference and teacher error before
+  changing capacity or claiming generalization. Include no-feedback/untrained,
+  random-feedback, fixed-feature and frozen-core controls.
+- [ ] Evaluate longer temporal credit and variable-length decoding only after the
+  bounded messaging experiment demonstrates reliable retained learning.
+
+The older milestones below record prior stages; spatial and session-only behavior
+is superseded. Preserve broader world learning and functional self-modeling goals.
+
+
 ## Active direction — Neural Volume Lab (explicit user redirection)
 
 First settle the visual embedding system in a native, launchable desktop app, then

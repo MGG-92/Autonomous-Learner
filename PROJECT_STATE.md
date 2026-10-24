@@ -1,5 +1,60 @@
 # Project state — 2026-10-24
 
+## Current increment — learned I/O, saved brain and stable messaging
+
+Supersedes geometric stimulation, session-only learning and changing-every-tick
+replies described in the historical increment below. The default native model has
+learned 576→512 input adaptation, dense connections from all 512 inputs to all
+15,625 recurrent neurons, and dense connections from each core neuron to 512 output
+units. Total parameters: 20,947,564. Spatial encoding remains an explicit legacy
+control. Cached embeddings are 576-dimensional; display positions do not drive neurons.
+
+Input enters one token per tick; partial input shows receiving status. A completed
+input delivers one stable reply. Idle ticks do not overwrite it; Try again creates
+an explicitly separate sample without a hidden tick. Human ratings/corrections and
+optional professor reviews supply learning signals; guesses never become own labels.
+Human corrections use twelve bounded online updates; professor examples five.
+Each update uses newest plus one rotating older example from eight retained entries.
+
+Automatic private checkpoints preserve weights, optimizers, sampler, vocabulary and
+numeric replay under ignored runs/neural-volume-lab/learning/dense-io-v1. The primary
+trained checkpoint is about 241 MiB plus one backup. Atomic writes, identity/config/
+topology/finite-value validation, weights-only loading and single-writer locking
+protect local state. Activity restarts silent. No raw transcript is stored, but
+numeric replay/token IDs remain private. Verification checkpoints are isolated.
+
+Validation commands and evidence:
+- `.venv/Scripts/python.exe -m pytest -q`: 180 passed in 18.44 seconds.
+- `.venv/Scripts/python.exe -m autonomous_learner demo --memory runs/demo-io-final.sqlite`:
+  passed including restart and memory ablation. Default demo path already existed;
+  preserved it and used a fresh database.
+- `.venv/Scripts/python.exe neural-volume-lab/check_io.py --output runs/neural-volume-lab/io-development-final`:
+  all four controls fit 2/2 known development pairs; restoration preserves predictions,
+  updates and vocabulary. Sanitized results: reports/neural-volume-io-v1.
+- `.venv/Scripts/python.exe neural-volume-lab/app.py --verify-chat-output runs/neural-volume-lab/messaging-source-final`:
+  passed; measured first five-second tick 5.093 seconds; correction fitted in twelve
+  updates, reward/professor processing and a new worker restored fourteen updates.
+- `.venv/Scripts/python.exe neural-volume-lab/build_desktop.py`: built fresh versioned
+  package; generated launcher now selects it. Packaged executable was launched from
+  runs with `--verify-chat-output` and fresh messaging-package-final destination:
+  passed, including worker restart and native screenshot.
+- Build, checkpoints and caches stay on project drive. Latest drive snapshot:
+  approximately 37.25 GiB free on system drive, 500.37 GiB on project drive.
+
+Limits: these are known synthetic development examples, not dialogue competence or
+general reasoning. Fixed features/readout-only also fit both pairs; learned recurrence
+has no demonstrated benefit here. The adapter/normalization remain lossy, readout is
+limited to sixteen token slots and 511 admitted target IDs. Professor judgments are
+uncalibrated and unverified; the positive smoke reward was saturated and did not
+measurably change probability. Directional feedback evidence comes from dedicated
+unsaturated tests. Scalar updates have immediate credit, not long-horizon RL.
+
+Next task: define matched-budget retention/interference experiments with disjoint
+validation/test inputs and teacher/no-feedback/random-feedback/frozen-feature controls
+before adding capacity or claiming generalization. Preserve prior research results.
+
+## Historical increment record
+
 ## Active increment — timed chat, strong rewards and double-click correction
 
 Default native view now places a chat beside the neural volume. Start brain begins

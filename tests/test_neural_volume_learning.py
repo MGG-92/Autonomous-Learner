@@ -20,7 +20,7 @@ def sequence(ids, points):
 
 
 def learner():
-    return neural.Learner(neural.Config(side=5, degree=4, hidden=24, slots=3, vocabulary=12))
+    return neural.Learner(neural.Config(side=5, degree=4, hidden=24, slots=3, vocabulary=12, encoding="spatial"))
 
 
 def test_topology_is_directed_without_self_or_reciprocal_edges_and_is_seeded():

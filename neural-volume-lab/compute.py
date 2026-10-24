@@ -22,12 +22,14 @@ class Compute(QObject):
     result = Signal(object)
     failed = Signal(str)
 
-    def __init__(self, parent=None):
+    def __init__(self, parent=None, checkpoint=None):
         super().__init__(parent)
         self.process = QProcess(self)
         self.buffer = b""
         self.busy = False
         self.closing = False
+        self.stopping = False
+        self.checkpoint = Path(checkpoint) if checkpoint is not None else None
         self.process.readyReadStandardOutput.connect(self.read)
         # Drain stderr without persisting prompts or filling a pipe.
         self.process.readyReadStandardError.connect(self.process.readAllStandardError)
@@ -40,10 +42,10 @@ class Compute(QObject):
 
     def finished(self, code, status):
         if not self.closing:
-            self.fail(f"Compute process stopped ({code}); in-memory learning was lost")
+            self.fail(f"Compute process stopped ({code}); start the brain to restore its last saved learning")
 
     def request(self, op, **arguments):
-        if self.busy:
+        if self.busy or self.stopping:
             return False
         if self.process.state() == QProcess.ProcessState.NotRunning:
             try:
@@ -62,7 +64,8 @@ class Compute(QObject):
                 environment.insert("PYTHONDONTWRITEBYTECODE", "1")
                 self.process.setProcessEnvironment(environment)
                 self.process.setWorkingDirectory(str(root))
-                self.process.start(str(python), ["-u", str(script)])
+                checkpoint = self.checkpoint or root / "runs" / "neural-volume-lab" / "learning" / "dense-io-v1" / "brain.pt"
+                self.process.start(str(python), ["-u", str(script), "--checkpoint", str(checkpoint.resolve())])
                 if not self.process.waitForStarted(3000):
                     raise RuntimeError("Could not start local compute runtime")
             except Exception as error:
@@ -88,8 +91,12 @@ class Compute(QObject):
                 self.result.emit(payload)
 
     def close(self):
+        self.stopping = True
         self.closing = True
         self.process.closeWriteChannel()
-        if not self.process.waitForFinished(1000):
+        # Finish a bounded in-flight teaching/save operation before releasing its lock.
+        if not self.process.waitForFinished(30000 if self.busy else 3000):
             self.process.kill()
             self.process.waitForFinished(3000)
+        self.busy = False
+        self.stopping = False

@@ -1,5 +1,29 @@
 # Architecture and experimental boundaries
 
+## Current native architecture — learned I/O and stable messages
+
+This section supersedes spatial stimulation and session-only descriptions below.
+The native Qt app delegates CPU learning to a local worker. Frozen 576-component
+embeddings feed a trainable 576→512 adapter, dense 512→15,625 input projection,
+stable sparse recurrent core, dense 15,625→512 output and bounded token-slot readout.
+The 20,947,564 parameters include both dense projections. Position is visualization
+only. Input tokens enter one per tick; only completed inputs or explicit practice
+produce delivered messages. Idle ticks preserve the last reply and its exact credit.
+
+Corrections fit the captured readout state plus an auxiliary full-input sequence
+loss (weight 0.25). Twelve online updates train the newest example and one rotating
+older example; professor examples use five. Replay retains eight entries. Feedback
+remains immediate, externally rewarded policy optimization, not self-labeling.
+
+Private atomic checkpoints include weights, optimizer, vocabulary, sampler and
+numeric replay. Identity/config/topology/finite-state checks guard restore;
+weights-only Torch loading, one-writer locking and a previous backup are used.
+Restored activity is silent. No raw transcript, weights or replay enter publication.
+The controlled probe does not establish that recurrence or the input adapter helps.
+
+## Historical architecture notes
+
+
 ## Active native embedding experiment
 
 The user redirected development to `neural-volume-lab/`. Its desktop application

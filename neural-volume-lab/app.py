@@ -96,7 +96,13 @@ class Volume(QWidget):
         self.neural = False
         self.reserve_inspector = False
         self.activity = []
+        self.input_activity = []
+        self.output_activity = []
+        self.show_embeddings = False
         self.neuron_positions = np.stack(np.meshgrid(*([np.linspace(-1, 1, 25)] * 3), indexing="ij"), -1).reshape(-1, 3)
+        yz = np.stack(np.meshgrid(np.linspace(-.9, .9, 16), np.linspace(-.9, .9, 32), indexing="ij"), -1).reshape(-1, 2)
+        self.input_positions = np.column_stack((np.full(512, -1.45), yz))
+        self.output_positions = np.column_stack((np.full(512, 1.45), yz))
 
     def reset_camera(self):
         self.yaw, self.pitch, self.zoom = .55, -.3, self.fit_zoom
@@ -123,7 +129,7 @@ class Volume(QWidget):
         painter.fillRect(self.rect(), gradient)
         painter.setFont(QFont("Segoe UI", 8))
         painter.setPen(QColor("#839fae"))
-        painter.drawText(28, 30, "●   COORDINATE VOLUME    /    XYZ TRIPLES")
+        painter.drawText(28, 30, "●   INPUT 512   →   RECURRENT CORE 15,625   →   OUTPUT 512" if self.neural else "●   NEURAL VOLUME LAB")
         if self.neural:
             painter.setPen(QPen(QColor(105, 150, 168, 26), 1.2))
             painter.drawPoints(QPolygonF(self.project(self.neuron_positions)))
@@ -135,6 +141,22 @@ class Volume(QWidget):
                     color.setAlpha(min(240, 50 + round(value * 180)))
                     painter.setPen(QPen(color, min(6., 2 + value * 3), Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
                     painter.drawPoint(point)
+            for positions, values, tint, name in ((self.input_positions, self.input_activity, "#e8ba86", "INPUT"),
+                                                   (self.output_positions, self.output_activity, "#a8c9fa", "OUTPUT")):
+                points = self.project(positions)
+                color = QColor(tint)
+                color.setAlpha(45)
+                painter.setPen(QPen(color, 2.))
+                painter.drawPoints(QPolygonF(points))
+                for point, value in zip(points, values):
+                    if value > 1e-5:
+                        color.setAlpha(min(245, 65 + round(value * 90)))
+                        painter.setPen(QPen(color, min(5., 2 + value), Qt.PenStyle.SolidLine, Qt.PenCapStyle.RoundCap))
+                        painter.drawPoint(point)
+                painter.setPen(QColor(tint))
+                anchor = positions[0].copy()
+                anchor[1] = 1.05
+                painter.drawText(self.project([anchor])[0], name + " / 512")
         if self.guides:
             radius = min(1, 1 / self.zoom)
             corners = [(x * radius, y * radius, z * radius) for x in (-1, 1) for y in (-1, 1) for z in (-1, 1)]
@@ -154,15 +176,15 @@ class Volume(QWidget):
         if not self.tokens and not self.neural:
             painter.setPen(QColor("#8bb9b1"))
             painter.setFont(QFont("Segoe UI", 9))
-            painter.drawText(QRectF(0, self.height() * .35, self.width(), 30), Qt.AlignmentFlag.AlignCenter, "LANGUAGE, IN SPACE")
+            painter.drawText(QRectF(0, self.height() * .35, self.width(), 30), Qt.AlignmentFlag.AlignCenter, "YOUR LEARNING NETWORK")
             painter.setPen(QColor("#e0ecf1"))
             painter.setFont(QFont("Segoe UI", 30, QFont.Weight.Light))
-            painter.drawText(QRectF(0, self.height() * .43, self.width(), 55), Qt.AlignmentFlag.AlignCenter, "Start with a sentence.")
+            painter.drawText(QRectF(0, self.height() * .43, self.width(), 55), Qt.AlignmentFlag.AlignCenter, "Start the brain.")
             painter.setFont(QFont("Segoe UI", 11))
             painter.setPen(QColor("#8fa7b4"))
             painter.drawText(QRectF(0, self.height() * .43 + 65, self.width(), 30), Qt.AlignmentFlag.AlignCenter,
-                             "One token. One vector. A line through its coordinates.")
-        elif self.tokens:
+                             "Send a message. Reward replies. Teach corrections.")
+        elif self.tokens and self.show_embeddings:
             indices = [i for i in range(len(self.tokens)) if i != self.index] if self.all_tokens else []
             indices.append(self.index)
             color = QColor("#f2bd95" if self.response else "#9ae7d2")
@@ -225,15 +247,15 @@ class Volume(QWidget):
 
 
 class Window(QMainWindow):
-    def __init__(self, store=None):
+    def __init__(self, store=None, checkpoint=None):
         super().__init__()
-        self.setWindowTitle("Neural Volume Lab")
+        self.setWindowTitle("Neural Volume Lab · Learned I/O")
         self.setMinimumSize(1120, 760)
         self.resize(1320, 920)
         self.store = store or EmbeddingStore()
         self.data, self.sequence, self.index = None, "message", 0
         self.metadata = None
-        self.compute = Compute(self)
+        self.compute = Compute(self, checkpoint=checkpoint)
         self.compute.result.connect(self.compute_result)
         self.compute.failed.connect(self.compute_failed)
         self.training_batches = 0
@@ -260,7 +282,7 @@ class Window(QMainWindow):
         titles = QVBoxLayout()
         titles.setSpacing(4)
         titles.addWidget(label("N E U R A L   V O L U M E   L A B", 10, "#d9e7ea", True))
-        titles.addWidget(label("CONVERSATION / 03", 8, "#7995a5"))
+        titles.addWidget(label("NEURAL MESSAGING / 04", 8, "#7995a5"))
         head.addLayout(titles)
         head.addStretch()
         self.mode_button = button("Inspect network", lambda: self.set_expert_mode(not self.expert_mode))
@@ -319,7 +341,7 @@ class Window(QMainWindow):
         for widget in (self.token_number, self.token_text, self.token_piece, self.token_details,
                        label("FIRST RAW COORDINATES", 8), self.raw):
             info.addWidget(widget)
-        note = label("XYZ vertices stimulate nearest grid neurons. Connecting segments are visual guides only. Activity is computed, never decorative.", 9, "#7d99a8")
+        note = label("XYZ triples are drawings only. Full embeddings enter a learned 512-unit input layer; positions do not choose neurons.", 9, "#7d99a8")
         note.setWordWrap(True)
         info.addWidget(note)
         self.inspector.hide()
@@ -469,6 +491,11 @@ class Window(QMainWindow):
         if self.compute.request(op, **arguments):
             self.neural_status.setText({"teacher": "Professor generating offline…", "train": "Optimizing neural parameters…"}.get(op, "Computing " + op + "…"))
             self.update_compute_controls(True)
+            status = {"init": "Loading your saved brain…", "enqueue": "Sending your message…",
+                      "coach": "Professor reviewing the reply…", "correct": "Learning your correction and saving…",
+                      "feedback": "Applying your reward and saving…", "speak": "Network composing another reply…"}.get(op)
+            if status:
+                self.chat.progress.setText(status)
             return True
         return False
 
@@ -489,7 +516,7 @@ class Window(QMainWindow):
             self.network_ready = False
             self.volume.activity = []
             self.volume.update()
-            self.prediction.setText("NETWORK OUTPUT   /   compute stopped · session learning lost")
+            self.prediction.setText("NETWORK OUTPUT   /   compute stopped · restart to restore saved learning")
         self.neural_timer.stop()
         self.neural_run.setText("Run")
         self.error.setText(message)
@@ -503,10 +530,12 @@ class Window(QMainWindow):
         if op in ("init", "reset"):
             self.network_ready = True
             self.volume.neural = True
-            self.volume.fit_zoom = self.volume.zoom = 1
-            self.prediction.setText("NETWORK OUTPUT   /   untrained · target vocabulary empty")
+            self.volume.fit_zoom = self.volume.zoom = .72
+            self.prediction.setText(f"NETWORK OUTPUT   /   learned vocabulary {result['vocabulary']} tokens" if result.get("vocabulary") else "NETWORK OUTPUT   /   untrained · target vocabulary empty")
         if "activity" in result:
             self.volume.activity = result["activity"]
+            self.volume.input_activity = result.get("input_activity", [])
+            self.volume.output_activity = result.get("output_activity", [])
             self.volume.update()
             self.neural_status.setText(f"15,625 neurons · active {result['active']:,} · peak {result['peak']:.4f} · updates {result['updates']}")
         elif op == "teacher":
@@ -528,15 +557,16 @@ class Window(QMainWindow):
             self.inspector.hide()
             self.transport.hide()
             self.volume.update()
-        elif op == "live_tick":
+        elif op in ("live_tick", "speak"):
             self.chat.show_tick(result)
-            if result["token"] and self.data:
+            if result.get("token") and self.data:
                 self.volume.tokens = self.data["message"]["tokens"][:result["received"]]
                 self.select(min(result["received"] - 1, len(self.volume.tokens) - 1))
         elif op == "feedback":
             self.chat.rated = True
             self.chat.add_bubble("YOUR REWARD · policy update", f"{result['reward']:+d} at impact {result['strength']:g}. " +
                 ("Feedback applied to the sampled reply." if result["update_attempted"] else "No learned words yet; start with a correction or professor example."), "#98e6cf")
+            self.chat.progress.setText("Reward processed. The delivered message stays unchanged.")
         elif op == "coach":
             self.chat.coached(result)
         elif op == "correct":
@@ -544,18 +574,27 @@ class Window(QMainWindow):
             edited = self.chat.corrected_text.toPlainText()
             self.chat.close_editor()
             self.chat.add_bubble("YOUR CORRECTION · example teaching", edited + "\n\nTaught this reply. Resume the brain when ready.", "#98e6cf")
+            self.chat.progress.setText("Correction learned. Resume the brain when ready.")
         elif op == "reset":
             self.chat.clear_session()
             self.coached_message_id = None
         if op == "init" and self.start_requested:
             self.start_requested = False
             self.brain_running = True
-        if op in ("init", "enqueue", "live_tick", "feedback", "coach", "correct") and self.brain_running:
+        storage = result.get("storage")
+        if storage:
+            self.chat.saved_status(storage)
+            if storage.get("error"):
+                self.brain_running = False
+                self.brain_timer.stop()
+                self.error.setText(storage["error"])
+                self.error.show()
+        if op in ("init", "enqueue", "live_tick", "speak", "feedback", "coach", "correct") and self.brain_running:
             self.brain_timer.start(round(self.chat.duration.value() * 1000))
         self.update_compute_controls()
-        if (op == "live_tick" and result["input_finished"] and self.chat.coach.isChecked()
-                and self.coached_message_id != result["message_id"]):
-            self.coached_message_id = result["message_id"]
+        if (op in ("live_tick", "speak") and result.get("reply", False) and self.chat.coach.isChecked()
+                and self.coached_message_id != result["turn_id"]):
+            self.coached_message_id = result["turn_id"]
             self.brain_timer.stop()
             self.send_compute("coach", turn_id=result["turn_id"])
         if op == "admit" and self.training_batches > 0:
@@ -571,6 +610,7 @@ class Window(QMainWindow):
     def set_expert_mode(self, enabled):
         self.expert_mode = enabled
         self.volume.reserve_inspector = enabled
+        self.volume.show_embeddings = enabled
         self.workspace.setVisible(enabled)
         self.chat.setVisible(not enabled)
         self.mode_button.setText("Back to chat" if enabled else "Inspect network")
@@ -701,7 +741,7 @@ class Window(QMainWindow):
         self.status.setText("●  LOCAL MODEL READY   /   OFFLINE")
         self.status.setStyleSheet("color:#9adfc9")
         self.model_label.setText(f"SmolLM2-135M · {metadata['dimensions']} dimensions · frozen embeddings · local CPU compute")
-        self.about.setText(f"Frozen embeddings, revision {metadata['revision']}; shared scale {metadata['scale']:.7g}. Consecutive XYZ triples, not a validated concept map. Sparse recurrent ReLU network: 15,625 units, 12 incoming edges each, no reciprocal edges; longer cycles remain possible. Random weights, zero recurrent biases/activity. Learned fixed-slot token readout: at most 16 tokens from up to 127 admitted target tokens, with EOS. Chat introduces one token per timed tick and samples its live readout. Ratings are clipped immediate-reward policy updates; double-click corrections teach examples with eight-pair replay. Credit uses one transition, not long-horizon RL. Professor coaching is a separate frozen offline LLM: unverified votes and occasional short examples, never the network's displayed reply. Zero activity stays zero without input, although learned readout biases can still produce words. Text, replay and learning are RAM-only and lost on close. Packaged GUI requires this checkout's Python compute runtime.")
+        self.about.setText(f"Frozen {metadata['dimensions']}-component embeddings, revision {metadata['revision']}. A learned projection feeds 512 input units; every core neuron connects to all input/output units. The core has 15,625 recurrent ReLU units and 12 recurrent inputs each; the learned output layer has 512 units. Coordinates are visual aids only and never choose neurons. Messaging waits for the full sentence and sends one stable network reply; idle ticks do not rewrite it. Try again explores another reply for feedback. Rewards use an immediate policy update; edited targets use supervised learning. Professor votes are unverified, not ground truth. Up to 16 output tokens and 511 learned target tokens. Learning, optimizer and bounded numeric replay autosave privately on the checkout drive; chat history is not recorded. Startup restores learning with activity silent. No consciousness or general reasoning is established.")
         self.visualize.setEnabled(True)
         self.update_compute_controls()
 
@@ -725,7 +765,7 @@ class Window(QMainWindow):
         self.response_tab.setText(f"Response reference  {len(response['tokens']) if response else 0}")
         self.response_tab.setEnabled(response is not None)
         extent = max(abs(v) for seq in (message, response) if seq for token in seq["tokens"] for p in token["points"] for v in p)
-        self.volume.fit_zoom = 1 if self.volume.neural else min(50, .85 / max(extent, .01))
+        self.volume.fit_zoom = .72 if self.volume.neural else min(50, .85 / max(extent, .01))
         self.volume.reset_camera()
         self.all.setChecked(False)
         self.switch("message")
@@ -841,6 +881,9 @@ class Window(QMainWindow):
 
     def closeEvent(self, event):
         self.stop()
+        self.brain_running = False
+        self.training_batches = 0
+        self.start_requested = False
         self.brain_timer.stop()
         self.neural_timer.stop()
         self.compute.close()
@@ -861,7 +904,12 @@ def main():
     painter.drawText(icon.rect(), Qt.AlignmentFlag.AlignCenter, "nv")
     painter.end()
     app.setWindowIcon(QIcon(icon))
-    window = Window()
+    verification_flags = ("--verify-output", "--verify-learning-output", "--verify-chat-output")
+    isolated_checkpoint = None
+    for flag in verification_flags:
+        if flag in sys.argv:
+            isolated_checkpoint = Path(sys.argv[sys.argv.index(flag) + 1]).resolve() / "brain.pt"
+    window = Window(checkpoint=isolated_checkpoint)
     available = app.primaryScreen().availableGeometry()
     window.resize(min(1320, round(available.width() * .94)), min(920, round(available.height() * .92)))
     if "--verify-output" in sys.argv:

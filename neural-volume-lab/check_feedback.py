@@ -22,7 +22,7 @@ def run():
              ("no_reward", 0, "human", 5), ("cleared_replay_positive", 1, "human", 5)]
     for seed in (7, 42, 97):
         for name, reward, source, strength in cases:
-            model = Learner(Config(seed=seed))
+            model = Learner(Config(seed=seed, encoding="spatial", vocabulary=128))
             model.admit(sequence([1]), sequence([8, 9]))
             ids, trajectory = model.sample(sequence([1]))
             if name == "cleared_replay_positive":
@@ -38,7 +38,7 @@ def run():
                 "sampled_actions": random.integers(0, 3, 16).tolist(), "delta_mean_log_probability": 0.}
     lab = Path(__file__).resolve().parent
     return {"status": "development mechanism diagnostic", "seeds": [7, 42, 97],
-            "config": Learner().description(), "rows": rows, "random_baseline": baseline,
+            "config": Learner(Config(encoding="spatial", vocabulary=128)).description(), "rows": rows, "random_baseline": baseline,
             "runtime": {"torch": torch.__version__, "numpy": np.__version__, "threads": 2, "device": "cpu"},
             "source_sha256": {name: hashlib.sha256((lab / name).read_bytes()).hexdigest() for name in ("neural.py", "worker.py")},
             "hyperparameters": {"feedback_SGD_base_lr": .05, "human_default_strength": 5,

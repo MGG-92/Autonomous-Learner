@@ -1,5 +1,5 @@
 """Chat-first native controls; displayed replies always come from the neural worker."""
-from PySide6.QtCore import Qt, Signal, QTimer
+from PySide6.QtCore import Qt, Signal, QTimer, QDateTime
 from PySide6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton,
     QPlainTextEdit, QDoubleSpinBox, QSpinBox, QScrollArea, QCheckBox, QFrame)
 
@@ -42,6 +42,8 @@ class Chat(QWidget):
         self.tick_count = 0
         self.input_pending = False
         self.rated = self.corrected = False
+        self.ui_busy = False
+        self.storage_announced = False
         layout = QVBoxLayout(self)
         layout.setContentsMargins(22, 18, 22, 18)
         layout.setSpacing(12)
@@ -80,11 +82,11 @@ class Chat(QWidget):
         bar.rangeChanged.connect(lambda _minimum, maximum: bar.setValue(maximum) if self.follow_tail else None)
         bar.valueChanged.connect(lambda value: setattr(self, "follow_tail", value >= bar.maximum() - 24))
         layout.addWidget(self.scroll, 1)
-        self.add_bubble("HOW THIS WORKS", "One token enters on each tick. The network's attempted reply evolves with its real activity. Reward it, or double-click its reply to teach a correction.", "#92acb7")
-        self.live_title = QLabel("CURRENT NETWORK REPLY")
+        self.add_bubble("HOW THIS WORKS", "Start the brain and send a message. One token enters per tick. The network sends one reply when it has received the sentence. Reward the reply or double-click it to teach a correction.", "#92acb7")
+        self.live_title = QLabel("LAST DELIVERED REPLY")
         self.live_title.setStyleSheet("color:#98e6cf;font-size:10px")
         layout.addWidget(self.live_title)
-        self.live = Reply("Waiting for input and a tick…")
+        self.live = Reply("No reply yet.")
         self.live.setTextFormat(Qt.TextFormat.PlainText)
         self.live.setWordWrap(True)
         self.live.setMinimumHeight(42)
@@ -95,7 +97,7 @@ class Chat(QWidget):
         layout.addWidget(self.live)
         ratings = QHBoxLayout()
         self.good = QPushButton("Good reply  +")
-        self.bad = QPushButton("Needs work  −")
+        self.bad = QPushButton("Needs work  âˆ’")
         self.edit = QPushButton("Edit reply")
         self.good.clicked.connect(lambda: self.rate(1))
         self.bad.clicked.connect(lambda: self.rate(-1))
@@ -119,7 +121,7 @@ class Chat(QWidget):
         layout.addLayout(strength_row)
         self.editor = QFrame(objectName="inspector")
         editor_layout = QVBoxLayout(self.editor)
-        editor_layout.addWidget(QLabel("YOUR CORRECTION · example teaching, not a reward"))
+        editor_layout.addWidget(QLabel("YOUR CORRECTION Â· example teaching, not a reward"))
         self.corrected_text = QPlainTextEdit()
         self.corrected_text.setMaximumHeight(75)
         self.corrected_text.setAccessibleName("Corrected neural reply")
@@ -135,16 +137,24 @@ class Chat(QWidget):
         layout.addWidget(self.editor)
         self.editor.hide()
         self.composer = Composer()
-        self.composer.setPlaceholderText("Talk to the learner…  Enter to send")
+        self.composer.setPlaceholderText("Talk to the learnerâ€¦  Enter to send")
         self.composer.setFixedHeight(72)
         self.composer.setAccessibleName("Chat message")
         self.composer.submitted.connect(self.submit)
         layout.addWidget(self.composer)
-        self.send = QPushButton("Send sentence  ↗", objectName="primary")
+        self.send = QPushButton("Send message  â†—", objectName="primary")
         self.send.clicked.connect(self.submit)
         self.send.setEnabled(False)
-        layout.addWidget(self.send)
-        footer = QLabel("Short turns · 16 tokens · session-only learning\nProfessor feedback is fallible. The network speaks for itself.")
+        send_row = QHBoxLayout()
+        send_row.addWidget(self.send, 1)
+        self.practice = QPushButton("Try again")
+        self.practice.setToolTip("The network explores another reply to the last sentence. Professor review, if enabled, supplies feedback; guesses are not treated as truth.")
+        self.practice.clicked.connect(lambda: self.action.emit("speak", {}))
+        self.practice.setEnabled(False)
+        send_row.addWidget(self.practice)
+        layout.addLayout(send_row)
+        footer = QLabel("Short messages Â· 16 tokens Â· 512-unit input/output layers\nLearning restores when you start. Professor feedback is unverified.")
+        self.save_note = footer
         footer.setStyleSheet("color:#7894a4;font-size:11px")
         footer.setWordWrap(True)
         layout.addWidget(footer)
@@ -162,8 +172,9 @@ class Chat(QWidget):
         body.setStyleSheet("color:#dce9ed;font-size:14px;background:transparent")
         if reply:
             body.edit_requested.connect(lambda body=body: self.open_editor(body))
-            body.setToolTip("Double-click to correct this reply. Credit is retained for the last eight ticks.")
+            body.setToolTip("Double-click to correct this reply. Credit is retained for the last eight messages.")
         content.addWidget(body)
+        body.message_role = role_label
         self.messages.insertWidget(self.messages.count() - 1, frame)
         while self.messages.count() > 41:
             old = self.messages.takeAt(0).widget()
@@ -182,27 +193,45 @@ class Chat(QWidget):
 
     def queued(self, text, result):
         self.message_id = result["message_id"]
-        self.add_bubble("YOU", text, "#b7cbd4")
-        self.latest_reply = self.add_bubble("NETWORK · live attempted reply", "Waiting for the next tick…", "#98e6cf", reply=True)
+        self.add_bubble("YOU Â· " + self.timestamp(), text, "#b7cbd4")
+        self.latest_reply = self.add_bubble("NETWORK Â· receiving", "Receiving your sentence â€” no reply yetâ€¦", "#98e6cf", reply=True)
         self.composer.clear()
         self.input_pending = True
         self.turn_id = None
-        self.progress.setText(f"Queued {result['queued']} tokens · one enters per tick")
+        self.progress.setText(f"Message sent Â· receiving 0/{result['queued']} tokens")
 
     def show_tick(self, result):
-        self.tick_count += 1
-        self.turn_id = result["turn_id"]
-        self.rated = self.corrected = False
-        self.reply_text = result["prediction"]
-        self.live_title.setText(f"CURRENT NETWORK REPLY · TICK {self.tick_count}")
-        self.live.setText(self.reply_text or "[No words yet / end of response]")
-        if self.latest_reply is not None:
-            self.latest_reply.setText(self.reply_text or "[No words yet / end of response]")
+        if not result.get("practice"):
+            self.tick_count += 1
+        if "received" in result:
+            self.input_pending = result["received"] < result["total"]
+        if result.get("reply"):
+            self.turn_id = result["turn_id"]
+            self.rated = self.corrected = False
+            self.reply_text = result["prediction"]
+            shown = self.reply_text or "[The network sent no words â€” teach a first example.]"
+            if result.get("practice") or self.latest_reply is None:
+                self.latest_reply = self.add_bubble("NETWORK", shown, "#98e6cf", reply=True)
+            self.latest_reply.message_role.setText("NETWORK Â· " + self.timestamp())
+            self.latest_reply.setText(shown)
             self.latest_reply.setProperty("turn_id", self.turn_id)
             self.latest_reply.setProperty("reply_text", self.reply_text)
-        self.input_pending = result["received"] < result["total"]
-        entered = repr(result["token"]["text"]) if result["token"] else "no new input"
-        self.progress.setText(f"Tick {self.tick_count} · {entered}\nReceived {result['received']}/{result['total']} tokens · {result['active']:,} active neurons")
+            self.live_title.setText("LAST DELIVERED REPLY Â· " + self.timestamp())
+            self.live.setText(shown)
+            self.progress.setText(f"Reply delivered Â· tick {self.tick_count} Â· {result['active']:,} active neurons")
+            self.bottom()
+        elif self.input_pending:
+            self.progress.setText(f"Receiving your message Â· {result['received']}/{result['total']} tokens\nNo reply yet. Next token after {self.duration.value():g} seconds.")
+            self.live_title.setText("NETWORK IS RECEIVING")
+            self.live.setText("No reply yet â€” receiving your sentence.")
+            if self.latest_reply is not None:
+                self.latest_reply.setText(f"Receiving {result['received']}/{result['total']} tokensâ€¦")
+        else:
+            self.progress.setText(f"Brain active Â· tick {self.tick_count} Â· {result['active']:,} active neurons\nNo new message. Delivered replies stay unchanged.")
+
+    @staticmethod
+    def timestamp():
+        return QDateTime.currentDateTime().toString("HH:mm")
 
     def rate(self, reward):
         if self.turn_id is not None:
@@ -211,7 +240,7 @@ class Chat(QWidget):
     def open_editor(self, selected=None):
         if not isinstance(selected, Reply):
             selected = self.latest_reply
-        if selected is None or selected.property("turn_id") is None or not self.edit.isEnabled():
+        if selected is None or selected.property("turn_id") is None or self.ui_busy:
             return
         self.edit_turn_id = selected.property("turn_id")
         self.corrected_text.setPlainText(selected.property("reply_text") or "")
@@ -223,11 +252,14 @@ class Chat(QWidget):
     def close_editor(self):
         self.editor.hide()
         self.editing.emit(False)
+        self.progress.setText("Brain paused. Resume when ready.")
 
     def available(self, ready, busy, running):
+        self.ui_busy = busy
         self.start.setEnabled(ready or not busy)
         self.start.setText("Pause brain" if running else "Resume brain" if ready else "Start brain")
         self.send.setEnabled(ready and not busy and not self.input_pending and not self.editor.isVisible())
+        self.practice.setEnabled(ready and not busy and not self.input_pending and self.turn_id is not None and not self.editor.isVisible())
         can_rate = ready and not busy and self.turn_id is not None and self.latest_reply is not None
         self.good.setEnabled(can_rate and not self.rated)
         self.bad.setEnabled(can_rate and not self.rated)
@@ -236,8 +268,22 @@ class Chat(QWidget):
         self.cancel.setEnabled(not busy)
 
     def coached(self, result):
-        extra = " + short example teaching" if result["teaching"] else " · reward only"
-        self.add_bubble("PROFESSOR · unverified feedback", result["verdict"] + f"\nReward {result['reward']:+d}" + extra + "\nExample: " + result["proposal"], "#f2bd95")
+        extra = " + short example teaching" if result["teaching"] else " Â· reward only"
+        self.add_bubble("PROFESSOR Â· unverified feedback", result["verdict"] + f"\nReward {result['reward']:+d}" + extra + "\nExample: " + result["proposal"], "#f2bd95")
+        self.progress.setText("Example learned. Click Try again to let the network practice." if result["teaching"] else
+                              "Professor review finished. Reward or correct the network's reply.")
+
+    def saved_status(self, storage):
+        if storage.get("error"):
+            self.save_note.setText("Saving failed Â· current learning is in memory only. See the error below.")
+            return
+        self.save_note.setText(f"Learning saved locally Â· {storage['updates']} updates\n512-unit input/output Â· professor feedback is unverified")
+        if not self.storage_announced:
+            self.storage_announced = True
+            text = ("Restored saved learning" if storage.get("restored") else "New brain created") + f" Â· {storage['updates']} updates. Learning autosaves locally; the chat starts fresh."
+            if storage.get("recovered"):
+                text += " Recovered the previous valid checkpoint."
+            self.add_bubble("SAVED BRAIN", text, "#98e6cf")
 
     def clear_session(self):
         self.turn_id = None
@@ -246,7 +292,7 @@ class Chat(QWidget):
         self.reply_text = ""
         self.tick_count = 0
         self.message_id = None
-        self.live.setText("Waiting for input and a tick…")
-        self.live_title.setText("CURRENT NETWORK REPLY")
+        self.live.setText("No reply yet.")
+        self.live_title.setText("LAST DELIVERED REPLY")
         self.close_editor()
         self.add_bubble("SESSION", "Learning reset. Start with a short example.")

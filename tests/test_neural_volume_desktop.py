@@ -148,11 +148,15 @@ def test_chat_starts_brain_queues_tokens_and_double_click_corrects_exact_reply(n
     assert requests[-1] == ("enqueue", {"message": "one two"})
     native.compute.result.emit({"op": "enqueue", "result": {"queued": 2, "message_id": 1}})
     assert not native.volume.tokens and not native.chat.send.isEnabled()
-    tick = {"turn_id": 1, "message_id": 1, "prediction": "greeting", "token": {"text": "one", "id": 0},
+    tick = {"turn_id": None, "reply": False, "message_id": 1, "prediction": None, "token": {"text": "one", "id": 0},
             "received": 1, "total": 2, "input_finished": False, "active": 1, "peak": .85,
             "activity": [[0, .85]], "updates": 0}
     native.compute.result.emit({"op": "live_tick", "result": tick})
     assert len(native.volume.tokens) == 1
+    assert "Receiving" in native.chat.latest_reply.text() and not native.chat.good.isEnabled()
+    tick.update({"turn_id": 1, "reply": True, "prediction": "greeting", "received": 2, "input_finished": True,
+                 "token": {"text": "two", "id": 1}})
+    native.compute.result.emit({"op": "live_tick", "result": tick})
     assert native.chat.latest_reply.text() == "greeting"
     assert native.chat.live.text() == "greeting"
     qapp.processEvents()
@@ -173,7 +177,7 @@ def test_chat_rating_pauses_timer_and_uses_strong_explicit_feedback(native, monk
     native.network_ready = True
     native.brain_running = True
     native.chat.queued("hello", {"message_id": 1, "queued": 1})
-    native.chat.show_tick({"turn_id": 12, "prediction": "hi", "received": 1, "total": 1, "token": None, "active": 1})
+    native.chat.show_tick({"reply": True, "turn_id": 12, "prediction": "hi", "received": 1, "total": 1, "token": None, "active": 1})
     native.brain_timer.start(5000)
     requests = []
     monkeypatch.setattr(native.compute, "request", lambda op, **args: requests.append((op, args)) or True)
@@ -190,17 +194,18 @@ def test_professor_runs_once_after_full_sentence_and_remains_optional(native, mo
     requests = []
     monkeypatch.setattr(native.compute, "request", lambda op, **args: requests.append((op, args)) or True)
     native.network_ready = True
-    tick = {"turn_id": 1, "message_id": 4, "prediction": "hi", "received": 1, "total": 2,
+    tick = {"reply": False, "turn_id": None, "message_id": 4, "prediction": None, "received": 1, "total": 2,
             "input_finished": False, "token": None, "activity": [], "active": 0, "peak": 0, "updates": 0}
     native.compute.result.emit({"op": "live_tick", "result": tick})
     assert requests == []
-    tick.update({"received": 2, "input_finished": True})
+    tick.update({"reply": True, "turn_id": 1, "prediction": "hi", "received": 2, "input_finished": True})
     native.compute.result.emit({"op": "live_tick", "result": tick})
     assert requests == [("coach", {"turn_id": 1})]
     native.compute.result.emit({"op": "live_tick", "result": tick})
     assert len(requests) == 1
     native.chat.coach.setChecked(False)
     tick["message_id"] = 5
+    tick["turn_id"] = 2
     native.compute.result.emit({"op": "live_tick", "result": tick})
     assert len(requests) == 1
 
@@ -209,10 +214,10 @@ def test_double_click_on_earlier_bubble_does_not_correct_the_latest_reply(native
     native.set_expert_mode(False)
     native.network_ready = True
     native.chat.queued("earlier", {"message_id": 1, "queued": 1})
-    native.chat.show_tick({"turn_id": 11, "prediction": "earlier answer", "received": 1, "total": 1, "token": None, "active": 1})
+    native.chat.show_tick({"reply": True, "turn_id": 11, "prediction": "earlier answer", "received": 1, "total": 1, "token": None, "active": 1})
     earlier = native.chat.latest_reply
     native.chat.queued("latest", {"message_id": 2, "queued": 1})
-    native.chat.show_tick({"turn_id": 12, "prediction": "latest answer", "received": 1, "total": 1, "token": None, "active": 1})
+    native.chat.show_tick({"reply": True, "turn_id": 12, "prediction": "latest answer", "received": 1, "total": 1, "token": None, "active": 1})
     requests = []
     monkeypatch.setattr(native.compute, "request", lambda op, **args: requests.append((op, args)) or True)
     native.update_compute_controls()
@@ -223,3 +228,21 @@ def test_double_click_on_earlier_bubble_does_not_correct_the_latest_reply(native
     native.chat.corrected_text.setPlainText("edited earlier answer")
     QTest.mouseClick(native.chat.save, Qt.MouseButton.LeftButton)
     assert requests[-1] == ("correct", {"turn_id": 11, "target": "edited earlier answer"})
+
+
+def test_delivered_message_does_not_change_on_idle_ticks_and_practice_is_explicit(native, monkeypatch):
+    native.network_ready = True
+    native.set_expert_mode(False)
+    native.chat.queued("hello", {"message_id": 1, "queued": 1})
+    native.chat.show_tick({"reply": True, "turn_id": 1, "prediction": "hi", "received": 1, "total": 1, "active": 1})
+    old = native.chat.latest_reply
+    native.chat.show_tick({"reply": False, "turn_id": None, "prediction": None, "received": 1, "total": 1, "active": 0})
+    assert native.chat.latest_reply is old and old.text() == "hi" and native.chat.turn_id == 1
+    requests = []
+    monkeypatch.setattr(native.compute, "request", lambda op, **args: requests.append((op, args)) or True)
+    native.update_compute_controls()
+    QTest.mouseClick(native.chat.practice, Qt.MouseButton.LeftButton)
+    assert requests[-1] == ("speak", {})
+    native.compute.result.emit({"op": "speak", "result": {"reply": True, "practice": True, "turn_id": 2,
+        "prediction": "another reply", "active": 0}})
+    assert old.text() == "hi" and native.chat.latest_reply is not old
