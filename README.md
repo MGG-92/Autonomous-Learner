@@ -12,8 +12,10 @@ native desktop viewer with a sparse recurrent neural-network experiment and an
 offline local professor. On this Windows checkout, double-click
 `neural-volume-lab/Launch Neural Volume Lab.cmd`. The first stage has a dark 3D
 coordinate volume, token playback, orbit/zoom and a response-reference view.
-It now displays actual neuron activity, fits taught response pairs by backpropagation,
-and offers editable professor proposals. The first two-pair fitting check is not
+The default chat view starts a timed brain: one token enters per tick, live neural
+activity drives attempted replies, ratings perform immediate reward updates, and
+double-click corrections teach examples. Optional local professor coaching gives
+unverified feedback and short examples. The first two-pair fitting check is not
 evidence of general reasoning; a frozen-core control also succeeds. Learning is
 currently session-only. Earlier research below is preserved.
 

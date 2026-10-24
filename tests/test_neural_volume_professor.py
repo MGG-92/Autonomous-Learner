@@ -58,3 +58,35 @@ def test_professor_loads_only_pinned_offline_model_and_freezes_it(monkeypatch):
     assert calls == ["load", "load", "frozen"]
     with pytest.raises(ValueError):
         professor.respond(" ")
+
+
+@pytest.mark.parametrize("difference,reward", [(5., 1), (-5., -1), (0., 0)])
+def test_professor_vote_is_from_frozen_logits_and_explicitly_unverified(monkeypatch, difference, reward):
+    monkeypatch.syspath_prepend(str(Path(__file__).resolve().parents[1] / "neural-volume-lab"))
+    import worker
+    professor = worker.Professor()
+    monkeypatch.setattr(professor, "respond", lambda message: "A short example")
+
+    class Tokenizer:
+        def apply_chat_template(self, messages, **options):
+            assert '"learner_reply": "candidate"' in messages[0]["content"]
+            return "synthetic question"
+
+        def __call__(self, prompt, **options):
+            return {"input_ids": torch.tensor([[1]])}
+
+        def encode(self, label, **options):
+            return [2 if label == "Yes" else 3]
+
+    class Model:
+        def __call__(self, **options):
+            assert not torch.is_grad_enabled()
+            logits = torch.zeros(1, 1, 4)
+            logits[0, 0, 2] = difference
+            return SimpleNamespace(logits=logits)
+
+    professor.tokenizer, professor.model = Tokenizer(), Model()
+    result = professor.assess("synthetic question", "candidate")
+    assert result["reward"] == reward
+    assert result["source"].startswith("Unverified")
+    assert "not calibrated" in result["source"]

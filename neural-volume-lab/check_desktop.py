@@ -11,6 +11,7 @@ def verify(window, app, destination):
     destination = Path(destination)
     destination.mkdir(parents=True, exist_ok=True)
     try:
+        window.set_expert_mode(True)
         window.message.setPlainText("Hello, world. Hello!")
         window.response.setPlainText("Welcome back.")
         QTest.mouseClick(window.visualize, Qt.MouseButton.LeftButton)

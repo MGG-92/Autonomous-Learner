@@ -6,16 +6,18 @@ a spatial neural network from user-provided input/response examples.
 The first stage is now a native desktop embedding viewer built with PySide6
 QtWidgets and a QPainter drawing surface. No browser, web server or WebView is used.
 It now includes a sparse recurrent learner and an offline local professor. Existing
-research experiments and their frozen results remain separate. This is a supervised
-association-fitting experiment, not a demonstration of independent general reasoning.
+research experiments and their frozen results remain separate. The chat view combines
+immediate reward feedback with example teaching, not demonstrated general reasoning.
 
 ## Launch the desktop app
 
 On this Windows checkout, double-click `Launch Neural Volume Lab.cmd`. It uses the
 packaged `NeuralVolumeLab.exe` when present, otherwise the project's Python runtime.
 The packaged application lives under ignored
-`runs/neural-volume-lab/desktop-learning/NeuralVolumeLab/`. Keep that entire directory
-together. The GUI bundles its Qt/embedding assets; neural/professor computation reuses
+`runs/neural-volume-lab/desktop-builds/<build-id>/NeuralVolumeLab/`. A local
+`launch-desktop.cmd` selects the latest successful build. New releases never replace
+an open app; keep each selected release directory together. The GUI bundles its
+Qt/embedding assets; neural/professor computation reuses
 this checkout's `.venv` and cached model. It is a local deployment, not a portable
 standalone compute distribution. No duplicate Torch or language-model bundle is built.
 
@@ -41,7 +43,68 @@ CPU Torch and, only when requested, Transformers. Missing assets fail explicitly
 All messages, proposals, replay examples and learned weights are RAM-only: closing
 the app loses learning. No private conversations or checkpoints are published.
 
-## Teach and inspect the network
+## Talk, reward and correct
+
+1. Click **Start brain**. Set the duration beside it, for example **5 s / tick**.
+2. Type a short sentence and press **Enter** or **Send sentence**. Shift+Enter adds
+   a newline. The sentence is queued; it does not stimulate the brain immediately.
+3. Each tick introduces exactly one token's vertex pulse and updates actual neural
+   activity once. Tokens can be word fragments. After the sentence, ticks continue
+   without new input. **Pause brain** freezes state; **Resume brain** continues.
+4. The network's live attempted reply is sampled from its current state each tick.
+   Its bubble evolves; it is not replaced by professor text or a correction. Initially
+   it has no learned words and can only end its response. A first example introduces
+   output words. The visible chat transcript is not an extra input to the network.
+5. Click **Good reply +** or **Needs work −** to rate the currently displayed reply.
+   **Your feedback impact** is 1–10, default 5. This performs a real scalar-reward
+   policy update. Ticking pauses for computation, then resumes if it was running.
+6. **Double-click a network reply**, or click **Edit reply**, to correct it. The brain
+   pauses while you edit. **Teach this reply** trains your target on that reply's
+   captured neural context; it does not relabel a different/latest response. Resume
+   when ready. This is supervised example teaching, separate from a reward.
+7. **Professor coach** is on by default and can be disabled. Once a complete sentence
+   has arrived, the local professor gives an unverified reward and short example.
+   Example training occurs initially or when a nonpositive rating calls for unseen
+   words; otherwise it uses reward only. Human-taught examples take priority while
+   retained. It does not run an independent background teaching loop.
+
+Feedback snapshots are retained for the last eight ticks; editing pauses before
+more can expire. Older expired replies cannot be credited silently: resend their
+sentence. Replay retains eight examples, replacing an earlier professor example
+when you correct the same input. The transcript retains at most 40 message cards.
+Everything is RAM-only, including learned weights; closing the app loses learning.
+
+The tick duration is a minimum wall-clock pacing interval, not a real-time deadline.
+Inference/coaching/feedback can delay the next tick; requests never overlap or feed
+extra hidden tokens. One live tick is one recurrence update. Higher feedback impact
+is intentionally strong but bounded; it can still cause interference. Positive
+feedback does not guarantee correctness or introduce new words on its own.
+
+### Reward learning and example teaching
+
+The immediate reward path is a contextual-bandit policy update, not long-horizon RL
+or a full PPO implementation. It stores the actual sampled tokens/EOS and behavior
+log probabilities. A clipped per-token importance-ratio surrogate uses scalar +1/−1
+credit; no corrected target is fabricated for a rating. SGD uses step size
+`0.05 × impact` (0.25 at the default human impact), gradient norm clipped to 1,
+one update per source per reply, ratio objective clipping at [0.8, 1.2]. Ratio clipping
+limits the surrogate; it does not promise a strict 20% probability or KL bound.
+Recurrent stability constraints remain in force. Earlier state is detached: credit
+backpropagates through the captured live transition and readout, not the full history.
+
+Professor rewards have weight 0.25 and impact 1. Its frozen model compares next-token
+Yes/No logits on a relevance/correctness question: relative Yes support ≥0.65 means
++1, ≤0.35 means −1, otherwise 0. This is an unvalidated, uncalibrated model vote and
+can be biased or wrong. The professor provides short respectful examples rather
+than roleplaying an infant. Human corrections use 60 Adam updates; bootstrap/new-word
+professor examples use 20. Examples use eight-entry replay; scalar rewards do not
+add imitation targets. See `reports/neural-volume-feedback-v1/` for seeded controls.
+
+## Inspect the network (optional lab controls)
+
+Click **Inspect network** to expose the earlier manual controls; **Back to chat**
+returns to the conversation. The following actions are explicit manual operations,
+distinct from the chat clock and its enabled professor coach:
 
 1. Click **Start network**. The 25³ grid starts silent with random trainable weights.
 2. Enter a message, then **Visualize** and select a token. **Inject token** stimulates
@@ -52,7 +115,8 @@ the app loses learning. No private conversations or checkpoints are published.
 4. Write an expected response, or **Ask professor** for an editable, unverified
    proposal. The frozen local SmolLM2-135M generates at most 16 tokens, greedily on CPU.
    It is a small, fallible model; output can be wrong or truncated. It never trains
-   the learner automatically. The first professor request also loads the cached model.
+   the learner automatically in this manual path. Chat coaching is controlled by its
+   separate checkbox. The first professor request also loads the cached model.
 5. **Train pair** performs 100 Adam updates in ten cancellable chunks. **Stop training**
    finishes the current chunk and stops. The last eight training pairs are replayed.
    A repeated click admits another replay entry; frequencies therefore affect training.
@@ -82,8 +146,10 @@ edges exist; longer cycles remain possible. This is not a biological brain simul
 
 For state `s` and vertex pulse `p`, one synchronous tick is
 `s_next = clamp(0.15*s + 0.85*ReLU(sum(w*s_source) + p), max=4)`.
-Each token supplies a binary nearest-site pulse, followed by one undriven tick.
-Tokens enter in order; prediction starts from zero independently of live exploration.
+Chat supplies one binary nearest-site pulse on each tick, then undriven updates once
+the queue is empty, retaining live state between sentences. The preserved manual
+Predict/Train pair path starts from zero with a driven and undriven tick per token;
+it is a separate diagnostic. Live corrections/replay use the actual captured transition.
 Rounded indices use `(coordinate+1)*24/2` on each axis. Colliding vertices merge;
 within-token vertex order and magnitudes inside a quantization cell are lost.
 Segments do not stimulate. Display coordinates use the original fixed scale.
@@ -114,7 +180,11 @@ and unrelated application writes are outside this application's disk control.
 ```powershell
 .\.venv\Scripts\python.exe neural-volume-lab/check_learning.py --output runs/neural-volume-lab/new-controls.json
 .\.venv\Scripts\python.exe neural-volume-lab/app.py --verify-learning-output runs/neural-volume-lab/new-source-check
-& .\runs\neural-volume-lab\desktop-learning\NeuralVolumeLab\NeuralVolumeLab.exe --verify-learning-output runs/neural-volume-lab/new-package-check
+$desktopBuild = Get-Content runs/neural-volume-lab/desktop-build.json | ConvertFrom-Json
+$desktopExe = Join-Path runs/neural-volume-lab $desktopBuild.executable
+& $desktopExe --verify-learning-output runs/neural-volume-lab/new-package-check
+.\.venv\Scripts\python.exe neural-volume-lab/check_feedback.py --output runs/neural-volume-lab/new-feedback-controls.json
+.\.venv\Scripts\python.exe neural-volume-lab/app.py --verify-chat-output runs/neural-volume-lab/new-chat-check
 ```
 
 Verification uses only explicit synthetic text, checks real native controls and
@@ -149,7 +219,9 @@ The guides describe the current coordinate view; they are not a neuron lattice.
 .\.venv\Scripts\python.exe neural-volume-lab/build_desktop.py
 .\.venv\Scripts\python.exe -m pytest -q
 .\.venv\Scripts\python.exe neural-volume-lab/app.py --verify-output runs/neural-volume-lab/source-check
-& .\runs\neural-volume-lab\desktop-learning\NeuralVolumeLab\NeuralVolumeLab.exe --verify-output runs/neural-volume-lab/package-check
+$desktopBuild = Get-Content runs/neural-volume-lab/desktop-build.json | ConvertFrom-Json
+$desktopExe = Join-Path runs/neural-volume-lab $desktopBuild.executable
+& $desktopExe --verify-output runs/neural-volume-lab/package-check
 ```
 
 Explicit verification mode uses the real local model and native controls, tests

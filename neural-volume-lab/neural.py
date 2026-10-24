@@ -65,8 +65,11 @@ class SpatialNetwork(nn.Module):
         for pulse in pulses:
             state = self.tick(state, pulse)
             state = self.tick(state)
+        return self.readout(state), state
+
+    def readout(self, state):
         logits = self.decoder(F.relu(self.encoder(state)))
-        return logits.reshape(self.config.slots + 1, self.config.vocabulary), state
+        return logits.reshape(self.config.slots + 1, self.config.vocabulary)
 
     @torch.no_grad()
     def constrain(self):
@@ -82,7 +85,10 @@ class Learner:
         self.optimizer = torch.optim.Adam(self.network.parameters(), lr=.003)
         self.vocabulary = []  # Readout support, not a mapping from messages to responses.
         self.examples = []
+        self.example_metadata = []
         self.updates = 0
+        self.feedback_optimizer = torch.optim.SGD(self.network.parameters(), lr=.05)
+        self.sampling = torch.Generator().manual_seed(config.seed)
 
     def encode(self, sequence):
         tokens = sequence["tokens"]
@@ -90,11 +96,17 @@ class Learner:
             raise ValueError(f"Network supports 1–{self.config.slots} input/target tokens")
         return torch.stack([self.network.pulse(t["points"]) for t in tokens])
 
-    def admit(self, message, target):
+    def admit(self, message, target, source="user", replace=False, context=None):
         pulses = self.encode(message)
         if not 1 <= len(target["tokens"]) <= self.config.slots:
             raise ValueError("Target exceeds network response slots")
         ids = [t["id"] for t in target["tokens"]]
+        key = tuple(t["id"] for t in message["tokens"])
+        if len(self.example_metadata) != len(self.examples):
+            self.example_metadata = [None] * len(self.examples)
+        if source == "professor" and any(meta and meta[0] == key and meta[1] != "professor"
+                                         for meta in self.example_metadata):
+            return False  # Explicit human examples take priority while retained.
         new = list(dict.fromkeys(self.vocabulary + ids))
         if len(new) >= self.config.vocabulary:
             raise ValueError("Readout vocabulary full; reset learning to start another experiment")
@@ -102,8 +114,16 @@ class Learner:
         labels = torch.zeros(self.config.slots + 1, dtype=torch.long)
         labels[:len(ids)] = torch.tensor([self.vocabulary.index(i) + 1 for i in ids])
         # Replay contains training examples only; predictions never query it.
-        self.examples.append((pulses, labels))
+        if replace:
+            retained = [(example, meta) for example, meta in zip(self.examples, self.example_metadata)
+                        if not meta or meta[0] != key]
+            self.examples = [example for example, _ in retained]
+            self.example_metadata = [meta for _, meta in retained]
+        self.examples.append((context if context is not None else pulses, labels))
+        self.example_metadata.append((key, source))
         self.examples = self.examples[-self.config.replay:]
+        self.example_metadata = self.example_metadata[-self.config.replay:]
+        return True
 
     def train(self, epochs=10):
         if not self.examples:
@@ -115,7 +135,7 @@ class Learner:
             self.optimizer.zero_grad(set_to_none=True)
             loss = 0
             for pulses, labels in self.examples:
-                logits, _ = self.network(pulses)
+                logits, _ = self.evaluate(pulses)
                 # Ignore unused classes, but include learned EOS (class zero).
                 logits = logits[:, :len(self.vocabulary) + 1]
                 # Score tokens and first EOS equally; padding does not dominate.
@@ -146,6 +166,77 @@ class Learner:
             result.append(self.vocabulary[index - 1])
         return result
 
+    @torch.no_grad()
+    def sample(self, message=None, context=None):
+        """Sample the network, retaining its behavior-policy probabilities for credit."""
+        pulses = context if context is not None else self.encode(message)
+        logits, state = self.evaluate(pulses)
+        self.network.activity.copy_(state)
+        distribution = logits[:, :len(self.vocabulary) + 1].log_softmax(-1)
+        classes, old_log_probs, ids = [], [], []
+        for slot in range(self.config.slots):
+            action = int(torch.multinomial(distribution[slot].exp(), 1, generator=self.sampling))
+            classes.append(action)
+            old_log_probs.append(float(distribution[slot, action]))
+            if action == 0:
+                break
+            ids.append(self.vocabulary[action - 1])
+        trajectory = {"pulses": pulses, "classes": classes, "old_log_probs": old_log_probs,
+                      "vocabulary": tuple(self.vocabulary), "rated": set()}
+        return ids, trajectory
+
+    def evaluate(self, context):
+        if isinstance(context, dict):
+            # Credit one real transition; earlier activity is a detached observation.
+            state = self.network.tick(context["state_before"], context["pulse"])
+            return self.network.readout(state), state
+        return self.network(context)
+
+    def feedback(self, trajectory, reward, source="human", strength=5):
+        """One bounded, clipped token-policy update per source on the actual sampled reply.
+
+        This is immediate-reward contextual-bandit feedback, not a long-horizon RL
+        algorithm. Per-token probability ratios permit bounded reuse after teaching.
+        """
+        if source not in ("human", "professor") or reward not in (-1, 0, 1):
+            raise ValueError("Feedback requires a known source and reward -1, 0 or +1")
+        if not isinstance(strength, (int, float)) or not 1 <= strength <= 10:
+            raise ValueError("Feedback strength must be between 1 and 10")
+        if source in trajectory["rated"]:
+            raise ValueError("This source already rated this reply")
+        old_support = trajectory["vocabulary"]
+        if tuple(self.vocabulary[:len(old_support)]) != old_support:
+            raise ValueError("Reply belongs to a different vocabulary; send another message")
+        weight = 1. if source == "human" else .25
+        classes = torch.tensor(trajectory["classes"], dtype=torch.long)
+        old = torch.tensor(trajectory["old_log_probs"])
+        logits, _ = self.evaluate(trajectory["pulses"])
+        log_probs = logits[:len(classes), :len(self.vocabulary) + 1].log_softmax(-1)
+        selected = log_probs.gather(1, classes[:, None]).squeeze(1)
+        before = float(selected.mean().detach())
+        ratio = (selected - old).clamp(-20, 20).exp()
+        advantage = float(reward) * weight
+        loss = -torch.minimum(ratio * advantage, ratio.clamp(.8, 1.2) * advantage).mean()
+        changed = reward != 0 and bool(self.vocabulary)
+        if changed:
+            self.feedback_optimizer.param_groups[0]["lr"] = .05 * strength
+            self.feedback_optimizer.zero_grad(set_to_none=True)
+            loss.backward()
+            nn.utils.clip_grad_norm_(self.network.parameters(), 1.)
+            self.feedback_optimizer.step()
+            self.network.constrain()
+            self.updates += 1
+        trajectory["rated"].add(source)
+        with torch.no_grad():
+            logits, _ = self.evaluate(trajectory["pulses"])
+            after = float(logits[:len(classes), :len(self.vocabulary)+1].log_softmax(-1)
+                          .gather(1, classes[:, None]).mean())
+        return {"kind": "reward_feedback", "source": source, "reward": reward,
+                "weight": weight, "update_attempted": changed, "updates": self.updates,
+                "strength": strength, "step_size": .05 * strength,
+                "mean_log_probability_before": before, "mean_log_probability_after": after,
+                "loss": float(loss.detach())}
+
     def rest(self, epochs=10):
         if not self.examples:
             raise ValueError("Rest training requires task replay to check against collapse")
@@ -162,7 +253,7 @@ class Learner:
                 before = float(rest_loss.detach())
             task_loss = 0
             for pulses, labels in self.examples:
-                logits, _ = self.network(pulses)
+                logits, _ = self.evaluate(pulses)
                 length = int((labels != 0).sum()) + 1
                 task_loss = task_loss + F.cross_entropy(logits[:length, :len(self.vocabulary)+1], labels[:length])
             loss = rest_loss + task_loss / len(self.examples)

@@ -8,10 +8,11 @@ from PySide6.QtCore import QEvent, QPointF, QRectF, Qt, QThread, QTimer, Signal
 from PySide6.QtGui import QColor, QFont, QIcon, QPainter, QPen, QPixmap, QPolygonF, QRadialGradient
 from PySide6.QtWidgets import (QApplication, QCheckBox, QFrame, QHBoxLayout, QLabel,
     QMainWindow, QPlainTextEdit, QPushButton, QScrollArea, QSizePolicy, QSlider,
-    QVBoxLayout, QWidget)
+    QVBoxLayout, QWidget, QSplitter)
 
 from embeddings import EmbeddingStore
 from compute import Compute
+from chat import Chat
 
 
 STYLE = """
@@ -43,6 +44,8 @@ QCheckBox{background:transparent;color:#9bb3bf;spacing:8px}
 QCheckBox::indicator{width:13px;height:13px;border:1px solid #4b6776;border-radius:3px;background:#13222c}
 QCheckBox::indicator:checked{background:#7bbba9;border-color:#a9e5d4}
 QToolTip{background:#172c36;color:#e2f1ef;border:1px solid #486774;padding:6px}
+QSpinBox,QDoubleSpinBox{background:#15232d;border:1px solid #304653;border-radius:6px;padding:6px;color:#b9d5d9}
+QSplitter::handle{background:#24323c;width:1px}
 """
 
 
@@ -91,6 +94,7 @@ class Volume(QWidget):
         self.yaw, self.pitch, self.zoom, self.fit_zoom = .55, -.3, 1., 1.
         self.drag_position = None
         self.neural = False
+        self.reserve_inspector = False
         self.activity = []
         self.neuron_positions = np.stack(np.meshgrid(*([np.linspace(-1, 1, 25)] * 3), indexing="ij"), -1).reshape(-1, 3)
 
@@ -106,7 +110,7 @@ class Volume(QWidget):
         y = xyz[:, 1] * cp - z * sp
         depth = xyz[:, 1] * sp + z * cp
         factor = min(self.width(), self.height()) * .34 * self.zoom * 4 / np.maximum(.2, 4 - depth)
-        center = (self.width() - (250 if self.tokens else 0)) / 2
+        center = (self.width() - (250 if self.tokens and self.reserve_inspector else 0)) / 2
         return [QPointF(center + xx * f, self.height() * .47 - yy * f) for xx, yy, f in zip(x, y, factor)]
 
     def paintEvent(self, event):
@@ -234,6 +238,12 @@ class Window(QMainWindow):
         self.compute.failed.connect(self.compute_failed)
         self.training_batches = 0
         self.network_ready = False
+        self.expert_mode = False
+        self.brain_running = False
+        self.start_requested = False
+        self.coached_message_id = None
+        self.brain_timer = QTimer(self)
+        self.brain_timer.timeout.connect(self.brain_tick)
         self.neural_timer = QTimer(self)
         self.neural_timer.timeout.connect(lambda: self.send_compute("step"))
         self.timer = QTimer(self)
@@ -250,18 +260,32 @@ class Window(QMainWindow):
         titles = QVBoxLayout()
         titles.setSpacing(4)
         titles.addWidget(label("N E U R A L   V O L U M E   L A B", 10, "#d9e7ea", True))
-        titles.addWidget(label("SPATIAL LEARNING / 02", 8, "#7995a5"))
+        titles.addWidget(label("CONVERSATION / 03", 8, "#7995a5"))
         head.addLayout(titles)
         head.addStretch()
+        self.mode_button = button("Inspect network", lambda: self.set_expert_mode(not self.expert_mode))
+        head.addWidget(self.mode_button)
         self.status = label("●  LOADING LOCAL EMBEDDINGS", 9, "#c2ad85")
         head.addWidget(self.status)
         layout.addWidget(header)
         self.volume = Volume()
         self.volume.installEventFilter(self)
-        layout.addWidget(self.volume, 1)
+        self.split = QSplitter(Qt.Orientation.Horizontal)
+        self.split.addWidget(self.volume)
+        self.chat = Chat()
+        self.split.addWidget(self.chat)
+        self.split.setStretchFactor(0, 3)
+        self.split.setStretchFactor(1, 2)
+        self.split.setSizes([760, 520])
+        self.chat.brain_toggled.connect(self.toggle_brain)
+        self.chat.duration_changed.connect(self.set_tick_duration)
+        self.chat.action.connect(self.chat_action)
+        self.chat.editing.connect(self.chat_editing)
+        layout.addWidget(self.split, 1)
         self.build_inspector()
         self.build_transport()
         self.build_workspace(layout)
+        self.workspace.hide()
         self.error = label("", 10, "#f0b3a3")
         self.error.setWordWrap(True)
         self.error.setContentsMargins(28, 8, 28, 8)
@@ -331,6 +355,7 @@ class Window(QMainWindow):
 
     def build_workspace(self, parent_layout):
         workspace = QFrame(objectName="workspace")
+        self.workspace = workspace
         area = QVBoxLayout(workspace)
         area.setContentsMargins(28, 14, 28, 14)
         area.setSpacing(10)
@@ -432,7 +457,7 @@ class Window(QMainWindow):
         self.prediction = label("NETWORK OUTPUT   /   untrained · no prediction", 10, "#98e6cf")
         self.prediction.setTextFormat(Qt.TextFormat.PlainText)
         self.prediction.setWordWrap(True)
-        self.target_source = label("Target source: user · professor proposals are unverified and never train automatically", 8)
+        self.target_source = label("Manual lab target · chat coaching has separate, labeled reward/example updates", 8)
         self.response.textChanged.connect(lambda: self.target_source.setText("Target source: edited/user supplied · train explicitly"))
         area.addWidget(self.prediction)
         area.addWidget(self.target_source)
@@ -452,9 +477,14 @@ class Window(QMainWindow):
         for widget in self.compute_buttons:
             widget.setEnabled(self.network_ready and not busy and self.training_batches == 0)
         self.stop_training.setEnabled(self.training_batches > 0)
+        self.chat.available(self.network_ready, busy, self.brain_running)
+        if self.metadata is None:
+            self.chat.start.setEnabled(False)
 
     def compute_failed(self, message):
         self.training_batches = 0
+        self.brain_timer.stop()
+        self.brain_running = False
         if self.compute.process.state() == self.compute.process.ProcessState.NotRunning:
             self.network_ready = False
             self.volume.activity = []
@@ -465,6 +495,7 @@ class Window(QMainWindow):
         self.error.setText(message)
         self.error.show()
         self.neural_status.setText("Operation failed · see error below")
+        self.chat.progress.setText(message)
         self.update_compute_controls()
 
     def compute_result(self, payload):
@@ -487,7 +518,46 @@ class Window(QMainWindow):
             self.neural_status.setText(f"{op.title()} loss {loss:.5f} · updates {result['updates']} · training metric only")
         if op == "predict":
             self.prediction.setText("NETWORK OUTPUT   /   " + (result["prediction"] or "[EOS / no response]"))
+        if op == "enqueue":
+            self.chat.queued(self.chat_message, result)
+            self.message.setPlainText(self.chat_message)
+            # Reference text from a prior conversation must not enter visualization.
+            self.response.clear()
+            self.visualize_text()
+            self.volume.tokens = []  # No vertex is displayed as introduced before a tick.
+            self.inspector.hide()
+            self.transport.hide()
+            self.volume.update()
+        elif op == "live_tick":
+            self.chat.show_tick(result)
+            if result["token"] and self.data:
+                self.volume.tokens = self.data["message"]["tokens"][:result["received"]]
+                self.select(min(result["received"] - 1, len(self.volume.tokens) - 1))
+        elif op == "feedback":
+            self.chat.rated = True
+            self.chat.add_bubble("YOUR REWARD · policy update", f"{result['reward']:+d} at impact {result['strength']:g}. " +
+                ("Feedback applied to the sampled reply." if result["update_attempted"] else "No learned words yet; start with a correction or professor example."), "#98e6cf")
+        elif op == "coach":
+            self.chat.coached(result)
+        elif op == "correct":
+            self.chat.corrected = self.chat.edit_turn_id == self.chat.turn_id
+            edited = self.chat.corrected_text.toPlainText()
+            self.chat.close_editor()
+            self.chat.add_bubble("YOUR CORRECTION · example teaching", edited + "\n\nTaught this reply. Resume the brain when ready.", "#98e6cf")
+        elif op == "reset":
+            self.chat.clear_session()
+            self.coached_message_id = None
+        if op == "init" and self.start_requested:
+            self.start_requested = False
+            self.brain_running = True
+        if op in ("init", "enqueue", "live_tick", "feedback", "coach", "correct") and self.brain_running:
+            self.brain_timer.start(round(self.chat.duration.value() * 1000))
         self.update_compute_controls()
+        if (op == "live_tick" and result["input_finished"] and self.chat.coach.isChecked()
+                and self.coached_message_id != result["message_id"]):
+            self.coached_message_id = result["message_id"]
+            self.brain_timer.stop()
+            self.send_compute("coach", turn_id=result["turn_id"])
         if op == "admit" and self.training_batches > 0:
             self.send_compute("train", epochs=10)
         elif op == "train" and self.training_batches > 0:
@@ -498,10 +568,75 @@ class Window(QMainWindow):
                 self.update_compute_controls()
                 self.send_compute("predict", message=self.training_message)
 
+    def set_expert_mode(self, enabled):
+        self.expert_mode = enabled
+        self.volume.reserve_inspector = enabled
+        self.workspace.setVisible(enabled)
+        self.chat.setVisible(not enabled)
+        self.mode_button.setText("Back to chat" if enabled else "Inspect network")
+        self.inspector.setVisible(enabled and bool(self.volume.tokens))
+        self.transport.setVisible(enabled and bool(self.volume.tokens))
+        self.position_overlays()
+        self.volume.update()
+
+    def toggle_brain(self):
+        if not self.network_ready:
+            if self.compute.busy:
+                return
+            self.start_requested = True
+            if not self.send_compute("init"):
+                self.start_requested = False
+            return
+        if self.chat.editor.isVisible():
+            self.chat.progress.setText("Finish or cancel the correction before resuming.")
+            return
+        self.brain_running = not self.brain_running
+        self.neural_timer.stop()
+        self.neural_run.setText("Run")
+        if self.brain_running:
+            self.brain_timer.start(round(self.chat.duration.value() * 1000))
+            self.chat.progress.setText("Brain running · next tick after the selected duration")
+        else:
+            self.brain_timer.stop()
+            self.chat.progress.setText("Brain paused · state and learning preserved")
+        self.update_compute_controls(self.compute.busy)
+
+    def set_tick_duration(self, seconds):
+        self.brain_timer.setInterval(round(seconds * 1000))
+
+    def brain_tick(self):
+        if self.brain_running and not self.compute.busy:
+            self.send_compute("live_tick")
+
+    def chat_action(self, op, arguments):
+        if self.compute.busy:
+            return
+        if op == "enqueue":
+            try:
+                self.chat_message = arguments["message"]
+                if len(self.store.encode(self.chat_message)["tokens"]) > 16:
+                    raise ValueError("Use at most 16 tokens in a sentence for this prototype")
+            except Exception as error:
+                self.chat.progress.setText(str(error))
+                return
+        self.brain_timer.stop()
+        self.send_compute(op, **arguments)
+
+    def chat_editing(self, editing):
+        if editing:
+            self.brain_running = False
+            self.brain_timer.stop()
+            self.neural_timer.stop()
+            self.neural_run.setText("Run")
+        self.update_compute_controls(self.compute.busy)
+
     def inject_token(self):
         self.send_compute("step", message=self.message.toPlainText(), index=self.index)
 
     def toggle_neural_run(self):
+        self.brain_running = False
+        self.brain_timer.stop()
+        self.chat.available(self.network_ready, self.compute.busy, False)
         if self.neural_timer.isActive():
             self.neural_timer.stop()
             self.neural_run.setText("Run")
@@ -510,11 +645,15 @@ class Window(QMainWindow):
             self.neural_run.setText("Pause")
 
     def silence_network(self):
+        self.brain_running = False
+        self.brain_timer.stop()
         self.neural_timer.stop()
         self.neural_run.setText("Run")
         self.send_compute("silence")
 
     def train_pair(self):
+        self.brain_running = False
+        self.brain_timer.stop()
         self.neural_timer.stop()
         self.neural_run.setText("Run")
         self.training_message = self.message.toPlainText()
@@ -562,7 +701,7 @@ class Window(QMainWindow):
         self.status.setText("●  LOCAL MODEL READY   /   OFFLINE")
         self.status.setStyleSheet("color:#9adfc9")
         self.model_label.setText(f"SmolLM2-135M · {metadata['dimensions']} dimensions · frozen embeddings · local CPU compute")
-        self.about.setText(f"Frozen embeddings, revision {metadata['revision']}; shared scale {metadata['scale']:.7g}. Consecutive XYZ triples, not a validated concept map. Sparse recurrent ReLU network: 15,625 units, 12 incoming edges each, no reciprocal edges; longer cycles remain possible. Random weights, zero recurrent biases/activity. Learned fixed-slot token readout: at most 16 tokens from up to 127 admitted target tokens, with EOS; not a pretrained language decoder. Training uses eight-pair replay; Predict never reads targets or replay. Professor is a separate frozen offline LLM, not network cognition. Responses may be wrong or truncated. Run adds no random activity; zero stays zero. Text, replay and learning are RAM-only and lost on close. Packaged GUI requires this checkout's Python compute runtime.")
+        self.about.setText(f"Frozen embeddings, revision {metadata['revision']}; shared scale {metadata['scale']:.7g}. Consecutive XYZ triples, not a validated concept map. Sparse recurrent ReLU network: 15,625 units, 12 incoming edges each, no reciprocal edges; longer cycles remain possible. Random weights, zero recurrent biases/activity. Learned fixed-slot token readout: at most 16 tokens from up to 127 admitted target tokens, with EOS. Chat introduces one token per timed tick and samples its live readout. Ratings are clipped immediate-reward policy updates; double-click corrections teach examples with eight-pair replay. Credit uses one transition, not long-horizon RL. Professor coaching is a separate frozen offline LLM: unverified votes and occasional short examples, never the network's displayed reply. Zero activity stays zero without input, although learned readout biases can still produce words. Text, replay and learning are RAM-only and lost on close. Packaged GUI requires this checkout's Python compute runtime.")
         self.visualize.setEnabled(True)
         self.update_compute_controls()
 
@@ -590,8 +729,8 @@ class Window(QMainWindow):
         self.volume.reset_camera()
         self.all.setChecked(False)
         self.switch("message")
-        self.inspector.show()
-        self.transport.show()
+        self.inspector.setVisible(self.expert_mode)
+        self.transport.setVisible(self.expert_mode)
         self.position_overlays()
 
     def switch(self, sequence):
@@ -702,6 +841,7 @@ class Window(QMainWindow):
 
     def closeEvent(self, event):
         self.stop()
+        self.brain_timer.stop()
         self.neural_timer.stop()
         self.compute.close()
         self.loader.wait()
@@ -734,6 +874,11 @@ def main():
         from check_learning_desktop import verify_learning
         destination = Path(sys.argv[sys.argv.index("--verify-learning-output") + 1])
         window.loader.ready.connect(lambda _: QTimer.singleShot(100, lambda: verify_learning(window, app, destination)))
+        window.loader.failed.connect(lambda _: app.exit(1))
+    if "--verify-chat-output" in sys.argv:
+        from check_chat_desktop import verify_chat
+        destination = Path(sys.argv[sys.argv.index("--verify-chat-output") + 1])
+        window.loader.ready.connect(lambda _: QTimer.singleShot(100, lambda: verify_chat(window, app, destination)))
         window.loader.failed.connect(lambda _: app.exit(1))
     window.show()
     sys.exit(app.exec())

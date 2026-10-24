@@ -19,6 +19,17 @@ of independently acquired language knowledge. See that folder's README for launc
   check earlier-pair replay, target isolation, silence and perturbed-state rest.
 - [x] E2: local offline professor using the existing pinned model; explicit editable
   proposals, isolated process, native launch and E-drive caches/builds, no auto-training.
+- [x] E2b: user-requested chat-first flow, start/pause brain, seconds per tick,
+  sequential one-token stimulation and live-state sampled replies. Existing lab
+  controls remain available through Inspect network.
+- [x] E2b: strong adjustable scalar feedback with exact reply credit, and double-click
+  corrections as separate supervised examples; bounded snapshots and replay.
+- [x] E2b: optional per-sentence professor coaching: unverified model reward, short
+  first/new-word examples, lower reward weight and human-example priority. This
+  supersedes E2's manual-only professor policy; no independent teaching job exists.
+- [ ] E2b follow-up: evaluate correctness/interference in multi-turn teaching, compare
+  rewards-only/examples-only/hybrid controls, and validate professor judgments on
+  fresh independently labeled examples. Current evidence checks update mechanisms.
 - [ ] E3: quantify spatial aliasing and loss of within-token order; compare richer
   encodings and recurrent versus readout-only learning on fresh multi-pair/sequence
   tasks. The two-pair frozen-core control succeeds; no core-learning benefit established.

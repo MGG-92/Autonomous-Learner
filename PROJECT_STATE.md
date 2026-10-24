@@ -1,6 +1,95 @@
 # Project state — 2026-10-24
 
-## Active increment — spatial learner and offline professor
+## Active increment — timed chat, strong rewards and double-click correction
+
+Default native view now places a chat beside the neural volume. Start brain begins
+an adjustable clock, default five seconds. Sending queues a short sentence; exactly
+one token pulse enters and one recurrent update occurs each tick. Live state carries
+between sentences and ticks continue undriven after input. The network's attempted
+reply is sampled from its actual live state each tick; no professor generates that
+displayed reply. Inspect network retains the earlier manual lab controls.
+
+Good reply / Needs work apply scalar +1/−1 feedback to the exact sampled response.
+Human impact ranges 1–10, default 5; SGD base lr 0.05, gradient cap 1, clipped token
+probability-ratio surrogate [0.8, 1.2]. This is immediate contextual-bandit feedback,
+not full PPO or long-horizon RL. The previous live state is detached, so temporal
+credit spans one transition/readout. One update per source/reply; eight recent reply
+snapshots are retained and really expire. No rating creates an imitation target.
+
+Double-click any retained reply (or Edit reply) to pause and edit that specific
+reply. Teach this reply uses 60 supervised Adam updates on the captured neural context,
+with eight-example replay. Human edits replace professor examples for the same input
+and block professor imitation overrides while retained. The original network bubble
+is not silently replaced with the edit. Expired credit fails explicitly.
+
+Professor coach is on by default, optional, and runs once per completed sentence.
+It offers an unverified Yes/No-logit reward and short respectful example. Professor
+reward weight is 0.25 and impact 1. A first/new-word example can teach 20 supervised
+updates; known-word cases can use reward alone. Relative Yes support thresholds
+0.65/0.35 are supplied, uncalibrated and unvalidated. No independent background job,
+new model download or private conversation recording was introduced. This enabled
+coaching policy supersedes the prior increment's manual-only professor workflow.
+
+Evidence: 172 tests pass, preserved demo and embedding checks pass. Actual-model
+source chat verification measured its first timed tick at 5.015 seconds, introduced
+Hello and world on separate ticks, fitted a double-click Welcome correction, applied
+human reward and obtained a real offline professor vote without replacing the human
+teaching example. Native screenshot was inspected; the chat and neural volume are
+the default view. The latest sampled reply stays pinned beside its rating controls,
+so scrolling teacher feedback cannot hide the response being rated. Build targets
+fresh versioned desktop-builds directories so earlier open apps and their unsaved
+learning need not be closed or overwritten. A sharing-lock precheck prevented
+overwriting a newly open chat app; the final builder now always creates a new release
+and advances a local launcher only after successful packaging.
+Final versioned Windows package verification also passed from another working
+directory, measuring its first tick at 5.032 seconds with real offline professor
+assessment and all chat/correction/reward checks. Its folder is about 263.7 MiB.
+Disk observations for this increment: C free 40.82 GiB before work and 40.81 GiB
+after verification; E free 503.36 then 502.35 GiB. These are whole-drive snapshots,
+not attribution of unrelated writes. No package/model downloads were needed.
+
+Seeded mechanism report `reports/neural-volume-feedback-v1/`: across seeds 7/42/97,
+mean selected-token log-probability change is +0.088467 for human +1 at impact 5,
+−0.094361 for human −1, +0.018182 at impact 1, and +0.004568 for weaker professor +1.
+Neutral reward is unchanged; clearing replay preserves the scalar update; fixed
+random control is unchanged by construction. No dialogue correctness or teacher
+quality is demonstrated. Earlier reports and controlled experiments are preserved.
+
+Launch `neural-volume-lab/Launch Neural Volume Lab.cmd`, now selecting the local
+`runs/neural-volume-lab/launch-desktop.cmd`, which selects the latest successful
+versioned build. `desktop-build.json` records its relative executable path.
+The package reuses this checkout's Python runtime, CPU Torch and pinned model cache.
+Large artifacts and application-controlled caches remain on the checkout drive.
+
+Commands (choose fresh output/database names for reruns):
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q
+.\.venv\Scripts\python.exe -m autonomous_learner demo --memory runs/neural-volume-lab/chat-legacy-smoke.sqlite
+.\.venv\Scripts\python.exe neural-volume-lab/check_feedback.py --output runs/neural-volume-lab/feedback-controls.json
+.\.venv\Scripts\python.exe neural-volume-lab/app.py --verify-chat-output runs/neural-volume-lab/chat-source-check
+.\.venv\Scripts\python.exe neural-volume-lab/app.py --verify-output runs/neural-volume-lab/chat-embedding-regression
+.\.venv\Scripts\python.exe neural-volume-lab/build_desktop.py
+$desktopBuild = Get-Content runs/neural-volume-lab/desktop-build.json | ConvertFrom-Json
+$desktopExe = Join-Path runs/neural-volume-lab $desktopBuild.executable
+& $desktopExe --verify-chat-output runs/neural-volume-lab/chat-package-final
+.\.venv\Scripts\python.exe scripts/publication_check.py
+```
+
+Limits remain: 16 input/output tokens, 127 admitted target tokens, session-only
+learning lost on close, geometry aliasing, strong recurrent decay, no calibrated
+uncertainty or general reasoning. Learned readout biases can output words even when
+recurrent state is zero; that is not spontaneous neural activity. Timer intervals
+are minimum pacing, can be delayed by compute, and never introduce hidden extra
+tokens. Increasing reward impact can cause interference; clipped objectives do not
+strictly bound probability or guarantee useful learning. No audit log becomes input.
+
+Next take E2b follow-up in docs/PLAN.md: compare reward-only, examples-only and hybrid
+teaching on fresh labeled cases; quantify teacher error and interference. Preserve
+the frozen-core negative conclusion and E3 representation questions. Opt-in validated
+persistence is still pending. Do not resume preserved older research by default.
+
+## Previous increment — spatial learner and offline professor (historical)
 
 The native application now runs a 25³ (15,625-unit) sparse recurrent ReLU learner,
 187,500 directed edges, 1,898,572 total parameters, seeded random weights and silent
