@@ -420,3 +420,9 @@ checks actually performed and never certify that the whole system is flaw-free.
   also passed. Frozen runtime reports confirm Torch/Transformers are not loaded.
   Final native screenshot was inspected. The package stays local/ignored, and the
   executable was opened for the user after stopping the superseded browser server.
+
+- CI boundary repair: the first Ubuntu job reproduced `libEGL.so.1` missing during
+  QtTest import. Added explicit Qt runtime packages and job-wide offscreen selection;
+  retained native tests. Windows source/package verification remains valid because
+  this repair affects only the headless CI environment. Both Python versions must
+  pass the revised workflow before merging.

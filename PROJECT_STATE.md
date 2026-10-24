@@ -59,7 +59,10 @@ The first packaged launch failed because dependency discovery selected an incomp
 ICU DLL from an unrelated toolchain on PATH. Build-only PATH isolation and a clean
 rebuild repaired it; both console diagnosis and the final windowed build then passed.
 The earlier browser server was stopped and the native executable opened for the user. CI installs desktop extras and runs native tests offscreen
-without downloading model weights. No scientific learning result is claimed.
+without downloading model weights. The initial Ubuntu CI job exposed a missing
+`libEGL.so.1` at QtTest import. The workflow now installs explicit Qt runtime
+libraries (`libegl1`, `libopengl0`, `libxkbcommon0`) and sets the offscreen platform
+at job scope; the desktop tests remain enabled rather than being skipped. No scientific learning result is claimed.
 
 Next: refine the embedding UI from user feedback, then define the spatial NN's
 stimulation, temporal encoding, connectivity, initialization and readout before
